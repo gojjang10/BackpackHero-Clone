@@ -13,8 +13,8 @@ public class InventoryItem : MonoBehaviour
     public int finalDefense;    // 방어력
 
     [Header("그리드 포지션")]
-    public int onGridX; // 현재 그리드의 X 좌표
-    public int onGridY; // 현재 그리드의 Y 좌표
+    public int onGridX; // 현재 아이템의 그리드 X 좌표
+    public int onGridY; // 현재 아이템의 그리드 Y 좌표
 
     // 내부 컴포넌트
     private Image itemImage; // 아이템 이미지
