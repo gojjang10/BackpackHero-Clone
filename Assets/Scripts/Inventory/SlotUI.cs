@@ -1,13 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class SlotUI : MonoBehaviour
+public class SlotUI : MonoBehaviour, IPointerDownHandler
 {
     public int x, y;
 
     private Image backgroundImage;
+    private GridInteract gridInteract; // 매니저 참조
 
     [Header("색상 설정")]
     public Color unlockedColor = Color.white;       // 해금됨 (흰색)
@@ -16,6 +18,7 @@ public class SlotUI : MonoBehaviour
     private void Awake()
     {
         backgroundImage = GetComponent<Image>();
+        gridInteract = FindObjectOfType<GridInteract>();
     }
 
     // 좌표 설정
@@ -31,6 +34,16 @@ public class SlotUI : MonoBehaviour
         if (backgroundImage != null)
         {
             backgroundImage.color = isLocked ? lockedColor : unlockedColor;
+        }
+    }
+
+    // ★ 클릭되었을 때 호출되는 함수 (유니티 엔진이 자동 호출)
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (gridInteract != null)
+        {
+            // 매니저에게 "나(x,y) 클릭됐어!" 라고 보고
+            gridInteract.OnClickSlot(x, y);
         }
     }
 }

@@ -15,6 +15,7 @@ public class InventoryItem : MonoBehaviour
     [Header("그리드 포지션")]
     public int onGridX; // 현재 아이템의 그리드 X 좌표
     public int onGridY; // 현재 아이템의 그리드 Y 좌표
+    public int tileSize = 100;
 
     // 내부 컴포넌트
     private Image itemImage; // 아이템 이미지
@@ -34,8 +35,8 @@ public class InventoryItem : MonoBehaviour
         // 이미지 및 크기 설정
         if (itemImage != null) itemImage.sprite = data.icon;
 
-        // Grid의 CellSize를 받아와서 곱해야 함. 우선 임의로 50으로 설정.
-        rectTransform.sizeDelta = new Vector2(data.width * 50, data.height * 50);
+        // Grid의 CellSize를 받아와서 곱해야 함. 우선 임의로 100으로 설정.
+        rectTransform.sizeDelta = new Vector2(data.width * tileSize, data.height * tileSize);
 
         // 스탯 초기화 위임
         data.InitializeStats(this);

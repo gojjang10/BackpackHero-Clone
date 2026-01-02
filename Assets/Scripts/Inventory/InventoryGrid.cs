@@ -108,4 +108,125 @@ public class InventoryGrid : MonoBehaviour
     {
         return x >= 0 && x < maxColumns && y >= 0 && y < maxRows;
     }
+
+    // 배치 가능 여부 확인
+    // startX, startY: 배치하려는 기준점 (왼쪽 아래부터 시작)
+    // width, height: 아이템의 크기
+    public bool CheckPosition(int startX, int startY, int width, int height)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                int checkX = startX + x;
+                int checkY = startY + y;
+
+                // 1. 맵 밖으로 나가는지?
+                if (!IsValidCoordinate(checkX, checkY)) return false;
+
+                // 2. 잠긴 슬롯인지?
+                if (!logicalGrid[checkX, checkY].isUnlocked) return false;
+
+                // 3. 이미 다른 아이템이 있는지?
+                if (!logicalGrid[checkX, checkY].IsEmpty()) return false;
+            }
+        }
+        return true;
+    }
+
+    // [아이템 배치 실행]
+    // 검사가 끝난(CheckPosition 통과) 아이템을 실제로 데이터에 등록하고 위치를 잡음
+    public void PlaceItem(InventoryItem item, int startX, int startY)
+    {
+        BaseItemData data = item.data; // InventoryItem의 데이터 참조
+
+        // 1. 아이템에게 자신의 위치 기억시키기
+        item.onGridX = startX;
+        item.onGridY = startY;
+
+        // 2. 논리적 그리드(데이터) 채우기
+        for (int x = 0; x < data.width; x++)
+        {
+            for (int y = 0; y < data.height; y++)
+            {
+                // 해당 슬롯에 "이 아이템이 차지하고 있음" 표시
+                logicalGrid[startX + x, startY + y].inventoryItem = item;
+            }
+        }
+
+        // 3. 시각적 위치 설정 (UI 이동)
+        RectTransform rt = item.GetComponent<RectTransform>();
+        rt.SetParent(slotParent); // 그리드 패널의 자식으로 설정 (그래야 같이 움직임)
+        rt.localScale = Vector3.one; // 크기 초기화
+
+        // ★ 위치 계산 로직 (InitializeGrid와 동일한 오프셋 방식 적용)
+        float xOffset = (maxColumns - 1) * 0.5f;
+        float yOffset = (maxRows - 1) * 0.5f;
+
+        // 아이템의 중심점 계산: (시작좌표 + 아이템너비의 절반)
+        // 예: 너비가 2칸이면, 0.5칸만큼 더 오른쪽으로 가야 중심임.
+        float centerX = startX + (data.width - 1) * 0.5f;
+        float centerY = startY + (data.height - 1) * 0.5f;
+
+        float posX = (centerX - xOffset) * tileSize;
+        float posY = (centerY - yOffset) * tileSize;
+
+        rt.anchoredPosition = new Vector2(posX, posY);
+    }
+
+    // [아이템 집기(제거)] - 나중에 GridInteract에서 쓸 것 미리 추가
+    public InventoryItem PickUpItem(int x, int y)
+    {
+        if (!IsValidCoordinate(x, y)) return null;
+
+        InventoryItem item = logicalGrid[x, y].inventoryItem;
+        if (item == null) return null;
+
+        // 아이템이 차지하던 모든 슬롯 비우기
+        CleanGridReference(item);
+
+        return item;
+    }
+
+    // 아이템이 있던 자리 null로 만들기
+    private void CleanGridReference(InventoryItem item)
+    {
+        for (int x = 0; x < item.data.width; x++)
+        {
+            for (int y = 0; y < item.data.height; y++)
+            {
+                int targetX = item.onGridX + x;
+                int targetY = item.onGridY + y;
+                if (IsValidCoordinate(targetX, targetY))
+                {
+                    logicalGrid[targetX, targetY].inventoryItem = null;
+                }
+            }
+        }
+    }
+
+    // 특정 좌표의 아이템 가져오기
+    public InventoryItem GetItem(int x, int y)
+    {
+        if (!IsValidCoordinate(x, y)) return null;
+        return logicalGrid[x, y].inventoryItem;
+    }
+
+    // 자동 배치 시도 함수(테스트 용)
+    public bool AutoPlaceItem(InventoryItem item)
+    {
+        // 왼쪽 아래(0,0)부터 순서대로 탐색
+        for (int y = 0; y < maxRows; y++)
+        {
+            for (int x = 0; x < maxColumns; x++)
+            {
+                if (CheckPosition(x, y, item.data.width, item.data.height))
+                {
+                    PlaceItem(item, x, y);
+                    return true; // 배치 성공!
+                }
+            }
+        }
+        return false; // 자리 없음
+    }
 }
