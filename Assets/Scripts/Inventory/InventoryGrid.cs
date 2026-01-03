@@ -32,6 +32,7 @@ public class InventoryGrid : MonoBehaviour
 
     void InitializeGrid()
     {
+        // 그리드 배열 초기화
         logicalGrid = new InventorySlot[maxColumns, maxRows];
         visualGrid = new SlotUI[maxColumns, maxRows];
         debugSlotList = new List<InventorySlot>();
@@ -97,10 +98,10 @@ public class InventoryGrid : MonoBehaviour
     {
         if (visualGrid[x, y] == null) return;
 
-        bool unlocked = logicalGrid[x, y].isUnlocked;
+        bool isUnlocked = logicalGrid[x, y].isUnlocked;
 
         // SlotUI에게 시각적 상태 변경 요청
-        visualGrid[x, y].SetLockedState(!unlocked);
+        visualGrid[x, y].SetLockedState(isUnlocked);
     }
 
     // 좌표 유효성 검사
@@ -121,7 +122,7 @@ public class InventoryGrid : MonoBehaviour
                 int checkX = startX + x;
                 int checkY = startY + y;
 
-                // 1. 맵 밖으로 나가는지?
+                // 1. 그리드 밖으로 나가는지? (좌표 유효성 검사)
                 if (!IsValidCoordinate(checkX, checkY)) return false;
 
                 // 2. 잠긴 슬롯인지?
@@ -131,6 +132,8 @@ public class InventoryGrid : MonoBehaviour
                 if (!logicalGrid[checkX, checkY].IsEmpty()) return false;
             }
         }
+
+        // 모든 검사 통과. true 반환
         return true;
     }
 
@@ -177,8 +180,10 @@ public class InventoryGrid : MonoBehaviour
     // [아이템 집기(제거)] - 나중에 GridInteract에서 쓸 것 미리 추가
     public InventoryItem PickUpItem(int x, int y)
     {
+        // 좌표 유효성 검사 (예외 처리)
         if (!IsValidCoordinate(x, y)) return null;
 
+        // 해당 좌표의 아이템 가져와서 유효성 검사
         InventoryItem item = logicalGrid[x, y].inventoryItem;
         if (item == null) return null;
 
@@ -211,6 +216,15 @@ public class InventoryGrid : MonoBehaviour
         if (!IsValidCoordinate(x, y)) return null;
         return logicalGrid[x, y].inventoryItem;
     }
+
+    // 특정 좌표의 SlotUI 가져오기
+    public SlotUI GetSlotUI(int x, int y)
+    {
+        // 좌표 유효성 검사
+        if (!IsValidCoordinate(x, y)) return null;
+        return visualGrid[x, y];
+    }
+
 
     // 자동 배치 시도 함수(테스트 용)
     public bool AutoPlaceItem(InventoryItem item)

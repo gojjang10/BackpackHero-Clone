@@ -9,13 +9,21 @@ public class GridInteract : MonoBehaviour
     public InventoryGrid inventoryGrid; // 인벤토리 그리드 참조
     [SerializeField] private Canvas canvas; // UI 렌더링 최상위 부모 (드래그 시 좌표 변환용)
 
+    [Header("하이라이트 색상")]
+    public Color validColor = new Color(0, 1, 0, 0.3f);   // 초록색 (반투명)
+    public Color invalidColor = new Color(1, 0, 0, 0.3f); // 빨간색 (반투명)
+
     [Header("상태 변수")]
     public InventoryItem selectedItem; // 현재 들고 있는 아이템
     private RectTransform selectedItemRect; // 들고 있는 아이템의 RectTransform
 
-    // 되돌리기 위한 위치 기억
+    // 아이템을 되돌리기 위한 위치 기억
     private int originalX = -1;
     private int originalY = -1;
+
+    // 현재 마우스가 올라간 슬롯 좌표 (없으면 -1(임시))
+    private int currentMouseSlotX = -1;
+    private int currentMouseSlotY = -1;
 
     private void Update()
     {
@@ -25,6 +33,31 @@ public class GridInteract : MonoBehaviour
             // 아이템의 위치를 마우스 위치로 갱신
             // (UI 모드일 때는 RectTransform의 position에 마우스 position을 넣으면 됨)
             selectedItemRect.position = Input.mousePosition;
+        }
+    }
+
+    // 마우스가 슬롯에 들어왔을 때 -> 하이라이트 갱신
+    public void OnEnterSlot(int x, int y)
+    {
+        currentMouseSlotX = x;
+        currentMouseSlotY = y;
+
+        // 아이템을 들고 있을 때만 하이라이트 표시
+        if (selectedItem != null)
+        {
+            UpdateHighlight(x, y);
+        }
+    }
+
+    // 마우스가 슬롯에서 나갔을 때 -> 하이라이트 끄기
+    public void OnExitSlot(int x, int y)
+    {
+        // 나간 슬롯이 현재 슬롯과 같다면 초기화
+        if (x == currentMouseSlotX && y == currentMouseSlotY)
+        {
+            currentMouseSlotX = -1;
+            currentMouseSlotY = -1;
+            ClearHighlight(); // 하이라이트 지우기
         }
     }
 
@@ -49,6 +82,7 @@ public class GridInteract : MonoBehaviour
         // 1. 해당 좌표에 아이템이 있는지 확인 (InventoryGrid 함수 활용)
         InventoryItem targetItem = inventoryGrid.GetItem(x, y);
 
+        // 아이템이 있는게 확인 되면
         if (targetItem != null)
         {
             // 2. 원래 위치 기억 (실패 시 되돌리기 위해)
@@ -72,7 +106,12 @@ public class GridInteract : MonoBehaviour
             Image img = selectedItem.GetComponent<Image>();
             if (img != null) img.raycastTarget = false;
 
+            UpdateHighlight(x, y);  // 첫 하이라이트 갱신
             Debug.Log($"아이템 집음: {selectedItem.data.itemName}");
+        }
+        else
+        {
+           Debug.Log("해당 슬롯에 아이템이 없습니다.");
         }
     }
 
@@ -96,6 +135,53 @@ public class GridInteract : MonoBehaviour
         }
 
         selectedItem = null; // 손 비우기
+        ClearHighlight();   // 하이라이트 끄기
+    }
+
+    private void UpdateHighlight(int startX, int startY)
+    {
+        // 1. 기존 하이라이트 싹 지우기 (잔상 방지)
+        ClearHighlight();
+
+        // 2. 배치 가능 여부 판단 -> 색상 결정
+        bool isValid = inventoryGrid.CheckPosition(startX, startY, selectedItem.data.width, selectedItem.data.height);
+        Color highlightColor = isValid ? validColor : invalidColor;
+
+        // 3. 아이템 크기만큼 반복하며 슬롯 색칠하기
+        for (int x = 0; x < selectedItem.data.width; x++)
+        {
+            for (int y = 0; y < selectedItem.data.height; y++)
+            {
+                int targetX = startX + x;
+                int targetY = startY + y;
+
+                // 유효한 좌표에 있는 슬롯만 칠하기
+                SlotUI slot = inventoryGrid.GetSlotUI(targetX, targetY); 
+                if (slot != null)
+                {
+                    slot.SetHighlight(true, highlightColor);
+                }
+            }
+        }
+    }
+
+    // 모든 슬롯의 하이라이트 끄기
+    private void ClearHighlight()
+    {
+        // 비효율적일 수 있지만, 전체를 도는 게 가장 안전함 (버그 방지)
+        // 최적화하고 싶다면 '마지막에 칠했던 슬롯 리스트'를 기억하면 됨.
+        // 하지만 8x5 정도는 그냥 다 돌아도 전혀 문제 없음.
+        for (int x = 0; x < inventoryGrid.maxColumns; x++)
+        {
+            for (int y = 0; y < inventoryGrid.maxRows; y++)
+            {
+                SlotUI slot = inventoryGrid.GetSlotUI(x, y);
+                if (slot != null)
+                {
+                    slot.SetHighlight(false, Color.white);
+                }
+            }
+        }
     }
 }
 
