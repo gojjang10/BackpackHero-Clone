@@ -122,7 +122,7 @@ public class InventoryGrid : MonoBehaviour
                 int checkX = startX + x;
                 int checkY = startY + y;
 
-                // 1. 맵 밖으로 나가는지? (좌표 유효성 검사)
+                // 1. 그리드 밖으로 나가는지? (좌표 유효성 검사)
                 if (!IsValidCoordinate(checkX, checkY)) return false;
 
                 // 2. 잠긴 슬롯인지?
@@ -216,6 +216,15 @@ public class InventoryGrid : MonoBehaviour
         if (!IsValidCoordinate(x, y)) return null;
         return logicalGrid[x, y].inventoryItem;
     }
+
+    // 특정 좌표의 SlotUI 가져오기
+    public SlotUI GetSlotUI(int x, int y)
+    {
+        // 좌표 유효성 검사
+        if (!IsValidCoordinate(x, y)) return null;
+        return visualGrid[x, y];
+    }
+
 
     // 자동 배치 시도 함수(테스트 용)
     public bool AutoPlaceItem(InventoryItem item)
