@@ -29,11 +29,11 @@ public class SlotUI : MonoBehaviour, IPointerDownHandler
     }
 
     // 잠금 상태에 따라 색상 변경
-    public void SetLockedState(bool isLocked)
+    public void SetLockedState(bool isUnlocked)
     {
         if (backgroundImage != null)
         {
-            backgroundImage.color = isLocked ? lockedColor : unlockedColor;
+            backgroundImage.color = isUnlocked ? unlockedColor : lockedColor;
         }
     }
 
