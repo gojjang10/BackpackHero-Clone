@@ -18,7 +18,7 @@ public class BaseItemData : ScriptableObject
     [Header("아이템 구분 및 기능")]
     public ItemType itemType;       // 액티브/패시브 구분
 
-    public List<ItemEffect> useEffects; // 이 아이템이 가진 특수 능력들 (공격, 회복, 시너지 등)
+    public List<BaseItemEffect> effects; // 이 아이템이 가진 특수 능력들 (공격, 회복, 시너지 등)
 
     // 초기화 위임 함수
     // InventoryItem(껍데기)이 생성될 때, 데이터(이 클래스)가 직접 스탯을 설정해주는 식으로 한번 구현해보기.
