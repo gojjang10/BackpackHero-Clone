@@ -126,6 +126,7 @@ public class GridInteract : MonoBehaviour
             // [성공] 새로운 위치에 배치
             inventoryGrid.PlaceItem(selectedItem, x, y);
             Debug.Log("아이템 배치 성공!");
+            ExecuteItemEffects(selectedItem);
         }
         else
         {
@@ -136,6 +137,19 @@ public class GridInteract : MonoBehaviour
 
         selectedItem = null; // 손 비우기
         ClearHighlight();   // 하이라이트 끄기
+    }
+
+    // 효과 실행을 위한 보조 함수 (깔끔하게 분리)
+    private void ExecuteItemEffects(InventoryItem item)
+    {
+        foreach (var effect in item.data.effects)
+        {
+            // OnClick(테스트용)으로 설정된 효과를 놓는 순간 확인
+            if (effect.triggerType == EffectTriggerType.OnClick)
+            {
+                effect.Execute(item, inventoryGrid);
+            }
+        }
     }
 
     private void UpdateHighlight(int startX, int startY)
@@ -169,8 +183,7 @@ public class GridInteract : MonoBehaviour
     private void ClearHighlight()
     {
         // 비효율적일 수 있지만, 전체를 도는 게 가장 안전함 (버그 방지)
-        // 최적화하고 싶다면 '마지막에 칠했던 슬롯 리스트'를 기억하면 됨.
-        // 하지만 8x5 정도는 그냥 다 돌아도 전혀 문제 없음.
+        // 최적화하고 싶다면 '마지막에 칠했던 슬롯 리스트'를 기억하면 될 것 같다고 생각됨.
         for (int x = 0; x < inventoryGrid.maxColumns; x++)
         {
             for (int y = 0; y < inventoryGrid.maxRows; y++)
