@@ -6,6 +6,7 @@ using UnityEngine;
 public static class GridSearcher
 {
     // 특정 시작 좌표에서 주어진 패턴에 따라 유효한 타겟 좌표들을 반환하는 전역 함수
+    // * 불규칙한 고정 범위(예: 대각선, L자 모양 등)를 탐색할 때 사용
     public static List<Vector2Int> GetValidCoordinates(int startX, int startY, List<Vector2Int> pattern, InventoryGrid grid)
     {
         // 유효한 타겟 좌표들을 담을 리스트
@@ -26,4 +27,36 @@ public static class GridSearcher
         }
         return validTargets;
     }
+
+    public static List<Vector2Int> GetDirectionTargets(int startX, int startY, int width, int height, SearchDirection direction, InventoryGrid grid)
+    {
+        List<Vector2Int> calculatedCoords = new List<Vector2Int>();
+
+        switch (direction)
+        {
+            case SearchDirection.RightSide:
+                // 우선은 오른쪽 면만 구현. 
+                // 예: 방패(2x2)가 (0,0)에 있으면 -> (2,0), (2,1)을 검사
+                int targetX = startX + width;
+                for (int y = 0; y < height; y++)
+                {
+                    calculatedCoords.Add(new Vector2Int(targetX, startY + y));
+                }
+                break;
+
+                // LeftSide, UpSide 등도 비슷한 원리로 추후에 추가 가능
+        }
+
+        List<Vector2Int> validTargets = new List<Vector2Int>();
+        foreach (var coord in calculatedCoords)
+        {
+            if (grid.IsValidCoordinate(coord.x, coord.y))
+            {
+                validTargets.Add(coord);
+            }
+        }
+
+        return validTargets;
+    }
 }
+
