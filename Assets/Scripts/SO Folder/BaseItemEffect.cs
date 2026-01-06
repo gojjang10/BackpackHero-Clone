@@ -32,8 +32,8 @@ public abstract class BaseItemEffect : ScriptableObject
             coords = GridSearcher.GetDirectionTargets(
                 sourceItem.onGridX,
                 sourceItem.onGridY,
-                sourceItem.data.width,
-                sourceItem.data.height,
+                sourceItem.Width,
+                sourceItem.Height,
                 searchDirection,
                 grid
             );

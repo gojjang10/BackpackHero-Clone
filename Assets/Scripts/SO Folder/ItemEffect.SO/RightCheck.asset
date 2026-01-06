@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: RightCheck
   m_EditorClassIdentifier: 
   triggerType: 0
-  searchPattern:
-  - {x: 1, y: 0}
+  searchDirection: 1
+  customPattern: []
