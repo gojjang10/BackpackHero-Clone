@@ -17,13 +17,11 @@ public class GridInteract : MonoBehaviour
     public InventoryItem selectedItem; // 현재 들고 있는 아이템
     private RectTransform selectedItemRect; // 들고 있는 아이템의 RectTransform
 
-    // 아이템을 되돌리기 위한 위치 기억
-    private int originalX = -1;
-    private int originalY = -1;
+    private Vector2Int originalGridPos; // 원래 위치 (X, Y) 묶어서 관리
+    private Vector2Int currentMouseSlotPos;
 
-    // 현재 마우스가 올라간 슬롯 좌표 (없으면 -1(임시))
-    private int currentMouseSlotX = -1;
-    private int currentMouseSlotY = -1;
+    // 현재 하이라이트 된 슬롯들의 목록 (전체를 다 돌면서 끄지 않기 위해)
+    private List<SlotUI> highlightedSlots = new List<SlotUI>();
 
     private void Update()
     {
@@ -33,14 +31,20 @@ public class GridInteract : MonoBehaviour
             // 아이템의 위치를 마우스 위치로 갱신
             // (UI 모드일 때는 RectTransform의 position에 마우스 position을 넣으면 됨)
             selectedItemRect.position = Input.mousePosition;
+
+            // [추가] 2. R키를 누르면 회전 시도
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                RotateItem();
+            }
         }
     }
 
     // 마우스가 슬롯에 들어왔을 때 -> 하이라이트 갱신
     public void OnEnterSlot(int x, int y)
     {
-        currentMouseSlotX = x;
-        currentMouseSlotY = y;
+        currentMouseSlotPos.x = x;
+        currentMouseSlotPos.y = y;
 
         // 아이템을 들고 있을 때만 하이라이트 표시
         if (selectedItem != null)
@@ -53,11 +57,10 @@ public class GridInteract : MonoBehaviour
     public void OnExitSlot(int x, int y)
     {
         // 나간 슬롯이 현재 슬롯과 같다면 초기화
-        if (x == currentMouseSlotX && y == currentMouseSlotY)
+        if (x == currentMouseSlotPos.x && y == currentMouseSlotPos.y)
         {
-            currentMouseSlotX = -1;
-            currentMouseSlotY = -1;
-            ClearHighlight(); // 하이라이트 지우기
+            currentMouseSlotPos = new Vector2Int(-1, -1);
+            ClearHighlight();
         }
     }
 
@@ -79,47 +82,38 @@ public class GridInteract : MonoBehaviour
     // 아이템 집기 로직
     private void PickUpItem(int x, int y)
     {
-        // 1. 해당 좌표에 아이템이 있는지 확인 (InventoryGrid 함수 활용)
         InventoryItem targetItem = inventoryGrid.GetItem(x, y);
+        if (targetItem == null) return;
 
-        // 아이템이 있는게 확인 되면
-        if (targetItem != null)
+        // 1. 원래 위치 기억
+        originalGridPos = new Vector2Int(targetItem.onGridX, targetItem.onGridY);
+
+        // 2. 그리드에서 제거 및 선택 상태로 전환
+        selectedItem = inventoryGrid.PickUpItem(x, y);
+        selectedItemRect = selectedItem.GetComponent<RectTransform>();
+
+        // 3. 렌더링 순서 조정 (제일 위로)
+        if (canvas != null)
         {
-            // 2. 원래 위치 기억 (실패 시 되돌리기 위해)
-            originalX = targetItem.onGridX;
-            originalY = targetItem.onGridY;
-
-            // 3. 그리드에서 아이템 제거 (데이터 비우기)
-            // (PickUpItem 함수는 아이템을 리턴하면서 그리드에서는 지워줌)
-            selectedItem = inventoryGrid.PickUpItem(x, y);
-            selectedItemRect = selectedItem.GetComponent<RectTransform>();
-
-            // 4. 시각적 처리: 아이템을 맨 앞으로 가져오기 (다른 슬롯에 가려지지 않게)
-            if (canvas != null)
-            {
-                selectedItem.transform.SetParent(canvas.transform); // 캔버스 직속으로 옮겨서 제일 위에 그리기
-                selectedItem.transform.SetAsLastSibling(); // 형제들 중 가장 마지막 = 가장 위에 그려짐
-            }
-
-            // 5. 클릭 통과 설정 (드래그 중에 내 아래에 있는 슬롯을 인식해야 하므로)
-            // 아이템 이미지의 Raycast Target을 꺼야 슬롯 클릭이 됨.
-            Image img = selectedItem.GetComponent<Image>();
-            if (img != null) img.raycastTarget = false;
-
-            UpdateHighlight(x, y);  // 첫 하이라이트 갱신
-            Debug.Log($"아이템 집음: {selectedItem.data.itemName}");
+            selectedItem.transform.SetParent(canvas.transform);
+            selectedItem.transform.SetAsLastSibling();
         }
-        else
-        {
-           Debug.Log("해당 슬롯에 아이템이 없습니다.");
-        }
+
+        // 4. 클릭 통과 설정 (Raycast Target Off)
+        var img = selectedItem.GetComponent<Image>();
+        if (img != null) img.raycastTarget = false;
+
+        // 5. 집자마자 현재 마우스 위치 기준으로 하이라이트 갱신
+        UpdateHighlight(x, y);
+
+        Debug.Log($"[PickUp] {selectedItem.data.itemName}을(를) 집었습니다.");
     }
 
     // 아이템 놓기 로직
     private void PlaceItem(int x, int y)
     {
         // 1. 놓을 수 있는지 검사 (크기, 잠금 여부, 다른 아이템 충돌 등)
-        bool canPlace = inventoryGrid.CheckPosition(x, y, selectedItem.data.width, selectedItem.data.height);
+        bool canPlace = inventoryGrid.CheckPosition(x, y, selectedItem.Width, selectedItem.Height);
 
         if (canPlace)
         {
@@ -131,12 +125,34 @@ public class GridInteract : MonoBehaviour
         else
         {
             // [실패] 원래 위치로 되돌리기 (Return)
-            Debug.Log("배치 실패! 원래 자리로 돌아갑니다.");
-            inventoryGrid.PlaceItem(selectedItem, originalX, originalY);
+
+            // 회전 상태가 바뀌었을 수도 있으니, 원래 자리로 돌아갈 수 있는지 재검사
+            bool canReturn = inventoryGrid.CheckPosition(originalGridPos.x, originalGridPos.y, selectedItem.Width, selectedItem.Height);
+
+            if(canReturn)
+            {
+                inventoryGrid.PlaceItem(selectedItem, originalGridPos.x, originalGridPos.y);
+            }
+            else
+            {
+                Debug.Log("배치 실패! 원래 자리로 돌아갑니다.");
+                selectedItem.Rotate();
+                inventoryGrid.PlaceItem(selectedItem, originalGridPos.x, originalGridPos.y);
+            }
         }
 
         selectedItem = null; // 손 비우기
         ClearHighlight();   // 하이라이트 끄기
+    }
+
+    private void RotateItem()
+    {
+        selectedItem.Rotate();
+
+        if (currentMouseSlotPos.x != -1 && currentMouseSlotPos.y != -1)
+        {
+            UpdateHighlight(currentMouseSlotPos.x, currentMouseSlotPos.y);
+        }
     }
 
     // 효과 실행을 위한 보조 함수 (깔끔하게 분리)
@@ -158,13 +174,13 @@ public class GridInteract : MonoBehaviour
         ClearHighlight();
 
         // 2. 배치 가능 여부 판단 -> 색상 결정
-        bool isValid = inventoryGrid.CheckPosition(startX, startY, selectedItem.data.width, selectedItem.data.height);
+        bool isValid = inventoryGrid.CheckPosition(startX, startY, selectedItem.Width, selectedItem.Height);
         Color highlightColor = isValid ? validColor : invalidColor;
 
         // 3. 아이템 크기만큼 반복하며 슬롯 색칠하기
-        for (int x = 0; x < selectedItem.data.width; x++)
+        for (int x = 0; x < selectedItem.Width; x++)
         {
-            for (int y = 0; y < selectedItem.data.height; y++)
+            for (int y = 0; y < selectedItem.Height; y++)
             {
                 int targetX = startX + x;
                 int targetY = startY + y;
@@ -174,6 +190,9 @@ public class GridInteract : MonoBehaviour
                 if (slot != null)
                 {
                     slot.SetHighlight(true, highlightColor);
+
+                    // 변경된 슬롯을 리스트에 추가 (나중에 이것만 끄기 위해)
+                    highlightedSlots.Add(slot);
                 }
             }
         }
@@ -182,19 +201,16 @@ public class GridInteract : MonoBehaviour
     // 모든 슬롯의 하이라이트 끄기
     private void ClearHighlight()
     {
-        // 비효율적일 수 있지만, 전체를 도는 게 가장 안전함 (버그 방지)
-        // 최적화하고 싶다면 '마지막에 칠했던 슬롯 리스트'를 기억하면 될 것 같다고 생각됨.
-        for (int x = 0; x < inventoryGrid.maxColumns; x++)
+        // 이전에 색칠했던 슬롯들만 찾아서 끄기
+        foreach (var slot in highlightedSlots)
         {
-            for (int y = 0; y < inventoryGrid.maxRows; y++)
+            if (slot != null)
             {
-                SlotUI slot = inventoryGrid.GetSlotUI(x, y);
-                if (slot != null)
-                {
-                    slot.SetHighlight(false, Color.white);
-                }
+                slot.SetHighlight(false, Color.white);
             }
         }
+        // 리스트 비우기
+        highlightedSlots.Clear();
     }
 }
 

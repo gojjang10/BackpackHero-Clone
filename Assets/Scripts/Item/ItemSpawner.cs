@@ -32,7 +32,8 @@ public class ItemSpawner : MonoBehaviour
         InventoryItem newItem = newItemObj.GetComponent<InventoryItem>();
 
         // 3. 데이터 주입 (Initialize 호출)
-        newItem.Initialize(selectedData);
+        // 임의로 tileSize를 100으로 지정
+        newItem.Initialize(selectedData, 100);
 
         if (inventoryGrid.AutoPlaceItem(newItem))
         {

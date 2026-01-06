@@ -148,9 +148,9 @@ public class InventoryGrid : MonoBehaviour
         item.onGridY = startY;
 
         // 2. 논리적 그리드(데이터) 채우기
-        for (int x = 0; x < data.width; x++)
+        for (int x = 0; x < item.Width; x++)
         {
-            for (int y = 0; y < data.height; y++)
+            for (int y = 0; y < item.Height; y++)
             {
                 // 해당 슬롯에 "이 아이템이 차지하고 있음" 표시
                 logicalGrid[startX + x, startY + y].inventoryItem = item;
@@ -168,8 +168,8 @@ public class InventoryGrid : MonoBehaviour
 
         // 아이템의 중심점 계산: (시작좌표 + 아이템너비의 절반)
         // 예: 너비가 2칸이면, 0.5칸만큼 더 오른쪽으로 가야 중심임.
-        float centerX = startX + (data.width - 1) * 0.5f;
-        float centerY = startY + (data.height - 1) * 0.5f;
+        float centerX = startX + (item.Width - 1) * 0.5f;
+        float centerY = startY + (item.Height - 1) * 0.5f;
 
         float posX = (centerX - xOffset) * tileSize;
         float posY = (centerY - yOffset) * tileSize;
@@ -196,9 +196,9 @@ public class InventoryGrid : MonoBehaviour
     // 아이템이 있던 자리 null로 만들기
     private void CleanGridReference(InventoryItem item)
     {
-        for (int x = 0; x < item.data.width; x++)
+        for (int x = 0; x < item.Width; x++)
         {
-            for (int y = 0; y < item.data.height; y++)
+            for (int y = 0; y < item.Height; y++)
             {
                 int targetX = item.onGridX + x;
                 int targetY = item.onGridY + y;
@@ -234,7 +234,7 @@ public class InventoryGrid : MonoBehaviour
         {
             for (int x = 0; x < maxColumns; x++)
             {
-                if (CheckPosition(x, y, item.data.width, item.data.height))
+                if (CheckPosition(x, y, item.Width, item.Height))
                 {
                     PlaceItem(item, x, y);
                     return true; // 배치 성공!
