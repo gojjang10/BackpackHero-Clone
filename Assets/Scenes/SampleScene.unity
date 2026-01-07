@@ -530,6 +530,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventoryGrid: {fileID: 715570384}
   canvas: {fileID: 580609523}
+  validColor: {r: 0, g: 1, b: 0, a: 0.3}
+  invalidColor: {r: 1, g: 0, b: 0, a: 0.3}
   selectedItem: {fileID: 0}
 --- !u!4 &1610807524
 Transform:
@@ -647,8 +649,8 @@ MonoBehaviour:
   itemPrefab: {fileID: 2869904551635920395, guid: e5db072c452b265408ef01afe7245e8b, type: 3}
   itemsToSpawn:
   - {fileID: 11400000, guid: 312912c1ac03d2f4887d02c1515c9860, type: 2}
-  - {fileID: 11400000, guid: 41cce5d6dcc8dd345a6a53738d6a1a4b, type: 2}
-  - {fileID: 11400000, guid: d00a0c213f7f35249be13135119ae9be, type: 2}
+  - {fileID: 11400000, guid: 7eaa5aafe3badd943819a597624cbeb5, type: 2}
+  - {fileID: 11400000, guid: 79acda4e4edcbe04091e5535b3830de0, type: 2}
 --- !u!4 &1830990643
 Transform:
   m_ObjectHideFlags: 0

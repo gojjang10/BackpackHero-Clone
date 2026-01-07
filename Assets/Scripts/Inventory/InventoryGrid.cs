@@ -225,6 +225,44 @@ public class InventoryGrid : MonoBehaviour
         return visualGrid[x, y];
     }
 
+    // 전체 아이템의 스탯을 재계산하는 핵심 함수
+    public void RecalculateAllStats()
+    {
+        // 1. 모든 아이템의 스탯을 '순정 상태(Base)'로 초기화 (Reset)
+        List<InventoryItem> processedItems = new List<InventoryItem>();
+
+        for (int x = 0; x < maxColumns; x++)
+        {
+            for (int y = 0; y < maxRows; y++)
+            {
+                InventoryItem item = GetItem(x, y);
+
+                // 중복 처리 방지 
+                if (item != null && !processedItems.Contains(item))
+                {
+                    item.ResetStats(); // 0으로 만들고 기본 스탯만 적용
+                    processedItems.Add(item);
+                }
+            }
+        }
+
+        // 2. 모든 아이템의 효과(Effect)를 다시 실행
+        foreach (var item in processedItems)
+        {
+            if (item.data.effects != null)
+            {
+                foreach (var effect in item.data.effects)
+                {
+                    // 효과 발동 (현재는 필터링된 대상들의 currentAttack을 올려줌)
+                    if (effect.triggerType == EffectTriggerType.Passive)
+                    {
+                        effect.Execute(item, this);
+                    }
+                }
+            }
+        }
+            Debug.Log(" 인벤토리 스탯 재계산 완료");
+    }
 
     // 자동 배치 시도 함수(테스트 용)
     public bool AutoPlaceItem(InventoryItem item)

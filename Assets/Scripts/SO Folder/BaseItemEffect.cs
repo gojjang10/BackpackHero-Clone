@@ -9,6 +9,10 @@ public abstract class BaseItemEffect : ScriptableObject
     [Header("탐색 전략 (드래그 앤 드롭)")]
     public SearchStrategy searchStrategy;
 
+    [Header("필터링 설정 (선택)")]
+    [Tooltip("비워두면 모든 아이템 허용. 설정하면 해당 태그 중 하나라도 가진 아이템만 허용.")]
+    public List<ItemTag> targetTags;
+
     // 실행 함수 (자식들이 구현)
     public abstract void Execute(InventoryItem sourceItem, InventoryGrid grid);
 
@@ -38,11 +42,11 @@ public abstract class BaseItemEffect : ScriptableObject
         {
             InventoryItem foundItem = grid.GetItem(coord.x, coord.y);
 
-            // 빈칸이 아니고, 나 자신(sourceItem)이 아닐 때만
-            if (foundItem != null && foundItem != sourceItem)
+            // 4. 기본 유효성 검사 (빈칸 X, 나 자신 X, 중복 X)
+            if (foundItem != null && foundItem != sourceItem && !targets.Contains(foundItem))
             {
-                // 이미 리스트에 들어있는 아이템인지 확인 (큰 아이템 중복 방지)
-                if (!targets.Contains(foundItem))
+                // 5. 태그 필터링 검사
+                if (IsTagMatched(foundItem.data.itemTags))
                 {
                     targets.Add(foundItem);
                 }
@@ -50,5 +54,22 @@ public abstract class BaseItemEffect : ScriptableObject
         }
 
         return targets;
+    }
+
+    // 태그 매칭 로직 (교집합 확인)
+    private bool IsTagMatched(List<ItemTag> itemTags)
+    {
+        // 조건(targetTags)이 아예 없으면 "모두" (True)
+        if (targetTags == null || targetTags.Count == 0) return true;
+
+        // 아이템한테 태그가 하나도 없으면 "X" (False)
+        if (itemTags == null || itemTags.Count == 0) return false;
+
+        // 하나라도 겹치는 게 있는지 확인
+        foreach (var tag in targetTags)
+        {
+            if (itemTags.Contains(tag)) return true;
+        }
+        return false;
     }
 }
