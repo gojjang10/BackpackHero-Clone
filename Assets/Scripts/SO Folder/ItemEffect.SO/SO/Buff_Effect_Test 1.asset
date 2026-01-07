@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b2635c82e9761b4e9dbfbad39b63bce, type: 3}
-  m_Name: RightCheck
+  m_Name: Buff_Effect_Test 1
   m_EditorClassIdentifier: 
-  triggerType: 0
-  searchDirection: 1
-  customPattern: []
+  triggerType: 1
+  searchStrategy: {fileID: 11400000, guid: c8a15b46b4235ea4792d57df5be477e6, type: 2}
+  targetTags: 01000000
+  bonusAttack: 5

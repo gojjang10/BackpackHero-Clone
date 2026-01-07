@@ -103,6 +103,8 @@ public class GridInteract : MonoBehaviour
         var img = selectedItem.GetComponent<Image>();
         if (img != null) img.raycastTarget = false;
 
+        inventoryGrid.RecalculateAllStats();    // 시너지 재계산
+
         // 5. 집자마자 현재 마우스 위치 기준으로 하이라이트 갱신
         UpdateHighlight(x, y);
 
@@ -120,7 +122,8 @@ public class GridInteract : MonoBehaviour
             // [성공] 새로운 위치에 배치
             inventoryGrid.PlaceItem(selectedItem, x, y);
             Debug.Log("아이템 배치 성공!");
-            ExecuteItemEffects(selectedItem);
+            inventoryGrid.RecalculateAllStats();    // 시너지 재계산
+            //ExecuteItemEffects(selectedItem);
         }
         else
         {
@@ -152,19 +155,6 @@ public class GridInteract : MonoBehaviour
         if (currentMouseSlotPos.x != -1 && currentMouseSlotPos.y != -1)
         {
             UpdateHighlight(currentMouseSlotPos.x, currentMouseSlotPos.y);
-        }
-    }
-
-    // 효과 실행을 위한 보조 함수 (깔끔하게 분리)
-    private void ExecuteItemEffects(InventoryItem item)
-    {
-        foreach (var effect in item.data.effects)
-        {
-            // OnClick(테스트용)으로 설정된 효과를 놓는 순간 확인
-            if (effect.triggerType == EffectTriggerType.OnClick)
-            {
-                effect.Execute(item, inventoryGrid);
-            }
         }
     }
 

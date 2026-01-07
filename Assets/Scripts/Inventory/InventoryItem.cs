@@ -21,8 +21,8 @@ public class InventoryItem : MonoBehaviour
 
     [Header("실시간 아이템 변수")]
     // BaseItemData에서 초기화된 후, 게임 중에 변할 수 있는 값들
-    public int finalDamage;     // 공격력
-    public int finalDefense;    // 방어력
+    public int currentAttack;     // 공격력
+    public int currentDefense;    // 방어력
 
     [Header("그리드 포지션")]
     public int onGridX; // 현재 아이템의 그리드 X 좌표
@@ -54,8 +54,21 @@ public class InventoryItem : MonoBehaviour
         SetSize(tileSize);
 
         // 3. 스탯 초기화 (데이터 원본에 있는 수치를 가져옴)
-        data.InitializeStats(this);
+        ResetStats();
     }
+
+    // 시너지 재계산 전에 "순정 상태"로 돌리는 함수
+    public void ResetStats()
+    {
+        // 1. 일단 모든 스탯 0으로 초기화 (찌꺼기 제거)
+        currentAttack = 0;
+        currentDefense = 0;
+
+        // 2. 데이터(설계도)에 적힌 기본값 적용
+        data.ApplyBaseStats(this);
+    }
+
+
 
     // 타일 크기에 맞춰 UI 크기 조절 (리팩토링으로 분리함)
     public void SetSize(int tileSize)
