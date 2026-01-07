@@ -8,7 +8,7 @@ public class DebugEffect : BaseItemEffect
     public override void Execute(InventoryItem user, InventoryGrid grid)
     {
         // 내 패턴 안에 있는 아이템들을 찾아서 로그 찍기
-        List<InventoryItem> targets = GetTargetItems(user, grid);
+        List<InventoryItem> targets = GetTargetItems(user, grid, user.onGridX, user.onGridY);
 
         if (targets.Count == 0)
         {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Base Item", menuName = "Backpack/Base Item Data")]
+[CreateAssetMenu(fileName = "New Base Item", menuName = "Item Data/Base Item Data")]
 public class BaseItemData : ScriptableObject
 {
     [Header("아이템 기본 정보")]

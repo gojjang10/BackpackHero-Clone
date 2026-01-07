@@ -6,42 +6,34 @@ public abstract class BaseItemEffect : ScriptableObject
 {
     public EffectTriggerType triggerType;
 
-    [Header("탐색 설정")]
-    public SearchDirection searchDirection; // 탐색 방향
-
-    [Header("CustomPattern일 때만 사용")]    // * 불규칙한 고정 범위(예: 대각선, L자 모양 등)를 탐색할 때 사용
-    public List<Vector2Int> customPattern;
+    [Header("탐색 전략 (드래그 앤 드롭)")]
+    public SearchStrategy searchStrategy;
 
     // 실행 함수 (자식들이 구현)
     public abstract void Execute(InventoryItem sourceItem, InventoryGrid grid);
 
-    // 타겟 찾는 공통 함수 (자식들이 편하게 쓰라고 만듦)
-    protected List<InventoryItem> GetTargetItems(InventoryItem sourceItem, InventoryGrid grid)
+    /// <summary>
+    /// 설정된 전략(SearchStrategy)을 사용하여, 지정된 기준 좌표(x, y)를 중심으로 영향을 받는 타겟 아이템들을 반환합니다.
+    /// <para>
+    /// * 아이템이 이미 배치된 경우: <c>sourceItem.onGridX</c>, <c>sourceItem.onGridY</c>를 전달.<br/>
+    /// * 배치 전 미리보기(Preview)인 경우: 마우스가 위치한 <c>임시 좌표</c>를 전달.
+    /// </para>
+    /// </summary>
+    /// <param name="sourceItem">효과를 발동시키는 주체 아이템 (자기 자신은 탐색에서 제외됩니다)</param>
+    /// <param name="grid">탐색을 수행할 인벤토리 그리드</param>
+    /// <param name="x">탐색의 기준이 될 X 좌표 (Center/Origin)</param>
+    /// <param name="y">탐색의 기준이 될 Y 좌표 (Center/Origin)</param>
+    /// <returns>탐색 범위 내에 존재하며 필터링 조건을 통과한 아이템 리스트</returns>
+    protected List<InventoryItem> GetTargetItems(InventoryItem sourceItem, InventoryGrid grid, int x, int y)
     {
-       List<Vector2Int> coords;
+        // 1. 전략이 없으면 빈 리스트 반환 (안전장치)
+        if (searchStrategy == null) return new List<InventoryItem>();
 
-        // 1. 방향 설정에 따라 좌표 구하기 방식 분기
-        if (searchDirection == SearchDirection.CustomPattern)
-        {
-            // [기존 방식] 수동 패턴. 현재 아이템의 좌표를 기준으로 customPattern이 유효한지 판단. 
-            coords = GridSearcher.GetValidCoordinates(sourceItem.onGridX, sourceItem.onGridY, customPattern, grid);
-        }
-        else
-        {
-            // [신규 방식] 크기에 따른 동적 계산
-            coords = GridSearcher.GetDirectionTargets(
-                sourceItem.onGridX,
-                sourceItem.onGridY,
-                sourceItem.Width,
-                sourceItem.Height,
-                searchDirection,
-                grid
-            );
-        }
+        // 2. 탐색 전략 클래스에게 좌표 계산 위임
+        List<Vector2Int> coords = searchStrategy.GetCoords(sourceItem, grid, x, y);
 
-        // 2. 좌표에 있는 아이템 가져오기 (중복 및 자기자신 제외)
+        // 3. 좌표 -> 아이템 변환 및 필터링 (기존 로직 유지)
         List<InventoryItem> targets = new List<InventoryItem>();
-        
         foreach (var coord in coords)
         {
             InventoryItem foundItem = grid.GetItem(coord.x, coord.y);

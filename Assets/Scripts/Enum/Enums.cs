@@ -18,7 +18,6 @@ public enum EffectTriggerType
 
 public enum SearchDirection
 {
-    CustomPattern, // 기존 방식: 내가 직접 좌표(1,0 등)를 찍겠다.
     RightSide,     // 동적 방식: 내 오른쪽 면 전체를 보겠다.
     LeftSide,      // 동적 방식: 내 왼쪽 면 전체를 보겠다.
     UpSide,        // 동적 방식: 내 위쪽 면 전체를 보겠다.
