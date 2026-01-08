@@ -28,7 +28,7 @@ public abstract class BaseItemEffect : ScriptableObject
     /// <param name="x">탐색의 기준이 될 X 좌표 (Center/Origin)</param>
     /// <param name="y">탐색의 기준이 될 Y 좌표 (Center/Origin)</param>
     /// <returns>탐색 범위 내에 존재하며 필터링 조건을 통과한 아이템 리스트</returns>
-    protected List<InventoryItem> GetTargetItems(InventoryItem sourceItem, InventoryGrid grid, int x, int y)
+    public List<InventoryItem> GetTargetItems(InventoryItem sourceItem, InventoryGrid grid, int x, int y)
     {
         // 1. 전략이 없으면 빈 리스트 반환 (안전장치)
         if (searchStrategy == null) return new List<InventoryItem>();

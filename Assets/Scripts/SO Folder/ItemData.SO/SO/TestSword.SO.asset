@@ -21,6 +21,6 @@ MonoBehaviour:
   itemType: 0
   itemTags: 01000000
   effects:
-  - {fileID: 11400000, guid: b837afaf97118b54bb19c7d0323b1785, type: 2}
+  - {fileID: 11400000, guid: 784baf9aafb1b2a41abc25f5c1494320, type: 2}
   baseAttack: 5
   baseDefense: 0

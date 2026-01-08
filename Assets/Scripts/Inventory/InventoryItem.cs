@@ -7,6 +7,9 @@ public class InventoryItem : MonoBehaviour
 {
     public BaseItemData data; // 아이템 원본 데이터
 
+    [Header("하이라이트 오브젝트")]    
+    public GameObject highlightObject;
+
     public bool isRotated = false; // 회전 여부 (true = 90도 회전됨)
 
     public int Width
@@ -75,8 +78,24 @@ public class InventoryItem : MonoBehaviour
     {
         if (rectTransform != null)
         {
-            // 초기 사이즈 설정 (회전되지 않은 상태 기준)
-            rectTransform.sizeDelta = new Vector2(data.width * tileSize, data.height * tileSize);
+            Vector2 newSize = new Vector2(data.width * tileSize, data.height * tileSize);
+            rectTransform.sizeDelta = newSize;
+
+            // [추가] 자식(하이라이트) 크기도 강제로 맞추기
+            if (highlightObject != null)
+            {
+                RectTransform highlightRect = highlightObject.GetComponent<RectTransform>();
+                if (highlightRect != null)
+                {
+                    // 1. 앵커를 중앙으로 초기화 (안전장치)
+                    highlightRect.anchorMin = new Vector2(0.5f, 0.5f);
+                    highlightRect.anchorMax = new Vector2(0.5f, 0.5f);
+                    highlightRect.pivot = new Vector2(0.5f, 0.5f);
+
+                    // 2. 크기를 아이템과 똑같이 맞춤
+                    highlightRect.sizeDelta = newSize;
+                }
+            }
         }
     }
 
@@ -92,6 +111,15 @@ public class InventoryItem : MonoBehaviour
             // 시계 방향으로 90도 회전 (Z축 -90)
             // 0도와 -90도를 왔다갔다함
             rectTransform.localRotation = Quaternion.Euler(0, 0, isRotated ? -90 : 0);
+        }
+    }
+
+    // 아이템 하이라이트 켜기/끄기
+    public void SetHighlight(bool isActive)
+    {
+        if (highlightObject != null)
+        {
+            highlightObject.SetActive(isActive);
         }
     }
 }
