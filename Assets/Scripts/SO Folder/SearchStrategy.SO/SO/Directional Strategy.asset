@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 705d20a367e6db74ca793fa40c57989f, type: 3}
   m_Name: Directional Strategy
   m_EditorClassIdentifier: 
-  direction: 0
+  direction: 2
   range: 1

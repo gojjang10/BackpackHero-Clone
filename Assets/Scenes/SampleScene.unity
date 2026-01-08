@@ -648,7 +648,6 @@ MonoBehaviour:
   inventoryGrid: {fileID: 715570384}
   itemPrefab: {fileID: 2869904551635920395, guid: e5db072c452b265408ef01afe7245e8b, type: 3}
   itemsToSpawn:
-  - {fileID: 11400000, guid: 312912c1ac03d2f4887d02c1515c9860, type: 2}
   - {fileID: 11400000, guid: 7eaa5aafe3badd943819a597624cbeb5, type: 2}
   - {fileID: 11400000, guid: 79acda4e4edcbe04091e5535b3830de0, type: 2}
 --- !u!4 &1830990643
