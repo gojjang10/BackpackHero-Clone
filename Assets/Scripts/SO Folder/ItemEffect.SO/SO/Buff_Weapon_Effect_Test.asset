@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Buff_Weapon_Effect_Test
   m_EditorClassIdentifier: 
   triggerType: 1
-  searchStrategy: {fileID: 11400000, guid: c8a15b46b4235ea4792d57df5be477e6, type: 2}
-  targetTags: 01000000
+  searchStrategy: {fileID: 11400000, guid: 919d357e7da585b4886166b3e6b9f130, type: 2}
+  targetTags: 06000000
   bonusAttack: 5

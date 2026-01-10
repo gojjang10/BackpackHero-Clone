@@ -145,5 +145,92 @@ public static class GridSearcher
         }
         return coords;
     }
+
+    /// <summary>
+    /// BFS(너비 우선 탐색) 알고리즘을 사용하여, 특정 태그(예 : 전도체)를 가진 아이템을 타고 연결된 모든 좌표를 반환합니다.
+    /// <para>
+    /// * 시작 아이템의 크기(Width, Height)가 1x1보다 클 경우, 아이템이 차지하는 모든 칸을 시작점으로 잡고 탐색을 시작합니다.
+    /// </para>
+    /// </summary>
+    /// <param name="startX">탐색을 시작할 기준 아이템의 X 좌표</param>
+    /// <param name="startY">탐색을 시작할 기준 아이템의 Y 좌표</param>
+    /// <param name="width">기준 아이템의 가로 크기 (회전 고려됨)</param>
+    /// <param name="height">기준 아이템의 세로 크기 (회전 고려됨)</param>
+    /// <param name="grid">검사할 인벤토리 그리드 참조</param>
+    /// <param name="connectorTag">연결 통로로 인식할 아이템 태그 (예: Conductive)</param>
+    /// <returns>연결된 모든 유효 좌표 리스트 (자기 자신은 포함되지 않음)</returns>
+    public static List<Vector2Int> GetConnectedCoords(int startX, int startY, int width, int height, InventoryGrid grid, ItemTag connectorTag)
+    {
+        List<Vector2Int> visitedCoords = new List<Vector2Int>(); // 결과 리스트
+        Queue<Vector2Int> toVisit = new Queue<Vector2Int>();     // 탐색 대기열
+        HashSet<Vector2Int> enqueued = new HashSet<Vector2Int>(); // 중복 방지
+
+        // 1. 탐색 방향
+        Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+
+        // 2. 시작 영역 설정 
+        // 아이템이 차지하는 모든 칸(x, y)을 기준으로 잡아야 함
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Vector2Int partPos = new Vector2Int(startX + x, startY + y);
+
+                // 내 자신이 차지하는 자리는 '이미 방문함' 처리해서 결과에 포함 안 되게 막음
+                enqueued.Add(partPos);
+
+                // 내 몸통의 각 칸마다 상하좌우를 확인해서 큐에 넣음
+                foreach (var dir in directions)
+                {
+                    Vector2Int neighbor = partPos + dir;
+
+                    // 유효한 좌표이고 && 아직 방문/예약 안 했고 && 자신이 아니라면
+                    if (grid.IsValidCoordinate(neighbor.x, neighbor.y) && !enqueued.Contains(neighbor))
+                    {
+                        toVisit.Enqueue(neighbor);
+                        enqueued.Add(neighbor);
+                    }
+                }
+            }
+        }
+
+        // 3. BFS 루프
+        while (toVisit.Count > 0)
+        {
+            Vector2Int currentPos = toVisit.Dequeue();
+
+            InventoryItem item = grid.GetItem(currentPos.x, currentPos.y);
+
+            if (item != null)
+            {
+                // A. 아이템 발견. 결과에 추가
+                visitedCoords.Add(currentPos);
+
+                // B. 태그를 가진 아이템이라면 더 뻗어나감
+                if (HasTag(item, connectorTag))
+                {
+                    foreach (var dir in directions)
+                    {
+                        Vector2Int nextPos = currentPos + dir;
+
+                        if (grid.IsValidCoordinate(nextPos.x, nextPos.y) && !enqueued.Contains(nextPos))
+                        {
+                            toVisit.Enqueue(nextPos);
+                            enqueued.Add(nextPos);
+                        }
+                    }
+                }
+            }
+        }
+
+        return visitedCoords;
+    }
+
+    // 아이템 태그 리스트에 특정 태그가 있는지 확인
+    private static bool HasTag(InventoryItem item, ItemTag tag)
+    {
+        if (item.data.itemTags == null) return false;
+        return item.data.itemTags.Contains(tag);
+    }
 }
 

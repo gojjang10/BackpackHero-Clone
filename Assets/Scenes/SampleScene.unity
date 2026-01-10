@@ -493,8 +493,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxColumns: 8
   maxRows: 5
-  startColumns: 4
-  startRows: 3
+  startColumns: 8
+  startRows: 5
   tileSize: 100
   slotPrefab: {fileID: 7409673364145921879, guid: b762a5df234204443a7c8d0deac1d47c, type: 3}
   slotParent: {fileID: 715570383}
