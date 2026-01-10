@@ -17,7 +17,9 @@ public enum ItemTag
     Armor,   // 방어구
     Potion,  // 포션
     Gem,     // 보석
-    Food     // 음식
+    Food,    // 음식
+    Conductive, // 전도체 (네트워크 아이템용)
+    ManaSource // 마나 원천 (마나 관련 아이템용)
 }
 
 // 아이템 효과 발동 조건 구분용 열거형
