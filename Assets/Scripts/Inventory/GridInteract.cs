@@ -17,6 +17,9 @@ public class GridInteract : MonoBehaviour
     public InventoryItem selectedItem; // 현재 들고 있는 아이템
     private RectTransform selectedItemRect; // 들고 있는 아이템의 RectTransform
 
+    [Header("UI")]
+    public UITooltip uiTooltip; // 인스펙터에서 할당
+
     private Vector2Int originalGridPos; // 원래 위치 (X, Y) 묶어서 관리
     private Vector2Int currentMouseSlotPos;
 
@@ -54,6 +57,20 @@ public class GridInteract : MonoBehaviour
         {
             UpdateHighlight(x, y);
         }
+
+        // [툴팁 로직] - 손에 아이템이 있든 없든, '바닥'에 있는 아이템 정보를 보여줌
+        InventoryItem itemOnSlot = inventoryGrid.GetItem(x, y);
+
+        if (itemOnSlot != null)
+        {
+            // 바닥에 아이템이 있으면 툴팁 켜기
+            uiTooltip.ShowTooltip(itemOnSlot);
+        }
+        else
+        {
+            // 바닥이 비어있으면 툴팁 끄기
+            uiTooltip.HideTooltip();
+        }
     }
 
     // 마우스가 슬롯에서 나갔을 때 -> 하이라이트 끄기
@@ -65,6 +82,9 @@ public class GridInteract : MonoBehaviour
             currentMouseSlotPos = new Vector2Int(-1, -1);
             ClearHighlight();
             ClearSynergyPreview();  // 시너지 미리보기 끄기
+
+            // [툴팁 로직] 슬롯에서 나가면 무조건 끄기
+            uiTooltip.HideTooltip();
         }
     }
 
