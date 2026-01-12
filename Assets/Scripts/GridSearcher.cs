@@ -201,26 +201,25 @@ public static class GridSearcher
 
             InventoryItem item = grid.GetItem(currentPos.x, currentPos.y);
 
-            if (item != null)
+            if (item != null && HasTag(item, connectorTag))
             {
-                // A. 아이템 발견. 결과에 추가
+                // 1. 태그가 확인되었으니 결과 리스트에 추가 
                 visitedCoords.Add(currentPos);
 
-                // B. 태그를 가진 아이템이라면 더 뻗어나감
-                if (HasTag(item, connectorTag))
+                // 2. 전도체니까 주변으로 계속 확장 시도
+                foreach (var dir in directions)
                 {
-                    foreach (var dir in directions)
-                    {
-                        Vector2Int nextPos = currentPos + dir;
+                    Vector2Int nextPos = currentPos + dir;
 
-                        if (grid.IsValidCoordinate(nextPos.x, nextPos.y) && !enqueued.Contains(nextPos))
-                        {
-                            toVisit.Enqueue(nextPos);
-                            enqueued.Add(nextPos);
-                        }
+                    // 유효하고, 방문 안 했으면 큐에 추가
+                    if (grid.IsValidCoordinate(nextPos.x, nextPos.y) && !enqueued.Contains(nextPos))
+                    {
+                        toVisit.Enqueue(nextPos);
+                        enqueued.Add(nextPos);
                     }
                 }
             }
+
         }
 
         return visitedCoords;

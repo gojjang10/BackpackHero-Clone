@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   itemName: "\uBC29\uD328"
-  description: 
+  description: "\uD14C\uC2A4\uD2B8\uC6A9 \uBC29\uD328\uC785\uB2C8\uB2E4."
   icon: {fileID: 21300000, guid: 256205b9c6ca12c45ab7762da8a65631, type: 3}
   width: 2
   height: 2
