@@ -16,6 +16,8 @@ public class BaseItemData : ScriptableObject
     public int height = 1;          // 세로 크기
 
     [Header("아이템 구분 및 기능")]
+
+    public int energyCost = 0;      // 사용 시 소모되는 에너지 양
     public ItemType itemType;       // 액티브/패시브 구분
     public List<ItemTag> itemTags; // 태그 리스트 (Weapon, Armor 등)
 

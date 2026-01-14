@@ -39,3 +39,9 @@ public enum SearchDirection
     UpSide,        // 동적 방식: 내 위쪽 면 전체를 보겠다.
     DownSide       // 동적 방식: 내 아래쪽 면 전체를 보겠다.
 }
+
+public enum GameState
+{
+    Exploration, // 탐험 (인벤토리 정리, 이동)
+    Battle       // 전투 (아이템 사용, 턴 진행)
+}
