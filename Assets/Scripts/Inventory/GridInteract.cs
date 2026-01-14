@@ -91,15 +91,39 @@ public class GridInteract : MonoBehaviour
     // SlotUI에서 클릭 이벤트가 발생하면 이 함수를 호출함
     public void OnClickSlot(int x, int y)
     {
-        // [CASE A] 손에 아무것도 없을 때 -> 잡기 (Pick Up)
-        if (selectedItem == null)
+        GameState state = (GameManager.instance != null) ? GameManager.instance.currentState : GameState.Exploration;
+
+        // [분기 1] 탐험 모드일 때 -> 기존 인벤토리 정리 로직
+        if (state == GameState.Exploration)
         {
-            PickUpItem(x, y);
+            if (selectedItem == null)
+            {
+                PickUpItem(x, y);
+            }
+            else
+            {
+                PlaceItem(x, y);
+            }
         }
-        // [CASE B] 손에 아이템이 있을 때 -> 놓기 (Place)
-        else
+        // [분기 2] 전투 모드일 때 -> 아이템 사용 로직
+        else if (state == GameState.Battle)
         {
-            PlaceItem(x, y);
+            // 아이템을 들고 있는 상태라면? -> 전투 중엔 아이템 못 옮기게 막기 (취소)
+            if (selectedItem != null)
+            {
+                Debug.Log("전투 중에는 아이템을 배치할 수 없습니다.");
+                return;
+            }
+
+            // 바닥에 있는 아이템을 클릭했다면 -> 사용 시도
+            InventoryItem clickedItem = inventoryGrid.GetItem(x, y);
+            if (clickedItem != null)
+            {
+                if (BattleManager.instance != null)
+                {
+                    BattleManager.instance.OnUseItem(clickedItem);
+                }
+            }
         }
     }
 
