@@ -7,7 +7,7 @@ public class EquipmentData : BaseItemData
 {
     [Header("장비 스탯 (원본)")]
     public int baseAttack;
-    public int baseDefense;
+    public int baseBlock;
     // 필요한 스탯 더 추가 가능
 
     public override void ApplyBaseStats(InventoryItem item)
@@ -17,6 +17,6 @@ public class EquipmentData : BaseItemData
 
         // 내 데이터(원본)에 있는 값을 아이템(InventoryItem)에 덮어씌움
         item.currentAttack = baseAttack;
-        item.currentDefense = baseDefense;
+        item.currentBlock = baseBlock;
     }
 }

@@ -25,7 +25,7 @@ public class Monster : MonoBehaviour
         currentHp = data.maxHp;
         currentBlock = 0;
 
-        // 3. 외형 변경 (가장 중요! 데이터에 있는 이미지로 갈아끼움)
+        // 3. 외형 변경 
         if (spriteRenderer != null && data.icon != null)
         {
             spriteRenderer.sprite = data.icon;
