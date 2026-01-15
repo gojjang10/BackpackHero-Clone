@@ -53,8 +53,8 @@ public class UITooltip : MonoBehaviour
         if (item.currentAttack > 0)
             sb.Append($"공격력: <color=red>{item.currentAttack}</color>\n");
 
-        if (item.currentDefense > 0)
-            sb.Append($"방어력: <color=blue>{item.currentDefense}</color>\n");
+        if (item.currentBlock > 0)
+            sb.Append($"방어력: <color=blue>{item.currentBlock}</color>\n");
 
         // 추후 마나 소모량 등도 여기서 추가하면 좋을까 생각중
 

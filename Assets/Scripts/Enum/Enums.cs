@@ -45,3 +45,12 @@ public enum GameState
     Exploration, // 탐험 (인벤토리 정리, 이동)
     Battle       // 전투 (아이템 사용, 턴 진행)
 }
+
+public enum BattleState 
+{ 
+    Start, 
+    PlayerTurn, 
+    EnemyTurn, 
+    Win, 
+    Lose 
+}

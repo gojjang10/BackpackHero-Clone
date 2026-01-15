@@ -18,10 +18,10 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 90e99a7fde056a4418b9fe16084adb5c, type: 3}
   width: 1
   height: 2
-  energyCost: 0
+  energyCost: 1
   itemType: 1
   itemTags: 0100000006000000
   effects:
   - {fileID: 11400000, guid: b837afaf97118b54bb19c7d0323b1785, type: 2}
   baseAttack: 5
-  baseDefense: 0
+  baseBlock: 0
