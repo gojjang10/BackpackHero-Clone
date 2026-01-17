@@ -232,7 +232,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   monsterBasePrefab: {fileID: 7784567653944077055, guid: 3d02487238233f246b3bebf197d59fc3, type: 3}
-  spawnPoint: {fileID: 641406427}
 --- !u!4 &72143041
 Transform:
   m_ObjectHideFlags: 0
@@ -353,14 +352,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97f0fe3f24171b45aa96363b90c57ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  monsterFactory: {fileID: 72143040}
-  testMonsterData: {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
+  spawner: {fileID: 1381867449}
+  uiManager: {fileID: 1381867448}
+  testMonsterList:
+  - {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
+  - {fileID: 11400000, guid: 7d7d630bf12c36f4292482637150338b, type: 2}
+  - {fileID: 11400000, guid: 99ac4e85300ae9d4188c3d8a6113f56a, type: 2}
   player: {fileID: 22935588}
-  energyText: {fileID: 1531209343}
-  turnInfoText: {fileID: 1479465585}
-  endGamePanel: {fileID: 141926919}
-  resultText: {fileID: 641721945}
   state: 0
+  activeMonsters: []
   currentTarget: {fileID: 0}
 --- !u!4 &315721399
 Transform:
@@ -1328,6 +1328,70 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1144476676}
   m_CullTransparentMesh: 1
+--- !u!1 &1381867447
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1381867450}
+  - component: {fileID: 1381867449}
+  - component: {fileID: 1381867448}
+  m_Layer: 0
+  m_Name: BattelSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1381867448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381867447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46cbd8f71ee4fd54eb1755a1926a748e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  energyText: {fileID: 1531209343}
+  turnInfoText: {fileID: 1479465585}
+  endGamePanel: {fileID: 141926919}
+  resultText: {fileID: 641721945}
+--- !u!114 &1381867449
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381867447}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b868dd340206134db1d227bff01eba7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  factory: {fileID: 72143040}
+  spawnCenter: {fileID: 641406427}
+  spacing: 3
+--- !u!4 &1381867450
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1381867447}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 180.4698, y: 131.39546, z: 0.003535308}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1397309120
 GameObject:
   m_ObjectHideFlags: 0
@@ -2251,6 +2315,7 @@ SceneRoots:
   - {fileID: 40579376}
   - {fileID: 1438592015}
   - {fileID: 315721399}
+  - {fileID: 1381867450}
   - {fileID: 72143041}
   - {fileID: 1999043038}
   - {fileID: 1699077635}

@@ -7,22 +7,18 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager instance; // 편의상 우선 싱글톤 (추후 사용여부 재판단)
 
+    [Header("하위 시스템 연결 (외주 업체들)")]
+    public MonsterSpawner spawner;      // 배치 담당
+    public BattleUIManager uiManager;   // 화면 담당
+
     [Header("시스템 연결")]
-    public MonsterFactory monsterFactory;
-    public BaseMonsterData testMonsterData; // 소환할 몬스터 데이터 (슬라임 등)
+    public List<BaseMonsterData> testMonsterList;
     public Player player; // 플레이어 참조
-
-    [Header("UI 연결")]
-    public TextMeshProUGUI energyText;   // "Energy: 3/3"
-    public TextMeshProUGUI turnInfoText; // "나의 턴" / "적의 턴" 표시용
-
-    [Header("결과 UI")]
-    public GameObject endGamePanel;      // 아까 만든 검은 패널
-    public TextMeshProUGUI resultText;   // 결과 텍스트
 
     [Header("전투 상태")]
     public BattleState state; // 현재 전투 상태
-    public Monster currentTarget; // 지금 플레이어가 보고 있는 놈
+    public List<Monster> activeMonsters = new List<Monster>();  // 현재 전투에 참여 중인 몬스터들
+    public Monster currentTarget; // 지금 플레이어가 보고 있는 몬스터
 
 
     private void Awake()
@@ -32,11 +28,17 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        // 몬스터 소환
-        if (monsterFactory != null && testMonsterData != null)
+        // 몬스터 리스트를 넘겨서 여러 마리 소환 요청
+        if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
         {
-            Monster newMonster = monsterFactory.SpawnMonster(testMonsterData);
-            if (newMonster != null) SelectTarget(newMonster);
+            // 스포너가 몬스터들을 쫙 깔아주고, 생성된 애들 명단을 리턴해줌
+            activeMonsters = spawner.SpawnWave(testMonsterList);
+
+            // 첫 번째 몬스터를 자동으로 타겟팅 (편의성)
+            if (activeMonsters.Count > 0)
+            {
+                SelectTarget(activeMonsters[0]);
+            }
         }
 
         // 전투 시작
@@ -58,7 +60,12 @@ public class BattleManager : MonoBehaviour
         // 플레이어 상태 리셋 (행동력 충전 등)
         if (player != null) player.OnTurnStart();
 
-        UpdateUI();
+        // UI 매니저에게 텍스트 갱신 명령
+        if (uiManager != null)
+        {
+            uiManager.UpdateEnergy(player.currentEnergy, player.maxEnergy);
+            uiManager.UpdateTurnText("Player Turn");
+        }
         Debug.Log(" 플레이어 턴 시작!");
     }
 
@@ -66,7 +73,6 @@ public class BattleManager : MonoBehaviour
     public void OnEndTurnButton()
     {
         if (state != BattleState.PlayerTurn) return;
-
         StartCoroutine(EnemyTurn());
     }
 
@@ -93,68 +99,75 @@ public class BattleManager : MonoBehaviour
         if (item.currentAttack > 0)
         {
             currentTarget.TakeDamage(item.currentAttack);
-            // [추가된 부분] 몬스터가 죽었나 확인?
-            if (currentTarget.currentHp <= 0)
+            // 몬스터가 죽었는지 체크
+            if (CheckAllMonstersDead())
             {
                 StartCoroutine(WinBattle());
-                return; // 승리했으면 아래 로직(행동력 차감 등) 실행 안 하고 종료
+                return;
             }
         }
 
         // 행동력 차감
         player.ModifyEnergy(-item.data.energyCost);
-        UpdateUI(); // UI 갱신
+        if (uiManager != null)
+            uiManager.UpdateEnergy(player.currentEnergy, player.maxEnergy);
     }
 
     // --- [적 턴] ---
     IEnumerator EnemyTurn()
     {
         state = BattleState.EnemyTurn;
-        if (turnInfoText != null) turnInfoText.text = "Enemy Turn";
+        if (uiManager != null) uiManager.UpdateTurnText("Enemy Turn");
 
         Debug.Log(" 적 턴 시작!");
 
-        yield return new WaitForSeconds(1.5f); // 적이 공격하는 척 뜸 들이기 (추후에 다른 방식 고민)
-
-        // 적이 살아있으면 플레이어 공격
-        if (currentTarget != null && currentTarget.currentHp > 0)
+        // 몬스터 리스트를 하나씩 돌면서 행동시킴
+        foreach (Monster monster in activeMonsters)
         {
-            int damage = currentTarget.data.attackDamage;
-            if (player != null) 
+            // 죽은 몬스터는 공격 못 함
+            if (monster.currentHp <= 0) continue;
+
+            yield return new WaitForSeconds(0.5f); // 몬스터 간 텀을 줌
+
+            // 공격 연출 (나중에 애니메이션 대기 시간으로 대체될 곳)
+            monster.transform.localScale = Vector3.one * 1.2f; // 커지는 연출 (임시)
+            yield return new WaitForSeconds(0.2f);
+            monster.transform.localScale = Vector3.one;        // 원상복구
+
+            // 플레이어 피격
+            int damage = monster.data.attackDamage;
+            if (player != null)
             {
                 player.TakeDamage(damage);
                 if (player.currentHp <= 0)
                 {
                     StartCoroutine(LoseBattle());
-                    yield break; // 코루틴 즉시 종료
+                    yield break; // 플레이어 죽으면 즉시 종료
                 }
-            } 
+            }
         }
 
-        yield return new WaitForSeconds(1f); // 잠시 대기
-
-        // 다시 플레이어 턴으로
+        yield return new WaitForSeconds(1f); // 모든 공격 끝나고 잠시 대기
         StartPlayerTurn();
     }
 
-    // UI 업데이트
-    void UpdateUI()
+    // 모든 몬스터가 죽었는지 검사
+    bool CheckAllMonstersDead()
     {
-        if (player != null && energyText != null)
+        foreach (Monster monster in activeMonsters)
         {
-            energyText.text = $"Energy: {player.currentEnergy} / {player.maxEnergy}";
+            if (monster.currentHp > 0)
+            {
+                return false; // 살아있는 몬스터가 하나라도 있으면 false 반환  
+            }
         }
-
-        if (turnInfoText != null && state == BattleState.PlayerTurn)
-        {
-            turnInfoText.text = "Player Turn";
-        }
+        return true; // 모든 몬스터가 죽었음
     }
 
     // 몬스터가 호출하는 함수
     public void SelectTarget(Monster monster)
     {
-        // 1. 기존에 선택된 애가 있었다면, 표시 끄기
+        // 1. 기존에 선택된 몬스터가 있었다면, 표시 끄기
         if (currentTarget != null)
         {
             currentTarget.SetSelection(false);
@@ -172,14 +185,9 @@ public class BattleManager : MonoBehaviour
         state = BattleState.Win; // 상태 변경 
         Debug.Log("승리했습니다!");
 
-        yield return new WaitForSeconds(1f); // 잠시 여운을 즐기고
+        yield return new WaitForSeconds(1f);    // 잠시 대기
 
-        // UI 띄우기
-        if (endGamePanel != null)
-        {
-            endGamePanel.SetActive(true);
-            if (resultText != null) resultText.text = "VICTORY!";
-        }
+        if (uiManager != null) uiManager.ShowWinUI();
     }
 
     IEnumerator LoseBattle()
@@ -187,13 +195,8 @@ public class BattleManager : MonoBehaviour
         state = BattleState.Lose;
         Debug.Log("패배했습니다...");
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);    // 잠시 대기
 
-        // UI 띄우기
-        if (endGamePanel != null)
-        {
-            endGamePanel.SetActive(true);
-            if (resultText != null) resultText.text = "GAME OVER...";
-        }
+        if (uiManager != null) uiManager.ShowLoseUI();
     }
 }
