@@ -15,5 +15,5 @@ MonoBehaviour:
   monsterName: "\uD14C\uC2A4\uD2B8 \uBAAC\uC2A4\uD130"
   icon: {fileID: 21300000, guid: 587503b6015abc741ad5147fff8f4a06, type: 3}
   maxHp: 50
-  attackDamage: 5
+  attackDamage: 50
   defense: 0

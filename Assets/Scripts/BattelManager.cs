@@ -16,6 +16,10 @@ public class BattleManager : MonoBehaviour
     public TextMeshProUGUI energyText;   // "Energy: 3/3"
     public TextMeshProUGUI turnInfoText; // "나의 턴" / "적의 턴" 표시용
 
+    [Header("결과 UI")]
+    public GameObject endGamePanel;      // 아까 만든 검은 패널
+    public TextMeshProUGUI resultText;   // 결과 텍스트
+
     [Header("전투 상태")]
     public BattleState state; // 현재 전투 상태
     public Monster currentTarget; // 지금 플레이어가 보고 있는 놈
@@ -85,15 +89,21 @@ public class BattleManager : MonoBehaviour
             return;
         }
 
-        // 행동력 차감
-        player.ModifyEnergy(-item.data.energyCost);
-        UpdateUI(); // UI 갱신
-
         // 공격 실행
         if (item.currentAttack > 0)
         {
             currentTarget.TakeDamage(item.currentAttack);
+            // [추가된 부분] 몬스터가 죽었나 확인?
+            if (currentTarget.currentHp <= 0)
+            {
+                StartCoroutine(WinBattle());
+                return; // 승리했으면 아래 로직(행동력 차감 등) 실행 안 하고 종료
+            }
         }
+
+        // 행동력 차감
+        player.ModifyEnergy(-item.data.energyCost);
+        UpdateUI(); // UI 갱신
     }
 
     // --- [적 턴] ---
@@ -110,7 +120,15 @@ public class BattleManager : MonoBehaviour
         if (currentTarget != null && currentTarget.currentHp > 0)
         {
             int damage = currentTarget.data.attackDamage;
-            if (player != null) player.TakeDamage(damage);
+            if (player != null) 
+            {
+                player.TakeDamage(damage);
+                if (player.currentHp <= 0)
+                {
+                    StartCoroutine(LoseBattle());
+                    yield break; // 코루틴 즉시 종료
+                }
+            } 
         }
 
         yield return new WaitForSeconds(1f); // 잠시 대기
@@ -147,5 +165,35 @@ public class BattleManager : MonoBehaviour
         currentTarget.SetSelection(true);
 
         Debug.Log($" 타겟 변경됨: {monster.data.monsterName}");
+    }
+
+    IEnumerator WinBattle()
+    {
+        state = BattleState.Win; // 상태 변경 
+        Debug.Log("승리했습니다!");
+
+        yield return new WaitForSeconds(1f); // 잠시 여운을 즐기고
+
+        // UI 띄우기
+        if (endGamePanel != null)
+        {
+            endGamePanel.SetActive(true);
+            if (resultText != null) resultText.text = "VICTORY!";
+        }
+    }
+
+    IEnumerator LoseBattle()
+    {
+        state = BattleState.Lose;
+        Debug.Log("패배했습니다...");
+
+        yield return new WaitForSeconds(1f);
+
+        // UI 띄우기
+        if (endGamePanel != null)
+        {
+            endGamePanel.SetActive(true);
+            if (resultText != null) resultText.text = "GAME OVER...";
+        }
     }
 }
