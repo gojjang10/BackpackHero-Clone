@@ -20,6 +20,10 @@ public class BattleManager : MonoBehaviour
     public List<Monster> activeMonsters = new List<Monster>();  // 현재 전투에 참여 중인 몬스터들
     public Monster currentTarget; // 지금 플레이어가 보고 있는 몬스터
 
+    [Header("보상 시스템")]
+    public GameObject rewardUIObject; // RewardPanel 오브젝트 (켜고 끄기용)
+    public ItemSpawner itemSpawner;   // 아이템 스포너
+
 
     private void Awake()
     {
@@ -31,7 +35,7 @@ public class BattleManager : MonoBehaviour
         // 몬스터 리스트를 넘겨서 여러 마리 소환 요청
         if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
         {
-            // 스포너가 몬스터들을 쫙 깔아주고, 생성된 애들 명단을 리턴해줌
+            // 스포너가 몬스터들을 생성해주고, 생성된 몬스터 명단을 리턴해줌
             activeMonsters = spawner.SpawnWave(testMonsterList);
 
             // 첫 번째 몬스터를 자동으로 타겟팅 (편의성)
@@ -76,41 +80,81 @@ public class BattleManager : MonoBehaviour
         StartCoroutine(EnemyTurn());
     }
 
-    // 아이템 사용
+    // 아이템 사용 함수
     public void OnUseItem(InventoryItem item)
     {
-        if (state != BattleState.PlayerTurn) return;
-        if (item.data.itemType != ItemType.Active) return;
+        // 1. 사용 가능 여부 검증 
+        if (!IsItemUsable(item)) return;
+
+        // 2. 행동력 차감
+        player.ModifyEnergy(-item.data.energyCost);
+
+        // 3. 공격 로직 실행 
+        if (item.currentAttack > 0)
+        {
+            ProcessAttack(item.currentAttack);
+        }
+
+        // 4. UI 갱신
+        if (uiManager != null)
+            uiManager.UpdateEnergy(player.currentEnergy, player.maxEnergy);
+    }
+
+    // 아이템 사용 가능 여부 체크
+    private bool IsItemUsable(InventoryItem item)
+    {
+        if (state != BattleState.PlayerTurn) return false;
+        if (item.data.itemType != ItemType.Active) return false;
 
         if (currentTarget == null)
         {
             Debug.LogWarning(" 타겟이 없습니다!");
-            return;
+            return false;
         }
 
-        // Player의 행동력 체크
         if (player.currentEnergy < item.data.energyCost)
         {
-            Debug.LogWarning($"행동력 부족! (필요: {item.data.energyCost}, 보유: {player.currentEnergy})");
-            return;
+            Debug.LogWarning($" 행동력 부족! (필요: {item.data.energyCost})");
+            return false;
         }
 
-        // 공격 실행
-        if (item.currentAttack > 0)
+        return true;
+    }
+
+    // 공격 처리 및 결과 확인 (자동 타겟팅 포함)
+    private void ProcessAttack(int damage)
+    {
+        if (currentTarget == null) return;
+
+        currentTarget.TakeDamage(damage);
+
+        // 몬스터가 죽었는지 확인
+        if (currentTarget.currentHp <= 0)
         {
-            currentTarget.TakeDamage(item.currentAttack);
-            // 몬스터가 죽었는지 체크
-            if (CheckAllMonstersDead())
-            {
-                StartCoroutine(WinBattle());
-                return;
-            }
+            HandleMonsterDeath(currentTarget);
         }
+    }
 
-        // 행동력 차감
-        player.ModifyEnergy(-item.data.energyCost);
-        if (uiManager != null)
-            uiManager.UpdateEnergy(player.currentEnergy, player.maxEnergy);
+    // 몬스터 사망 처리 로직
+    private void HandleMonsterDeath(Monster deadMonster)
+    {
+        // 1. 리스트에서 제거 
+        activeMonsters.Remove(deadMonster);
+
+        // 2. 몬스터 오브젝트 퇴장 처리 (OnDie 호출)
+        deadMonster.OnDie();
+
+        // 3. 승리 체크
+        if (activeMonsters.Count == 0)
+        {
+            currentTarget = null;
+            StartCoroutine(WinBattle());
+        }
+        else
+        {
+            // 4. 아직 적이 남았으면 다음 타겟 자동 지정
+            SelectNextTarget();
+        }
     }
 
     // --- [적 턴] ---
@@ -118,50 +162,41 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.EnemyTurn;
         if (uiManager != null) uiManager.UpdateTurnText("Enemy Turn");
-
         Debug.Log(" 적 턴 시작!");
 
-        // 몬스터 리스트를 하나씩 돌면서 행동시킴
         foreach (Monster monster in activeMonsters)
         {
-            // 죽은 몬스터는 공격 못 함
-            if (monster.currentHp <= 0) continue;
+            //  몬스터가 없거나 죽었으면 패스
+            if (monster == null || monster.currentHp <= 0) continue;
 
-            yield return new WaitForSeconds(0.5f); // 몬스터 간 텀을 줌
+            yield return new WaitForSeconds(0.5f);
 
-            // 공격 연출 (나중에 애니메이션 대기 시간으로 대체될 곳)
-            monster.transform.localScale = Vector3.one * 1.2f; // 커지는 연출 (임시)
-            yield return new WaitForSeconds(0.2f);
-            monster.transform.localScale = Vector3.one;        // 원상복구
-
-            // 플레이어 피격
-            int damage = monster.data.attackDamage;
-            if (player != null)
-            {
-                player.TakeDamage(damage);
-                if (player.currentHp <= 0)
-                {
-                    StartCoroutine(LoseBattle());
-                    yield break; // 플레이어 죽으면 즉시 종료
-                }
-            }
+            // 매니저가 직접 제어하지 않고 몬스터에게 위임
+            yield return StartCoroutine(monster.AttackRoutine(player));
         }
 
-        yield return new WaitForSeconds(1f); // 모든 공격 끝나고 잠시 대기
+        yield return new WaitForSeconds(1f);
         StartPlayerTurn();
+    }
+
+    // 다음 타겟 자동 선택
+    void SelectNextTarget()
+    {
+        if (activeMonsters.Count > 0)
+        {
+            // 리스트의 첫 번째 몬스터를 자동으로 선택
+            SelectTarget(activeMonsters[0]);
+        }
+        else
+        {
+            currentTarget = null;
+        }
     }
 
     // 모든 몬스터가 죽었는지 검사
     bool CheckAllMonstersDead()
     {
-        foreach (Monster monster in activeMonsters)
-        {
-            if (monster.currentHp > 0)
-            {
-                return false; // 살아있는 몬스터가 하나라도 있으면 false 반환  
-            }
-        }
-        return true; // 모든 몬스터가 죽었음
+        return activeMonsters.Count == 0;
     }
 
     // 몬스터가 호출하는 함수
@@ -187,7 +222,17 @@ public class BattleManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);    // 잠시 대기
 
-        if (uiManager != null) uiManager.ShowWinUI();
+        // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
+        if (rewardUIObject != null)
+        {
+            rewardUIObject.SetActive(true);
+
+            // 2. 보상 아이템 생성 요청
+            if (itemSpawner != null)
+            {
+                itemSpawner.SpawnRewardItems(5);
+            }
+        }
     }
 
     IEnumerator LoseBattle()

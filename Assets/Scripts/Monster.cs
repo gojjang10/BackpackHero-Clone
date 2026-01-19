@@ -25,7 +25,7 @@ public class Monster : MonoBehaviour
         currentHp = data.maxHp;
         currentBlock = 0;
 
-        // 3. 외형 변경 
+        // 3. 몬스터 이미지 설정 
         if (spriteRenderer != null && data.icon != null)
         {
             spriteRenderer.sprite = data.icon;
@@ -46,6 +46,7 @@ public class Monster : MonoBehaviour
         }
     }
 
+    // 플레이어가 선택했을 시 하이라이트 표시 함수
     public void SetSelection(bool isSelected)
     {
         if (selectionMark != null)
@@ -62,12 +63,41 @@ public class Monster : MonoBehaviour
         if (currentHp < 0) currentHp = 0;
 
         Debug.Log($" {data.monsterName}에게 {damage} 데미지! (남은 HP: {currentHp}/{data.maxHp})");
+    }
 
-        // 여기서 사망 처리 로직 등을 추가할 수 있음
-        if (currentHp <= 0)
+    // 매니저가 사망처리를 요청하는 함수
+    public void OnDie()
+    {
+        Destroy(gameObject);
+    }
+
+    public IEnumerator AttackRoutine(Player targetPlayer)
+    {
+        // 1. 원래 크기 저장 
+        Vector3 originalScale = transform.localScale;
+        Vector3 attackScale = originalScale * 1.2f;
+
+        // 2. 공격 연출 (커짐)
+        float duration = 0.1f;
+        float time = 0;
+
+        while (time < duration)
         {
-            Debug.Log($" {data.monsterName} 처치 완료!");
-            Destroy(gameObject);
+            transform.localScale = Vector3.Lerp(originalScale, attackScale, time / duration);
+            time += Time.deltaTime;
+            yield return null;
         }
+        transform.localScale = attackScale;
+
+        yield return new WaitForSeconds(0.1f); // 타격감 텀
+
+        // 3. 실제 데미지 적용
+        if (targetPlayer != null)
+        {
+            targetPlayer.TakeDamage(data.attackDamage);
+        }
+
+        // 4. 복구 연출 (원래 크기로 정확히 복구)
+        transform.localScale = originalScale;
     }
 }
