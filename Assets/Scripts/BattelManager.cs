@@ -20,6 +20,10 @@ public class BattleManager : MonoBehaviour
     public List<Monster> activeMonsters = new List<Monster>();  // 현재 전투에 참여 중인 몬스터들
     public Monster currentTarget; // 지금 플레이어가 보고 있는 몬스터
 
+    [Header("보상 시스템")]
+    public GameObject rewardUIObject; // RewardPanel 오브젝트 (켜고 끄기용)
+    public ItemSpawner itemSpawner;   // 아이템 스포너
+
 
     private void Awake()
     {
@@ -218,7 +222,17 @@ public class BattleManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);    // 잠시 대기
 
-        if (uiManager != null) uiManager.ShowWinUI();
+        // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
+        if (rewardUIObject != null)
+        {
+            rewardUIObject.SetActive(true);
+
+            // 2. 보상 아이템 생성 요청
+            if (itemSpawner != null)
+            {
+                itemSpawner.SpawnRewardItems(5);
+            }
+        }
     }
 
     IEnumerator LoseBattle()
