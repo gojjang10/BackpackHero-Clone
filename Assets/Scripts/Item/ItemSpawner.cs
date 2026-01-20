@@ -7,6 +7,7 @@ public class ItemSpawner : MonoBehaviour
     [Header("연결 필요")]
     public InventoryGrid inventoryGrid; // 하이어라키의 그리드 패널 연결
     public GameObject itemPrefab;       // InventoryItem 스크립트가 붙은 프리팹
+    public GridInteract gridInteract;
 
     [Header("보상 시스템 연결")]
     public Transform rewardPanel;
@@ -42,7 +43,7 @@ public class ItemSpawner : MonoBehaviour
 
         // 3. 데이터 주입 (Initialize 호출)
         // 임의로 tileSize를 100으로 지정
-        newItem.Initialize(selectedData, 100);
+        newItem.Initialize(selectedData, 100, gridInteract);
 
         if (inventoryGrid.AutoPlaceItem(newItem))
         {
@@ -81,7 +82,7 @@ public class ItemSpawner : MonoBehaviour
             newItemObj.transform.SetParent(rewardPanel, false);
 
             // 4. 데이터 초기화 
-            newItem.Initialize(selectedData, 100); // 100은 타일 사이즈
+            newItem.Initialize(selectedData, 100, gridInteract); // 100은 타일 사이즈
 
             // 아이템이 인벤토리 밖(보상 패널)에 있으므로,
             // GridInteract가 집을 때 "그리드에 없는 상태"임을 알아야 함.

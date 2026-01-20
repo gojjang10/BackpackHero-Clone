@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class InventoryItem : MonoBehaviour
+public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public BaseItemData data; // 아이템 원본 데이터
 
@@ -32,6 +33,7 @@ public class InventoryItem : MonoBehaviour
     public int onGridY; // 현재 아이템의 그리드 Y 좌표
 
     // 내부 컴포넌트
+    private GridInteract gridInteract;
     private Image itemImage; // 아이템 이미지
     private RectTransform rectTransform;    // 아이템 RectTransform
 
@@ -43,14 +45,16 @@ public class InventoryItem : MonoBehaviour
     }
 
     // 아이템 생성 시 호출되는 초기화 함수
-    public void Initialize(BaseItemData data, int tileSize)
+    public void Initialize(BaseItemData data, int tileSize, GridInteract manager)
     {
         this.data = data;
+        this.gridInteract = manager;
 
         // 1. 이미지 설정
         if (itemImage != null)
         {
             itemImage.sprite = data.icon;
+            SetRaycastTarget(true);
         }
 
         // 2. 크기 설정
@@ -58,6 +62,34 @@ public class InventoryItem : MonoBehaviour
 
         // 3. 스탯 초기화 (데이터 원본에 있는 수치를 가져옴)
         ResetStats();
+    }
+
+    // 아이템 클릭 이벤트 함수
+    public void OnPointerDown(PointerEventData eventData)
+    {
+
+        if (gridInteract != null) gridInteract.OnItemClicked(this);
+    }
+
+    // 아이템에 마우스가 들어왔을 때 호출되는 이벤트 함수
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (gridInteract != null) gridInteract.OnItemPointerEnter(this);
+    }
+
+    // 아이템에서 마우스가 나갔을 때 호출되는 이벤트 함수
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (gridInteract != null) gridInteract.OnItemPointerExit(this);
+    }
+
+    // Raycast Target 제어 (집었을 때 끄고, 놓았을 때 켜기 위함)
+    public void SetRaycastTarget(bool isOn)
+    {
+        if (itemImage != null)
+        {
+            itemImage.raycastTarget = isOn;
+        }
     }
 
     // 시너지 재계산 전에 "순정 상태"로 돌리는 함수
