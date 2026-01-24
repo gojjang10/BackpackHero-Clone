@@ -40,12 +40,14 @@ public enum SearchDirection
     DownSide       // 동적 방식: 내 아래쪽 면 전체를 보겠다.
 }
 
+// 게임상황 구분용 열거형
 public enum GameState
 {
     Exploration, // 탐험 (인벤토리 정리, 이동)
     Battle       // 전투 (아이템 사용, 턴 진행)
 }
 
+// 전투 상태 구분용 열거형
 public enum BattleState 
 { 
     Start, 
@@ -53,4 +55,12 @@ public enum BattleState
     EnemyTurn, 
     Win, 
     Lose 
+}
+
+// 스테이지 타입 구분용 열거형
+public enum StageType 
+{
+    Battle, 
+    Shop, 
+    Boss 
 }
