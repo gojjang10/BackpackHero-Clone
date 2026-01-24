@@ -176,6 +176,12 @@ public class BattleManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1f);
+
+        // 플레이어가 죽었는지 확인
+        if(player.currentHp == 0)
+        {
+            StartCoroutine(LoseBattle());
+        }
         StartPlayerTurn();
     }
 
