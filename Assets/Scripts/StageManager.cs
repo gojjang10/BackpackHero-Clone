@@ -17,6 +17,9 @@ public class StageManager : MonoBehaviour
     public GameObject shopPanel;   // 상점 UI 패널
     public GameObject rewardPanel; // 보상 UI 패널
 
+    [Header("아이템 청소를 위한 게임 오브젝트")]
+    public Transform worldItemHolder; 
+
 
     private void Awake()
     {
@@ -47,6 +50,8 @@ public class StageManager : MonoBehaviour
         shopPanel.SetActive(false);
         rewardPanel.SetActive(false);
 
+        CleanUpWorldItems();
+
         // 3. 타입에 맞는 패널 켜기
         switch (currentType)
         {
@@ -70,5 +75,17 @@ public class StageManager : MonoBehaviour
     {
         currentStageIndex++;
         LoadCurrentStage();
+    }
+
+    // 보관소 자식들을 전멸시키는 함수
+    private void CleanUpWorldItems()
+    {
+        if (worldItemHolder == null) return;
+
+        // 자식이 몇 명인지 세고 다 지움
+        foreach (Transform child in worldItemHolder)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

@@ -18,6 +18,10 @@ public class GridInteract : MonoBehaviour
     public InventoryItem selectedItem; // 현재 들고 있는 아이템
     private RectTransform selectedItemRect; // 들고 있는 아이템의 RectTransform
 
+    [Header("외부 아이템 보관소")]
+    public Transform worldItemHolder; 
+
+
     [Header("UI")]
     public UITooltip uiTooltip; // 인스펙터에서 할당
 
@@ -87,6 +91,8 @@ public class GridInteract : MonoBehaviour
 
         // 다시 클릭 가능하게
         selectedItem.SetRaycastTarget(true);
+
+        selectedItem.transform.SetParent(worldItemHolder);
 
         Debug.Log($"{selectedItem.data.itemName}을(를) 바닥에 두었습니다.");
 

@@ -30,27 +30,7 @@ public class BattleManager : MonoBehaviour
         instance = this;
     }
 
-    private void Start()
-    {
-        //// 몬스터 리스트를 넘겨서 여러 마리 소환 요청
-        //if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
-        //{
-        //    // 스포너가 몬스터들을 생성해주고, 생성된 몬스터 명단을 리턴해줌
-        //    activeMonsters = spawner.SpawnWave(testMonsterList);
-
-        //    // 첫 번째 몬스터를 자동으로 타겟팅 (편의성)
-        //    if (activeMonsters.Count > 0)
-        //    {
-        //        SelectTarget(activeMonsters[0]);
-        //    }
-        //}
-
-        //// 전투 시작
-        //state = BattleState.Start;
-        //StartCoroutine(SetupBattle());
-    }
-
-    // [신규 추가] 외부(StageManager)에서 호출할 초기화 함수
+    // 외부(StageManager)에서 호출할 초기화 함수
     public void StartBattle()
     {
         Debug.Log("새로운 전투 시작! 몬스터를 배치합니다.");
