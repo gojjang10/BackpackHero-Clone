@@ -32,20 +32,53 @@ public class BattleManager : MonoBehaviour
 
     private void Start()
     {
-        // 몬스터 리스트를 넘겨서 여러 마리 소환 요청
+        //// 몬스터 리스트를 넘겨서 여러 마리 소환 요청
+        //if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
+        //{
+        //    // 스포너가 몬스터들을 생성해주고, 생성된 몬스터 명단을 리턴해줌
+        //    activeMonsters = spawner.SpawnWave(testMonsterList);
+
+        //    // 첫 번째 몬스터를 자동으로 타겟팅 (편의성)
+        //    if (activeMonsters.Count > 0)
+        //    {
+        //        SelectTarget(activeMonsters[0]);
+        //    }
+        //}
+
+        //// 전투 시작
+        //state = BattleState.Start;
+        //StartCoroutine(SetupBattle());
+    }
+
+    // [신규 추가] 외부(StageManager)에서 호출할 초기화 함수
+    public void StartBattle()
+    {
+        Debug.Log("새로운 전투 시작! 몬스터를 배치합니다.");
+
+        // 1. [청소] 기존에 살아남거나 죽은 몬스터 찌꺼기 제거
+        // 리스트에 있는 애들뿐만 아니라, 화면에 남아있는 몬스터 오브젝트를 싹 지워야 함
+        if (activeMonsters != null)
+        {
+            foreach (var monster in activeMonsters)
+            {
+                if (monster != null) Destroy(monster.gameObject);
+            }
+            activeMonsters.Clear();
+        }
+
+        // 2. [생성] 스포너에게 몬스터 생성 요청 (기존 로직)
         if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
         {
-            // 스포너가 몬스터들을 생성해주고, 생성된 몬스터 명단을 리턴해줌
             activeMonsters = spawner.SpawnWave(testMonsterList);
 
-            // 첫 번째 몬스터를 자동으로 타겟팅 (편의성)
+            // 첫 번째 타겟 자동 지정
             if (activeMonsters.Count > 0)
             {
                 SelectTarget(activeMonsters[0]);
             }
         }
 
-        // 전투 시작
+        // 3. [상태 초기화]
         state = BattleState.Start;
         StartCoroutine(SetupBattle());
     }

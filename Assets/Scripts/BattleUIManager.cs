@@ -5,6 +5,10 @@ using UnityEngine;
 
 public class BattleUIManager : MonoBehaviour
 {
+    [Header("전투 UI")]
+    public GameObject battleUIPanel; // 모든 전투 UI
+
+
     [Header("상단 정보 UI")]
     public TextMeshProUGUI energyText;   // "Energy: 3/3"
     public TextMeshProUGUI turnInfoText; // "나의 턴"
@@ -13,6 +17,17 @@ public class BattleUIManager : MonoBehaviour
     public GameObject endGamePanel;      // 검은 배경 패널
     public TextMeshProUGUI resultText;   // VICTORY / GAME OVER
 
+    public void OnEnable()
+    {
+        if (battleUIPanel != null)
+            battleUIPanel.SetActive(true);
+    }
+
+    public void OnDisable()
+    {
+        if (battleUIPanel != null)
+            battleUIPanel.SetActive(false);
+    }
     // 행동력 텍스트 갱신
     public void UpdateEnergy(int current, int max)
     {

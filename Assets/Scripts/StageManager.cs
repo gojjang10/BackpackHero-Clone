@@ -15,6 +15,8 @@ public class StageManager : MonoBehaviour
     [Header("UI 연결")]
     public GameObject battlePanel; // 전투 UI 패널
     public GameObject shopPanel;   // 상점 UI 패널
+    public GameObject rewardPanel; // 보상 UI 패널
+
 
     private void Awake()
     {
@@ -43,12 +45,18 @@ public class StageManager : MonoBehaviour
         // 2. 패널 초기화 (다 끄고 시작)
         battlePanel.SetActive(false);
         shopPanel.SetActive(false);
+        rewardPanel.SetActive(false);
 
         // 3. 타입에 맞는 패널 켜기
         switch (currentType)
         {
             case StageType.Battle:
                 battlePanel.SetActive(true);
+
+                if(BattleManager.instance != null)
+                {
+                    BattleManager.instance.StartBattle();
+                }
                 // To do : 여기에 BattleManager.StartBattle() 같은거 나중에 추가
                 break;
             case StageType.Shop:
