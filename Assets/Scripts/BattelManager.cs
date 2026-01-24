@@ -261,6 +261,8 @@ public class BattleManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);    // 잠시 대기
 
+        uiManager.OnDisable();  // 전투 UI 비활성화
+
         // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
         if (rewardUIObject != null)
         {
@@ -280,6 +282,8 @@ public class BattleManager : MonoBehaviour
         Debug.Log("패배했습니다...");
 
         yield return new WaitForSeconds(1f);    // 잠시 대기
+
+        uiManager.OnDisable();  // 전투 UI 비활성화
 
         if (uiManager != null) uiManager.ShowLoseUI();
     }
