@@ -45,6 +45,9 @@ public class Player : MonoBehaviour
     {
         currentEnergy = maxEnergy; // 행동력 풀충전
         currentBlock = 0;          // 방어도 초기화
+
+        playerUI.UpdateHP(currentHp, maxHp);
+        playerUI.UpdateStats(currentBlock, currentEnergy);
     }
 
     // 데미지 받는 함수

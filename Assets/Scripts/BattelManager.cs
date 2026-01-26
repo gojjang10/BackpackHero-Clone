@@ -7,7 +7,7 @@ public class BattleManager : MonoBehaviour
 {
     public static BattleManager instance; // 편의상 우선 싱글톤 (추후 사용여부 재판단)
 
-    [Header("하위 시스템 연결 (외주 업체들)")]
+    [Header("시스템 연결")]
     public MonsterSpawner spawner;      // 배치 담당
     public BattleUIManager uiManager;   // 화면 담당
 
@@ -80,7 +80,6 @@ public class BattleManager : MonoBehaviour
         // UI 매니저에게 텍스트 갱신 명령
         if (uiManager != null)
         {
-            uiManager.UpdateEnergy(player.currentEnergy, player.maxEnergy);
             uiManager.UpdateTurnText("Player Turn");
         }
         Debug.Log(" 플레이어 턴 시작!");
@@ -107,10 +106,6 @@ public class BattleManager : MonoBehaviour
         {
             ProcessAttack(item.currentAttack);
         }
-
-        // 4. UI 갱신
-        if (uiManager != null)
-            uiManager.UpdateEnergy(player.currentEnergy, player.maxEnergy);
     }
 
     // 아이템 사용 가능 여부 체크

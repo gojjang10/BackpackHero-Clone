@@ -490,7 +490,7 @@ GameObject:
   - component: {fileID: 214115914}
   - component: {fileID: 214115913}
   m_Layer: 0
-  m_Name: ArmorUI
+  m_Name: EnergyUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -512,7 +512,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 72.2, y: -2}
+  m_AnchoredPosition: {x: 0, y: -0.0000019073}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &214115913
@@ -569,7 +569,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -702,7 +702,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 110.000015, y: -0.000009059906}
+  m_AnchoredPosition: {x: 114.49, y: -4.22}
   m_SizeDelta: {x: 163.03, y: 40.76}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &377964349
@@ -1983,8 +1983,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxColumns: 8
   maxRows: 5
-  startColumns: 8
-  startRows: 5
+  startColumns: 4
+  startRows: 3
   tileSize: 100
   slotPrefab: {fileID: 7409673364145921879, guid: b762a5df234204443a7c8d0deac1d47c, type: 3}
   slotParent: {fileID: 715570383}
@@ -2345,7 +2345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 110, y: 0.40001}
+  m_AnchoredPosition: {x: 116, y: 0.40001}
   m_SizeDelta: {x: 160, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1119536039
@@ -2664,7 +2664,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: HP
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 6dd912c87d69c424c9d873a382fc59b4, type: 2}
   m_sharedMaterial: {fileID: -2637321736843261249, guid: 6dd912c87d69c424c9d873a382fc59b4, type: 2}
@@ -2874,7 +2874,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleUIPanel: {fileID: 2041537415}
-  energyText: {fileID: 1531209343}
   turnInfoText: {fileID: 1479465585}
   endGamePanel: {fileID: 141926919}
   resultText: {fileID: 641721945}
@@ -3766,8 +3765,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 87.6, y: 175.5}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 75.1, y: 188}
+  m_SizeDelta: {x: 75, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1586329753
 MonoBehaviour:
@@ -4351,8 +4350,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: -5, y: 0}
-  m_SizeDelta: {x: -20, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1971164047
 GameObject:
