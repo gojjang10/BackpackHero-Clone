@@ -18,7 +18,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: 90e99a7fde056a4418b9fe16084adb5c, type: 3}
   width: 1
   height: 2
-  energyCost: 1
+  energyCost: 0
   itemType: 1
   itemTags: 0100000006000000
   effects:
