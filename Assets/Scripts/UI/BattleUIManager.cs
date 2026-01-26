@@ -10,7 +10,6 @@ public class BattleUIManager : MonoBehaviour
 
 
     [Header("상단 정보 UI")]
-    public TextMeshProUGUI energyText;   // "Energy: 3/3"
     public TextMeshProUGUI turnInfoText; // "나의 턴"
 
     [Header("결과 패널 UI")]
@@ -27,12 +26,6 @@ public class BattleUIManager : MonoBehaviour
     {
         if (battleUIPanel != null)
             battleUIPanel.SetActive(false);
-    }
-    // 행동력 텍스트 갱신
-    public void UpdateEnergy(int current, int max)
-    {
-        if (energyText != null)
-            energyText.text = $"Energy: {current} / {max}";
     }
 
     // 턴 정보 텍스트 갱신

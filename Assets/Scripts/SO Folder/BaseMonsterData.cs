@@ -13,4 +13,7 @@ public class BaseMonsterData : ScriptableObject
     public int maxHp;               // 최대 체력
     public int attackDamage;        // 기본 공격력
     public int defense;             // 기본 방어력 
+
+    [Header("몬스터 보상")]
+    public int xpReward;           // 처치 시 획득 경험치
 }
