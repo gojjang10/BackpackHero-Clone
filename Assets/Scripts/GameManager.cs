@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -15,11 +16,7 @@ public class GameManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // 씬 넘어가도 파괴 안 됨
-        }
-        else
-        {
-            Destroy(gameObject);
+            //DontDestroyOnLoad(gameObject); // 씬 넘어가도 파괴 안 됨
         }
     }
 
@@ -39,5 +36,12 @@ public class GameManager : MonoBehaviour
     {
         currentState = GameState.Battle;
         Debug.Log($"[GameManager] 상태 변경: {currentState}");
+    }
+
+    // [타이틀로] 버튼에 연결할 함수
+    public void OnClickToTitle()
+    {
+        //Time.timeScale = 1f; 추후에 게임을 정지시켰을시에 다시 활성화 시켜주는 코드
+        SceneManager.LoadScene("TitleScene"); // 
     }
 }

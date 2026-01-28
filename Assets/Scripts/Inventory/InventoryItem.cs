@@ -27,6 +27,7 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHa
     // BaseItemData에서 초기화된 후, 게임 중에 변할 수 있는 값들
     public int currentAttack;     // 공격력
     public int currentBlock;    // 방어력
+    public int currentEnergyCost; // 현재 마나 소모량 (시너지 등으로 변할 수 있음)
 
     [Header("그리드 포지션")]
     public int onGridX; // 현재 아이템의 그리드 X 좌표
