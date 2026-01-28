@@ -18,9 +18,10 @@ public class ItemSpawner : MonoBehaviour
     void Update()
     {
         // 스페이스바를 누르면 랜덤 아이템 생성 시도
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.S))
         {
             SpawnRandomItem();
+            inventoryGrid.RecalculateAllStats();    // 생성 후 스탯 재계산
         }
 
         if (Input.GetKeyDown(KeyCode.K))

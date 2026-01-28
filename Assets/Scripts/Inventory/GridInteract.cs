@@ -94,6 +94,8 @@ public class GridInteract : MonoBehaviour
 
         selectedItem.transform.SetParent(worldItemHolder);
 
+        selectedItem.data.ApplyBaseStats(selectedItem); // 기본 스탯 복원
+
         Debug.Log($"{selectedItem.data.itemName}을(를) 바닥에 두었습니다.");
 
         selectedItem = null;

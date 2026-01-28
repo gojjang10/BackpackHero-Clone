@@ -10,6 +10,8 @@ public class GameManager : MonoBehaviour
     [Header("현재 게임 상태")]
     public GameState currentState = GameState.Exploration; // 기본은 탐험 모드
 
+    private BattleUIManager battleUIManager;
+
     private void Awake()
     {
         // 싱글톤 패턴 적용 (어디서든 GameManager.instance로 접근 가능하게)
@@ -43,5 +45,15 @@ public class GameManager : MonoBehaviour
     {
         //Time.timeScale = 1f; 추후에 게임을 정지시켰을시에 다시 활성화 시켜주는 코드
         SceneManager.LoadScene("TitleScene"); // 
+    }
+
+    public void InitBattleUIManager(BattleUIManager uiManager)
+    {
+        battleUIManager = uiManager;
+    }
+
+    public void OnGameClear()
+    {
+        battleUIManager.ShowWinUI();
     }
 }

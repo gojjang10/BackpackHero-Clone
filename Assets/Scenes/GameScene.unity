@@ -2425,7 +2425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageList: 00000000010000000000000001000000
   currentStageIndex: 0
-  battlePanel: {fileID: 1381867447}
+  battlePanel: {fileID: 2041537415}
   shopPanel: {fileID: 74013132}
   rewardPanel: {fileID: 1497977704}
   worldItemHolder: {fileID: 1394753231}
@@ -4568,7 +4568,6 @@ MonoBehaviour:
   gridInteract: {fileID: 1610807523}
   rewardPanel: {fileID: 1366862376}
   itemsToSpawn:
-  - {fileID: 11400000, guid: 7eaa5aafe3badd943819a597624cbeb5, type: 2}
   - {fileID: 11400000, guid: 79acda4e4edcbe04091e5535b3830de0, type: 2}
 --- !u!4 &1830990643
 Transform:
@@ -4929,7 +4928,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2041537416}
   m_Layer: 5
-  m_Name: BattleUI
+  m_Name: BattlePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
