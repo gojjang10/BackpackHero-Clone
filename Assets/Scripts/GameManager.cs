@@ -23,14 +23,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // 상태 변경 테스트용 
-    private void Update()
+    public void RelocationInventory()
     {
-        // T 키를 누르면 전투 <-> 탐험 모드 전환 (테스트용)
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            currentState = (currentState == GameState.Exploration) ? GameState.Battle : GameState.Exploration;
-            Debug.Log($"[GameManager] 상태 변경: {currentState}");
-        }
+        currentState = (currentState == GameState.Exploration) ? GameState.Battle : GameState.Exploration;
+        Debug.Log($"[GameManager] 상태 변경: {currentState}");
     }
 }
