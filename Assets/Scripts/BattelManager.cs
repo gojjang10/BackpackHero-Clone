@@ -60,6 +60,8 @@ public class BattleManager : MonoBehaviour
 
         // 3. [상태 초기화]
         state = BattleState.Start;
+        GameManager.instance.BattleMode();
+
         StartCoroutine(SetupBattle());
     }
 
@@ -237,6 +239,7 @@ public class BattleManager : MonoBehaviour
         yield return new WaitForSeconds(1f);    // 잠시 대기
 
         uiManager.OnDisable();  // 전투 UI 비활성화
+        GameManager.instance.ExplorationMode();
 
         // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
         if (rewardUIObject != null)

@@ -16,6 +16,11 @@ public class BattleUIManager : MonoBehaviour
     public GameObject endGamePanel;      // 검은 배경 패널
     public TextMeshProUGUI resultText;   // VICTORY / GAME OVER
 
+    private void Start()
+    {
+        GameManager.instance.InitBattleUIManager(this);
+    }
+
     public void OnEnable()
     {
         if (battleUIPanel != null)

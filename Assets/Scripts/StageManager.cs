@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,6 +40,12 @@ public class StageManager : MonoBehaviour
         if (currentStageIndex >= stageList.Count)
         {
             Debug.Log("모든 스테이지 클리어! 게임 종료.");
+
+            battlePanel.SetActive(false);
+            shopPanel.SetActive(false);
+            rewardPanel.SetActive(false);
+
+            GameManager.instance.OnGameClear();
             return;
         }
 

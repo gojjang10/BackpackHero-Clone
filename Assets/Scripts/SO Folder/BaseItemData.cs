@@ -30,5 +30,6 @@ public class BaseItemData : ScriptableObject
     {
         // 기본 BaseItemData는 특별한 스탯이 없으므로 비워둠.
         // 나중에 자식들이 이 함수를 덮어써서 자기만의 로직을 정의.
+        itemInstance.currentEnergyCost = energyCost;
     }
 }

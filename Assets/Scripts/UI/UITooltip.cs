@@ -56,6 +56,9 @@ public class UITooltip : MonoBehaviour
         if (item.currentBlock > 0)
             sb.Append($"방어력: <color=blue>{item.currentBlock}</color>\n");
 
+        if (item.currentEnergyCost > 0)
+            sb.Append($"행동력 소모량: <color=green>{item.currentEnergyCost}</color>\n");
+
         // 추후 마나 소모량 등도 여기서 추가하면 좋을까 생각중
 
         statsText.text = sb.ToString();
