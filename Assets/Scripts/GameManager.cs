@@ -28,4 +28,16 @@ public class GameManager : MonoBehaviour
         currentState = (currentState == GameState.Exploration) ? GameState.Battle : GameState.Exploration;
         Debug.Log($"[GameManager] 상태 변경: {currentState}");
     }
+
+    public void ExplorationMode()
+    {
+        currentState = GameState.Exploration;
+        Debug.Log($"[GameManager] 상태 변경: {currentState}");
+    }
+
+    public void BattleMode()
+    {
+        currentState = GameState.Battle;
+        Debug.Log($"[GameManager] 상태 변경: {currentState}");
+    }
 }

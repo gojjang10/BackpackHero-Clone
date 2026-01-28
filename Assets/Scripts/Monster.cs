@@ -14,6 +14,7 @@ public class Monster : MonoBehaviour
     [Header("연결 요소")]
     public SpriteRenderer spriteRenderer; // 이미지를 바꿔주기 위해 필요
     public GameObject selectionMark;      // 선택 화살표
+    public MonsterUI monsterUI;          // 몬스터 UI
 
     // 팩토리가 이 함수를 호출해서 몬스터를 세팅함 (초기화)
     public void Init(BaseMonsterData inputData)
@@ -34,6 +35,8 @@ public class Monster : MonoBehaviour
         // 4. 이름 변경 (하이어라키 창에서 보기 편하게)
         gameObject.name = data.monsterName;
 
+        // 5. UI 초기화
+        monsterUI.UpdateHP(currentHp, data.maxHp);
         Debug.Log($" 몬스터 생성 완료: {data.monsterName} (HP: {currentHp})");
     }
 
@@ -62,6 +65,8 @@ public class Monster : MonoBehaviour
         currentHp -= damage;
         if (currentHp < 0) currentHp = 0;
 
+        // UI 업데이트
+        monsterUI.UpdateHP(currentHp, data.maxHp);
         Debug.Log($" {data.monsterName}에게 {damage} 데미지! (남은 HP: {currentHp}/{data.maxHp})");
     }
 
