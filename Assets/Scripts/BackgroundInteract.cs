@@ -12,10 +12,10 @@ public class BackgroundInteract : MonoBehaviour, IPointerDownHandler
         gridInteract = FindObjectOfType<GridInteract>();
     }
 
-    // ¹è°æ(¸Ç¹Ù´Ú)ÀÌ Å¬¸¯µÇ¾úÀ» ¶§ È£ÃâµÊ
+    // ë°°ê²½(ë§¨ë°”ë‹¥)ì´ í´ë¦­ë˜ì—ˆì„ ë•Œ í˜¸ì¶œë¨
     public void OnPointerDown(PointerEventData eventData)
     {
-        // GridInteract°¡ ÀÖ°í, ÇöÀç ¾ÆÀÌÅÛÀ» µé°í ÀÖ´Ù¸é -> ¶³±¸±â!
+        // GridInteractê°€ ìžˆê³ , í˜„ìž¬ ì•„ì´í…œì„ ë“¤ê³  ìžˆë‹¤ë©´ -> ë–¨êµ¬ê¸°!
         if (gridInteract != null && gridInteract.selectedItem != null)
         {
             gridInteract.DropItemOutside();
