@@ -64,3 +64,14 @@ public enum StageType
     Shop, 
     Boss 
 }
+
+public enum NodeType
+{
+    Battle,     // 일반 전투
+    Elite,      // 엘리트 전투
+    Shop,       // 상점
+    Rest,       // 휴식/정비
+    Treasure,   // 보물 상자
+    Event,      // 랜덤 이벤트
+    Boss        // 보스 (다음 층)
+}
