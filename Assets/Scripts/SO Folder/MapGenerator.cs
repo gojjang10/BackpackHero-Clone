@@ -46,12 +46,12 @@ public class MapGenerator : MonoBehaviour
             // (1) 타입 결정
             if (node.coordinate == startPos)
             {
-                node.nodeType = NodeType.Event; // 시작점은 이벤트(또는 빈방)
+                node.nodeType = NodeType.Neutral; // 시작점은 이벤트(또는 빈방)
                 node.isAccessible = true;       // 시작점은 바로 갈 수 있음
             }
             else if (node.coordinate == endPos)
             {
-                node.nodeType = NodeType.Boss;  // 끝점은 보스
+                node.nodeType = NodeType.NextStair; // 아니면 다음 층 계단
             }
             else
             {
@@ -128,15 +128,15 @@ public class MapGenerator : MonoBehaviour
     // 랜덤 타입 뽑기 (심플 버전)
     private NodeType GetRandomType()
     {
-        int total = config.battleWeight + config.shopWeight + config.eventWeight;
+        int total = config.neutralWeight + config.battleWeight + config.shopWeight;
         int random = Random.Range(0, total);
 
+        if (random < config.neutralWeight) return NodeType.Neutral;
+        random -= config.neutralWeight;
+
         if (random < config.battleWeight) return NodeType.Battle;
-        random -= config.battleWeight;
 
-        if (random < config.shopWeight) return NodeType.Shop;
-
-        return NodeType.Event;
+        return NodeType.Shop;
     }
 
     // 화면에 동그라미 생성
@@ -153,7 +153,8 @@ public class MapGenerator : MonoBehaviour
         SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
         if (node.nodeType == NodeType.Battle) sr.color = Color.red;
         else if (node.nodeType == NodeType.Shop) sr.color = Color.yellow;
-        else if (node.nodeType == NodeType.Event) sr.color = Color.blue;
+        else if (node.nodeType == NodeType.Neutral) sr.color = Color.blue;
         else if (node.nodeType == NodeType.Boss) sr.color = Color.black;
+        else if (node.nodeType == NodeType.NextStair) sr.color = Color.green;
     }
 }
