@@ -13,8 +13,11 @@ public class MapConfig : ScriptableObject
     public int maxPathCount = 3; // 길을 몇 갈래로 뚫을지
     [Range(0f, 1f)] public float branchProbability = 0.3f; // 위아래로 튈 확률
 
+    public bool isBossStage = false;    // 보스 스테이지 여부
+
     [Header("방 생성 확률 (가중치)")]
-    public int battleWeight = 60;
+
+    public int neutralWeight = 60;
+    public int battleWeight = 20;
     public int shopWeight = 20;
-    public int eventWeight = 20;
 }

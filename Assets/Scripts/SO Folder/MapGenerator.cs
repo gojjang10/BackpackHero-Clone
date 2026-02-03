@@ -9,6 +9,9 @@ public class MapGenerator : MonoBehaviour
     public Transform nodeParent;   // 노드들이 생성될 부모 오브젝트
     public GameObject nodePrefab;  // 화면에 보여줄 동그라미 프리팹
 
+    [Header("배치 설정")]
+    public float nodeSpacing = 1.5f; // 노드 간격
+
     // 생성된 맵 데이터를 저장할 딕셔너리 (좌표 -> 노드데이터)
     // public으로 열어서 다른 매니저가 볼 수 있게 함
     public Dictionary<Vector2Int, MapNode> mapGrid = new Dictionary<Vector2Int, MapNode>();
@@ -46,12 +49,12 @@ public class MapGenerator : MonoBehaviour
             // (1) 타입 결정
             if (node.coordinate == startPos)
             {
-                node.nodeType = NodeType.Event; // 시작점은 이벤트(또는 빈방)
+                node.nodeType = NodeType.Neutral; // 시작점은 이벤트(또는 빈방)
                 node.isAccessible = true;       // 시작점은 바로 갈 수 있음
             }
             else if (node.coordinate == endPos)
             {
-                node.nodeType = NodeType.Boss;  // 끝점은 보스
+                node.nodeType = NodeType.NextStair; // 아니면 다음 층 계단
             }
             else
             {
@@ -128,23 +131,40 @@ public class MapGenerator : MonoBehaviour
     // 랜덤 타입 뽑기 (심플 버전)
     private NodeType GetRandomType()
     {
-        int total = config.battleWeight + config.shopWeight + config.eventWeight;
+        int total = config.neutralWeight + config.battleWeight + config.shopWeight;
         int random = Random.Range(0, total);
 
+        if (random < config.neutralWeight) return NodeType.Neutral;
+        random -= config.neutralWeight;
+
         if (random < config.battleWeight) return NodeType.Battle;
-        random -= config.battleWeight;
 
-        if (random < config.shopWeight) return NodeType.Shop;
-
-        return NodeType.Event;
+        return NodeType.Shop;
     }
 
     // 화면에 동그라미 생성
     private void SpawnNodeObject(MapNode node)
     {
-        // 1.5f 같은 간격 띄우기
-        Vector3 pos = new Vector3(node.coordinate.x * 1.5f, node.coordinate.y * 1.5f, 0);
-        GameObject go = Instantiate(nodePrefab, pos, Quaternion.identity, nodeParent);
+        // 1. 전체 맵의 크기 계산 (중앙 정렬을 위해)
+        float mapWidth = (config.gridWidth - 1) * nodeSpacing;
+        float mapHeight = (config.gridHeight - 1) * nodeSpacing;
+
+        // 2. 중앙 보정값 (Offset) 계산
+        // (너비의 절반, 높이의 절반만큼 왼쪽/아래로 당겨야 중앙에 옴)
+        Vector3 centerOffset = new Vector3(mapWidth / 2f, mapHeight / 2f, 0);
+
+        // 3. 현재 노드의 '로컬' 좌표 계산
+        Vector3 localPos = new Vector3(node.coordinate.x * nodeSpacing, node.coordinate.y * nodeSpacing, 0);
+
+        // 4. 최종 위치 = 로컬 좌표 - 중앙 보정값
+        Vector3 finalPos = localPos - centerOffset;
+
+        // 5. 생성 및 부모 설정
+        // Instantiate 할 때 부모(nodeParent)를 바로 지정
+        GameObject go = Instantiate(nodePrefab, nodeParent);
+
+        // position(월드)이 아니라 localPosition(부모 기준)을 사용
+        go.transform.localPosition = finalPos;
 
         // 이름 예쁘게 짓기
         go.name = $"Node ({node.coordinate.x}, {node.coordinate.y})";
@@ -153,7 +173,8 @@ public class MapGenerator : MonoBehaviour
         SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
         if (node.nodeType == NodeType.Battle) sr.color = Color.red;
         else if (node.nodeType == NodeType.Shop) sr.color = Color.yellow;
-        else if (node.nodeType == NodeType.Event) sr.color = Color.blue;
+        else if (node.nodeType == NodeType.Neutral) sr.color = Color.blue;
         else if (node.nodeType == NodeType.Boss) sr.color = Color.black;
+        else if (node.nodeType == NodeType.NextStair) sr.color = Color.green;
     }
 }

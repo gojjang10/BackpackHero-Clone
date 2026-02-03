@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 622be6ba278ee854fa787b6c98f6e72c, type: 3}
   m_Name: DefaultMapConfig
   m_EditorClassIdentifier: 
-  gridWidth: 12
-  gridHeight: 7
+  gridWidth: 10
+  gridHeight: 5
   maxPathCount: 3
   branchProbability: 0.3
-  battleWeight: 60
-  shopWeight: 20
-  eventWeight: 20
+  isBossStage: 0
+  neutralWeight: 60
+  battleWeight: 20
+  shopWeight: 5
