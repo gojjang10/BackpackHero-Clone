@@ -176,5 +176,9 @@ public class MapGenerator : MonoBehaviour
         else if (node.nodeType == NodeType.Neutral) sr.color = Color.blue;
         else if (node.nodeType == NodeType.Boss) sr.color = Color.black;
         else if (node.nodeType == NodeType.NextStair) sr.color = Color.green;
+
+        MapNodeVisual visual = go.GetComponent<MapNodeVisual>();
+
+        visual.Setup(node); // 노드 데이터 연결
     }
 }

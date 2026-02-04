@@ -9,14 +9,12 @@ public class StageManager : MonoBehaviour
     // To do: 필요 시 제거
     public static StageManager Instance;
 
-    [Header("스테이지 순서 설정")]
-    public List<StageType> stageList;   // 인스펙터에서 [Battle, Shop, Battle] 순서로 넣기 (To do : 임시 순서로 넣어놓은 것이기 때문에 추후에 리팩토링 염두)
-    public int currentStageIndex = 0;   // 현재 스테이지 인덱스
-
     [Header("UI 연결")]
     public GameObject battlePanel; // 전투 UI 패널
     public GameObject shopPanel;   // 상점 UI 패널
     public GameObject rewardPanel; // 보상 UI 패널
+    public GameObject mapPanel;       // 맵 전체 부모 (MapPanelArea)
+    public GameObject inventoryPanel; // 인벤토리 전체 부모
 
     [Header("아이템 청소를 위한 게임 오브젝트")]
     public Transform worldItemHolder; 
@@ -29,59 +27,58 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
-        LoadCurrentStage();
+        ShowMap(); // 게임 시작 시 맵부터 보여주기
     }
 
-    // 현재 스테이지 로드
-    public void LoadCurrentStage()
+    // 맵을 켜고 나머지는 끄는 함수
+    public void ShowMap()
     {
-        // 1. 인덱스 초과 체크
-        // To do : 우선은 직선 순회 형태로 구현, 추후에 스테이지 선택 시스템 등으로 확장 필요
-        if (currentStageIndex >= stageList.Count)
-        {
-            Debug.Log("모든 스테이지 클리어! 게임 종료.");
-
-            battlePanel.SetActive(false);
-            shopPanel.SetActive(false);
-            rewardPanel.SetActive(false);
-
-            GameManager.instance.OnGameClear();
-            return;
-        }
-
-        StageType currentType = stageList[currentStageIndex];
-        Debug.Log($"스테이지 시작: {currentType}");
-
-        // 2. 패널 초기화 (다 끄고 시작)
         battlePanel.SetActive(false);
         shopPanel.SetActive(false);
         rewardPanel.SetActive(false);
 
-        CleanUpWorldItems();
+        mapPanel.SetActive(true); // 맵 켜기
 
-        // 3. 타입에 맞는 패널 켜기
-        switch (currentType)
-        {
-            case StageType.Battle:
-                battlePanel.SetActive(true);
-
-                if(BattleManager.instance != null)
-                {
-                    BattleManager.instance.StartBattle();
-                }
-                // To do : 여기에 BattleManager.StartBattle() 같은거 나중에 추가
-                break;
-            case StageType.Shop:
-                shopPanel.SetActive(true);
-                break;
-        }
+        CleanUpWorldItems(); // 필드 아이템 정리
     }
 
-    // 다음 스테이지로 이동
-    public void NextStage()
+    // ★ 핵심 변경: 인덱스가 아니라 '노드 타입'을 받아서 스테이지 전환
+    public void EnterStage(NodeType type)
     {
-        currentStageIndex++;
-        LoadCurrentStage();
+        Debug.Log($"스테이지 진입 시도: {type}");
+
+        // 1. 맵 끄기 (이제 해당 방으로 들어감)
+        mapPanel.SetActive(false);
+
+        // 2. 기존 패널 초기화
+        battlePanel.SetActive(false);
+        shopPanel.SetActive(false);
+        rewardPanel.SetActive(false);
+        CleanUpWorldItems();
+
+        // 3. 타입별 분기 처리
+        switch (type)
+        {
+            case NodeType.Battle:
+                battlePanel.SetActive(true);
+                // 전투 매니저가 있다면 시작
+                if (BattleManager.instance != null) BattleManager.instance.StartBattle();
+                break;
+
+            case NodeType.Shop:
+                shopPanel.SetActive(true);
+                break;
+
+            case NodeType.Neutral: // 이벤트 or 빈 방
+                rewardPanel.SetActive(true); // 임시로 보상 패널 사용
+                break;
+
+            case NodeType.NextStair:
+                Debug.Log(">>> 다음 층으로 이동 로직 실행! (맵 재생성 등)");
+                // 여기선 나중에 GameManager.NextFloor() 같은 걸 호출하면 됨
+                ShowMap(); // 임시로 다시 맵 보여주기
+                break;
+        }
     }
 
     // 보관소 자식들을 전멸시키는 함수
@@ -94,5 +91,15 @@ public class StageManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    // 맵과 인벤토리 토글 함수 
+    public void ToggleMapState()
+    {
+        // 맵이 꺼져있다면? -> 맵을 켜고 인벤토리를 끈다.
+        bool isMapOpening = !mapPanel.activeSelf;
+
+        mapPanel.SetActive(isMapOpening);
+        inventoryPanel.SetActive(!isMapOpening);
     }
 }
