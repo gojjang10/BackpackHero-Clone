@@ -17,6 +17,8 @@ public class StageManager : MonoBehaviour
     public GameObject battlePanel; // 전투 UI 패널
     public GameObject shopPanel;   // 상점 UI 패널
     public GameObject rewardPanel; // 보상 UI 패널
+    public GameObject mapPanel;       // 맵 전체 부모 (MapPanelArea)
+    public GameObject inventoryPanel; // 인벤토리 전체 부모
 
     [Header("아이템 청소를 위한 게임 오브젝트")]
     public Transform worldItemHolder; 
@@ -94,5 +96,15 @@ public class StageManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+    }
+
+    // 맵과 인벤토리 토글 함수 
+    public void ToggleMapState()
+    {
+        // 맵이 꺼져있다면? -> 맵을 켜고 인벤토리를 끈다.
+        bool isMapOpening = !mapPanel.activeSelf;
+
+        mapPanel.SetActive(isMapOpening);
+        inventoryPanel.SetActive(!isMapOpening);
     }
 }
