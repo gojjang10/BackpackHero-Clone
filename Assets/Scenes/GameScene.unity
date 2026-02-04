@@ -2691,8 +2691,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 958c058211c22dd449340dbed6c0c0a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageList: 00000000010000000000000001000000
-  currentStageIndex: 0
   battlePanel: {fileID: 2041537415}
   shopPanel: {fileID: 74013132}
   rewardPanel: {fileID: 1497977704}
