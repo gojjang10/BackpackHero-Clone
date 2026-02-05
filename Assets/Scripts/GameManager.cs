@@ -22,22 +22,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RelocationInventory()
+    // 상태 변경 함수
+    public void SetState(GameState newState)
     {
-        currentState = (currentState == GameState.Exploration) ? GameState.Battle : GameState.Exploration;
-        Debug.Log($"[GameManager] 상태 변경: {currentState}");
-    }
+        currentState = newState;
+        Debug.Log($"게임 상태 변경: {currentState}");
 
-    public void ExplorationMode()
-    {
-        currentState = GameState.Exploration;
-        Debug.Log($"[GameManager] 상태 변경: {currentState}");
-    }
-
-    public void BattleMode()
-    {
-        currentState = GameState.Battle;
-        Debug.Log($"[GameManager] 상태 변경: {currentState}");
     }
 
     // [타이틀로] 버튼에 연결할 함수

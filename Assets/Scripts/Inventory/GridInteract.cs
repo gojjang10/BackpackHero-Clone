@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class GridInteract : MonoBehaviour
 {
+    // 조작 모드 정의 (내부용)
+    public enum InteractMode { Manage, Use }
+    public InteractMode currentMode = InteractMode.Manage; // 기본은 정리 모드
+
     [Header("연결 필요")]
     public InventoryGrid inventoryGrid; // 인벤토리 그리드 참조
     [SerializeField] private Canvas canvas; // UI 렌더링 최상위 부모 (드래그 시 좌표 변환용)
@@ -56,25 +60,29 @@ public class GridInteract : MonoBehaviour
     // 아이템 클릭 (InventoryItem.OnPointerDown에서 호출) -> 집기/사용
     public void OnItemClicked(InventoryItem item)
     {
-        // 이미 들고 있는 아이템이 있으면 무시
         if (selectedItem != null) return;
 
-        // 전투 중 -> 아이템 사용
-        if (GameManager.instance != null && GameManager.instance.currentState == GameState.Battle)
-        {
-            BattleManager.instance.OnUseItem(item);
-            return;
-        }
+        // 1. 아이템 사용을 시도해야 하는 상황인지 판단
+        // 조건: [사용 모드]이면서 동시에 [전투 상태]여야 함
+        bool shouldTryUse = (currentMode == InteractMode.Use && GameManager.instance.currentState == GameState.Battle);
 
-        // 탐험 모드 중 -> 아이템 집기
-        PickUpItem(item);
+        if (shouldTryUse)
+        {
+            // [사용] 전투 중 + 사용 모드 -> 아이템 사용
+            BattleManager.instance.OnUseItem(item);
+        }
+        else
+        {
+            // [집기] 그 외 모든 상황
+            // 1. 정리 모드일 때
+            // 2. 사용 모드지만 전투가 끝났을 때 (보상 루팅 등) -> 여기서 자연스럽게 집기로 넘어감
+            PickUpItem(item);
+        }
     }
 
     // 슬롯 클릭 (SlotUI.OnPointerDown에서 호출) -> 놓기
     public void OnClickSlot(int x, int y)
     {
-        if (GameManager.instance != null && GameManager.instance.currentState != GameState.Exploration) return;
-
         // 손에 아이템이 있을 때만 배치 시도
         if (selectedItem != null)
         {
@@ -117,6 +125,13 @@ public class GridInteract : MonoBehaviour
     public void OnItemPointerExit(InventoryItem item)
     {
         uiTooltip.HideTooltip();
+    }
+
+    // 모드 토글 함수 (UI 버튼에 연결)
+    public void ToggleInteractMode()
+    {
+        currentMode = (currentMode == InteractMode.Manage) ? InteractMode.Use : InteractMode.Manage;
+        Debug.Log($" 조작 모드 변경: {currentMode}");
     }
     #endregion
 

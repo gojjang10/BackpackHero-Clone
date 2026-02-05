@@ -8,6 +8,7 @@ public class MapGenerator : MonoBehaviour
     public MapConfig config;       // 아까 만든 설정 파일 연결
     public Transform nodeParent;   // 노드들이 생성될 부모 오브젝트
     public GameObject nodePrefab;  // 화면에 보여줄 동그라미 프리팹
+    public GameObject linePrefab;  // 노드 연결선 프리팹
 
     [Header("배치 설정")]
     public float nodeSpacing = 1.5f; // 노드 간격
@@ -64,6 +65,8 @@ public class MapGenerator : MonoBehaviour
             // (2) 화면에 그리기 (Instantiate)
             SpawnNodeObject(node);
         }
+
+        DrawLines();    // 모든 노드 연결선 그리기
     }
 
     // 길 뚫기 알고리즘 
@@ -180,5 +183,51 @@ public class MapGenerator : MonoBehaviour
         MapNodeVisual visual = go.GetComponent<MapNodeVisual>();
 
         visual.Setup(node); // 노드 데이터 연결
+    }
+
+    // 선 그리는 함수
+    private void DrawLines()
+    {
+        foreach (var node in mapGrid.Values)
+        {
+            // 이 노드에서 뻗어나가는 모든 연결선 그리기
+            foreach (var nextNodeCoord in node.nextNodes)
+            {
+                if (mapGrid.ContainsKey(nextNodeCoord))
+                {
+                    MapNode targetNode = mapGrid[nextNodeCoord];
+
+                    // 1. 시작점과 끝점 계산 (로컬 좌표 기준)
+                    Vector3 startPos = GetNodeLocalPosition(node.coordinate);
+                    Vector3 endPos = GetNodeLocalPosition(targetNode.coordinate);
+
+                    // 2. 프리팹 생성
+                    GameObject lineObj = Instantiate(linePrefab, nodeParent);
+
+                    // 3. 선 연결
+                    LineRenderer lr = lineObj.GetComponent<LineRenderer>();
+
+                    lr.useWorldSpace = false;
+
+                    // 선 두께가 너무 두꺼우면 여기서 강제로 줄여줍니다.
+                    lr.startWidth = 0.1f;
+                    lr.endWidth = 0.1f;
+
+                    lr.positionCount = 2;
+                    lr.SetPosition(0, startPos);
+                    lr.SetPosition(1, endPos);
+                }
+            }
+        }
+    }
+
+    // 로컬 좌표 계산 함수
+    private Vector3 GetNodeLocalPosition(Vector2Int coord)
+    {
+        float mapWidth = (config.gridWidth - 1) * nodeSpacing;
+        float mapHeight = (config.gridHeight - 1) * nodeSpacing;
+        Vector3 centerOffset = new Vector3(mapWidth / 2f, mapHeight / 2f, 0);
+
+        return new Vector3(coord.x * nodeSpacing, coord.y * nodeSpacing, 0) - centerOffset;
     }
 }
