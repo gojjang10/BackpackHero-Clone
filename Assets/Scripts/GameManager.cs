@@ -22,12 +22,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RelocationInventory()
-    {
-        currentState = (currentState == GameState.Exploration) ? GameState.Battle : GameState.Exploration;
-        Debug.Log($"[GameManager] 상태 변경: {currentState}");
-    }
-
     public void ExplorationMode()
     {
         currentState = GameState.Exploration;
