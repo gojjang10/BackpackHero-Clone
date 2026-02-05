@@ -2795,9 +2795,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1438592014}
-        m_TargetAssemblyTypeName: GameManager, Assembly-CSharp
-        m_MethodName: RelocationInventory
+      - m_Target: {fileID: 1610807523}
+        m_TargetAssemblyTypeName: GridInteract, Assembly-CSharp
+        m_MethodName: ToggleInteractMode
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4638,6 +4638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9059fdd07d930c4bbbdd9a5ca6f9d75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentMode: 0
   inventoryGrid: {fileID: 715570384}
   canvas: {fileID: 580609523}
   validColor: {r: 0, g: 1, b: 0, a: 0.3}

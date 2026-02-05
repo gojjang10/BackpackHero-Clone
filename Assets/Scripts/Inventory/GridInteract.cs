@@ -62,23 +62,20 @@ public class GridInteract : MonoBehaviour
     {
         if (selectedItem != null) return;
 
-        // GameManager 상태가 아니라, 내 모드(currentMode)를 보고 결정
-        if (currentMode == InteractMode.Use)
+        // 1. 아이템 사용을 시도해야 하는 상황인지 판단
+        // 조건: [사용 모드]이면서 동시에 [전투 상태]여야 함
+        bool shouldTryUse = (currentMode == InteractMode.Use && GameManager.instance.currentState == GameState.Battle);
+
+        if (shouldTryUse)
         {
-            // 사용 모드일 때만 아이템 사용
-            // (단, 전투 중일 때만 사용 가능하게 안전장치는 필요)
-            if (GameManager.instance.currentState == GameState.Battle)
-            {
-                BattleManager.instance.OnUseItem(item);
-            }
-            else
-            {
-                Debug.Log("전투 중에만 사용할 수 있습니다.");
-            }
+            // [사용] 전투 중 + 사용 모드 -> 아이템 사용
+            BattleManager.instance.OnUseItem(item);
         }
         else
         {
-            // 정리 모드면 무조건 집기 (전투 중이어도 정리 가능)
+            // [집기] 그 외 모든 상황
+            // 1. 정리 모드일 때
+            // 2. 사용 모드지만 전투가 끝났을 때 (보상 루팅 등) -> 여기서 자연스럽게 집기로 넘어감
             PickUpItem(item);
         }
     }

@@ -45,6 +45,13 @@ public class StageManager : MonoBehaviour
     // ★ 핵심 변경: 인덱스가 아니라 '노드 타입'을 받아서 스테이지 전환
     public void EnterStage(NodeType type)
     {
+
+        if (GameManager.instance.currentState == GameState.Battle)
+        {
+            Debug.Log(" 전투 중에는 이동할 수 없습니다 (전투를 먼저 끝내세요)");
+            return; // 함수 강제 종료
+        }
+
         Debug.Log($"스테이지 진입 시도: {type}");
 
         // 1. 맵 끄기 (이제 해당 방으로 들어감)
@@ -61,16 +68,18 @@ public class StageManager : MonoBehaviour
         {
             case NodeType.Battle:
                 battlePanel.SetActive(true);
+                OpenInventory();
                 // 전투 매니저가 있다면 시작
                 if (BattleManager.instance != null) BattleManager.instance.StartBattle();
+
                 break;
 
             case NodeType.Shop:
                 shopPanel.SetActive(true);
+                OpenInventory();
                 break;
 
             case NodeType.Neutral: // 이벤트 or 빈 방
-                rewardPanel.SetActive(true); // 임시로 보상 패널 사용
                 break;
 
             case NodeType.NextStair:
@@ -90,6 +99,15 @@ public class StageManager : MonoBehaviour
         foreach (Transform child in worldItemHolder)
         {
             Destroy(child.gameObject);
+        }
+    }
+
+    // 인벤토리를 켜주는 헬퍼 함수
+    private void OpenInventory()
+    {
+        if (StageManager.Instance.inventoryPanel != null)
+        {
+            StageManager.Instance.inventoryPanel.SetActive(true);
         }
     }
 
