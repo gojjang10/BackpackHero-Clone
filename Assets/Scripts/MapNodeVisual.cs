@@ -23,6 +23,6 @@ public class MapNodeVisual : MonoBehaviour
         // if (!nodeData.isAccessible) return;
 
         // 3. StageManager에게 "나 이 방 들어갈래" 요청
-        StageManager.Instance.EnterStage(nodeData.nodeType);
+        StageManager.Instance.TryMoveToNode(nodeData);
     }
 }

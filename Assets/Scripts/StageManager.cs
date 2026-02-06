@@ -17,7 +17,13 @@ public class StageManager : MonoBehaviour
     public GameObject inventoryPanel; // 인벤토리 전체 부모
 
     [Header("아이템 청소를 위한 게임 오브젝트")]
-    public Transform worldItemHolder; 
+    public Transform worldItemHolder;
+
+    [Header("맵 이동 상태")]
+    public MapNode currentNode; // ★ 현재 플레이어가 있는 노드 데이터
+
+    // 맵 제너레이터 참조 (아이콘 옮기라고 시켜야 하니까)
+    public MapGenerator mapGenerator;
 
 
     private void Awake()
@@ -42,7 +48,7 @@ public class StageManager : MonoBehaviour
         CleanUpWorldItems(); // 필드 아이템 정리
     }
 
-    // ★ 핵심 변경: 인덱스가 아니라 '노드 타입'을 받아서 스테이지 전환
+    // 노드 타입을 받아서 스테이지 전환
     public void EnterStage(NodeType type)
     {
 
@@ -119,5 +125,51 @@ public class StageManager : MonoBehaviour
 
         mapPanel.SetActive(isMapOpening);
         inventoryPanel.SetActive(!isMapOpening);
+    }
+
+    // 초기화 함수 (MapGenerator가 맵 다 만들고 호출해줌)
+    public void SetCurrentNode(MapNode node)
+    {
+        currentNode = node;
+        Debug.Log($"현재 위치 초기화: {node.coordinate}");
+    }
+
+    // 노드 클릭 시 호출될 함수 (이동 시도)
+    public void TryMoveToNode(MapNode targetNode)
+    {
+        // 1. 이미 같은 곳을 클릭했다면? (무시)
+        if (currentNode == targetNode) return;
+
+        // 2. 연결된 노드인지 확인 (Logic Check)
+        // 현재 노드의 nextNodes 리스트에 타겟 좌표가 들어있는가?
+        if (currentNode.nextNodes.Contains(targetNode.coordinate))
+        {
+            // [이동 승인!] 
+            MoveToNode(targetNode);
+        }
+        else
+        {
+            // [이동 거절]
+            Debug.Log("갈 수 없는 길입니다! (연결되지 않음)");
+            // 여기에 "길이 없어요" 같은 UI 메시지를 띄울 수도 있음
+        }
+    }
+
+    // 실제 이동 처리
+    private void MoveToNode(MapNode targetNode)
+    {
+        Debug.Log($"이동: {currentNode.coordinate} -> {targetNode.coordinate}");
+
+        // 1. 데이터 갱신
+        currentNode = targetNode;
+
+        // 2. 비주얼 갱신 (아이콘 이동)
+        if (mapGenerator != null)
+        {
+            mapGenerator.UpdatePlayerIconPosition(targetNode);
+        }
+
+        // 3. 스테이지 진입 (기존 로직 연결)
+        EnterStage(targetNode.nodeType);
     }
 }
