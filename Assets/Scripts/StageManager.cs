@@ -134,24 +134,27 @@ public class StageManager : MonoBehaviour
         Debug.Log($"현재 위치 초기화: {node.coordinate}");
     }
 
-    // 노드 클릭 시 호출될 함수 (이동 시도)
+    // 이동 시도 함수
     public void TryMoveToNode(MapNode targetNode)
     {
-        // 1. 이미 같은 곳을 클릭했다면? (무시)
         if (currentNode == targetNode) return;
 
-        // 2. 연결된 노드인지 확인 (Logic Check)
-        // 현재 노드의 nextNodes 리스트에 타겟 좌표가 들어있는가?
-        if (currentNode.nextNodes.Contains(targetNode.coordinate))
+        // 1. 현재 방을 클리어하지 않았으면 이동 불가! (전투 중 도망 방지)
+        // (단, 이미 클리어된 방이거나 안전지대라면 이동 가능)
+        if (!currentNode.isCleared)
         {
-            // [이동 승인!] 
+            Debug.Log(" 현재 구역을 먼저 클리어해야 합니다!");
+            return;
+        }
+
+        // 2. ★ 길 찾기 알고리즘으로 갈 수 있는지 확인
+        if (IsPathAvailable(currentNode, targetNode))
+        {
             MoveToNode(targetNode);
         }
         else
         {
-            // [이동 거절]
-            Debug.Log("갈 수 없는 길입니다! (연결되지 않음)");
-            // 여기에 "길이 없어요" 같은 UI 메시지를 띄울 수도 있음
+            Debug.Log(" 연결된 경로가 없거나, 아직 갈 수 없는 곳입니다.");
         }
     }
 
@@ -171,5 +174,49 @@ public class StageManager : MonoBehaviour
 
         // 3. 스테이지 진입 (기존 로직 연결)
         EnterStage(targetNode.nodeType);
+    }
+
+    // ★ BFS 길 찾기 알고리즘
+    // 시작점에서 목표점까지, '클리어된 방'들만 밟아서 갈 수 있니?
+    private bool IsPathAvailable(MapNode start, MapNode target)
+    {
+        // 방문 체크용 (무한 루프 방지)
+        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
+        Queue<MapNode> queue = new Queue<MapNode>();
+
+        queue.Enqueue(start);
+        visited.Add(start.coordinate);
+
+        while (queue.Count > 0)
+        {
+            MapNode current = queue.Dequeue();
+
+            // 목표 발견 -> 가는 길 있음
+            if (current == target) return true;
+
+            // 지금 검사하는 방이 '목표'가 아닌데 '안 깬 방'이라면? 여기서 길 막힘.
+            if (!current.isCleared && current != start)
+            {
+                continue; // 더 이상 이쪽 길로는 못 감
+            }
+
+            // 연결된 이웃 노드 탐색
+            foreach (Vector2Int neighborPos in current.nextNodes)
+            {
+                // 아직 방문 안 했으면 큐에 넣기
+                if (!visited.Contains(neighborPos))
+                {
+                    // (주의: 매니저가 맵 데이터를 알고 있어야 함)
+                    // MapGenerator에서 mapGrid를 가져오거나, StageManager가 들고 있어야 함
+                    if (mapGenerator.mapGrid.ContainsKey(neighborPos))
+                    {
+                        visited.Add(neighborPos);
+                        queue.Enqueue(mapGenerator.mapGrid[neighborPos]);
+                    }
+                }
+            }
+        }
+
+        return false; // 길 못 찾음
     }
 }

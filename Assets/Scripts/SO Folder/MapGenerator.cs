@@ -140,9 +140,18 @@ public class MapGenerator : MonoBehaviour
 
             // 현재 노드와 다음 노드를 연결 (Graph 구조 형성)
             MapNode currentNode = mapGrid[current];
+            MapNode nextNode = mapGrid[next];
+
+            // 1. 현재 -> 다음 연결
             if (!currentNode.nextNodes.Contains(next))
             {
                 currentNode.nextNodes.Add(next);
+            }
+
+            // 2. 다음 -> 현재 연결 (이게 있어야 뒤로 갈 수 있음)
+            if (!nextNode.nextNodes.Contains(current))
+            {
+                nextNode.nextNodes.Add(current);
             }
 
             // 이동
