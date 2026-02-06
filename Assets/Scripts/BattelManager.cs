@@ -241,6 +241,12 @@ public class BattleManager : MonoBehaviour
         uiManager.OnDisable();  // 전투 UI 비활성화
         GameManager.instance.SetState(GameState.Exploration); // 탐험 모드로 전환
 
+        if (StageManager.Instance != null && StageManager.Instance.currentNode != null)
+        {
+            StageManager.Instance.currentNode.isCleared = true;
+            Debug.Log($" 노드 클리어 완료! ({StageManager.Instance.currentNode.coordinate})");
+        }
+
         // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
         if (rewardUIObject != null)
         {
