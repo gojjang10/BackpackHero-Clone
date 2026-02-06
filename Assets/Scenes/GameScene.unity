@@ -2697,6 +2697,7 @@ MonoBehaviour:
   mapPanel: {fileID: 954751191}
   inventoryPanel: {fileID: 715570382}
   worldItemHolder: {fileID: 1394753231}
+  mapGenerator: {fileID: 954751192}
 --- !u!4 &778873484
 Transform:
   m_ObjectHideFlags: 0
@@ -2878,6 +2879,7 @@ MonoBehaviour:
   nodeParent: {fileID: 1988467004}
   nodePrefab: {fileID: 8835221656679081327, guid: b7725387201ab5048922ea1c4145187a, type: 3}
   linePrefab: {fileID: 1569226992123039789, guid: 3c8cbb4daa2fa474794e8e86259deb94, type: 3}
+  playerIconPrefab: {fileID: 5235272482804473534, guid: c75a488e1c78f1b45884afd3a673862d, type: 3}
   nodeSpacing: 1
 --- !u!4 &954751193
 Transform:
@@ -5400,8 +5402,8 @@ SceneRoots:
   - {fileID: 22935589}
   - {fileID: 528541003}
   - {fileID: 40579376}
-  - {fileID: 954751193}
   - {fileID: 1438592015}
+  - {fileID: 954751193}
   - {fileID: 778873484}
   - {fileID: 315721399}
   - {fileID: 1381867450}

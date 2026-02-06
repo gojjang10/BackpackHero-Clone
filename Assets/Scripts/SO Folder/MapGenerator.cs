@@ -10,6 +10,10 @@ public class MapGenerator : MonoBehaviour
     public GameObject nodePrefab;  // 화면에 보여줄 동그라미 프리팹
     public GameObject linePrefab;  // 노드 연결선 프리팹
 
+    [Header("플레이어 아이콘")]
+    public GameObject playerIconPrefab; //  프리팹 연결할 변수
+    private GameObject playerIconInstance; // 생성된 아이콘을 들고 있을 변수
+
     [Header("배치 설정")]
     public float nodeSpacing = 1.5f; // 노드 간격
 
@@ -67,6 +71,42 @@ public class MapGenerator : MonoBehaviour
         }
 
         DrawLines();    // 모든 노드 연결선 그리기
+
+        // 데이터상으로도 시작점 설정 (StageManager에게 알리기)
+        if (mapGrid.ContainsKey(startPos))
+        {
+            MapNode startNode = mapGrid[startPos];
+            SpawnPlayerIcon(startNode);
+
+            // StageManager에게 "나 여기 있어"라고 초기화
+            StageManager.Instance.SetCurrentNode(startNode);
+        }
+    }
+
+    // 아이콘 생성 및 초기 위치 설정
+    private void SpawnPlayerIcon(MapNode startNode)
+    {
+        // 기존 아이콘이 있다면 삭제 (맵 재생성 시)
+        if (playerIconInstance != null) Destroy(playerIconInstance);
+
+        // 생성 (부모는 nodeParent로 해서 맵이랑 같이 움직이게)
+        playerIconInstance = Instantiate(playerIconPrefab, nodeParent);
+
+        // 위치 잡기
+        UpdatePlayerIconPosition(startNode);
+    }
+
+    // 아이콘 위치를 특정 노드로 옮기는 함수 (외부에서 호출 가능하게 public)
+    public void UpdatePlayerIconPosition(MapNode targetNode)
+    {
+        if (playerIconInstance == null) return;
+
+        // 해당 노드의 로컬 좌표를 가져와서 이동
+        Vector3 targetPos = GetNodeLocalPosition(targetNode.coordinate);
+        playerIconInstance.transform.localPosition = targetPos;
+
+        // (선택 사항) 약간 위로 띄우고 싶다면?
+        // playerIconInstance.transform.localPosition = targetPos + new Vector3(0, 0.5f, 0);
     }
 
     // 길 뚫기 알고리즘 
@@ -100,9 +140,18 @@ public class MapGenerator : MonoBehaviour
 
             // 현재 노드와 다음 노드를 연결 (Graph 구조 형성)
             MapNode currentNode = mapGrid[current];
+            MapNode nextNode = mapGrid[next];
+
+            // 1. 현재 -> 다음 연결
             if (!currentNode.nextNodes.Contains(next))
             {
                 currentNode.nextNodes.Add(next);
+            }
+
+            // 2. 다음 -> 현재 연결 (이게 있어야 뒤로 갈 수 있음)
+            if (!nextNode.nextNodes.Contains(current))
+            {
+                nextNode.nextNodes.Add(current);
             }
 
             // 이동
