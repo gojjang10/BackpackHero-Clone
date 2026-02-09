@@ -145,24 +145,25 @@ public class StageManager : MonoBehaviour
     // 이동 시도 함수
     public void TryMoveToNode(MapNode targetNode)
     {
-        if (currentNode == targetNode) return;
-
-        // 1. 현재 방을 클리어하지 않았으면 이동 불가! (전투 중 도망 방지)
-        // (단, 이미 클리어된 방이거나 안전지대라면 이동 가능)
-        if (!currentNode.isCleared)
+        // 1. 현재 전투 중인지 확인 
+        if (GameManager.instance.currentState == GameState.Battle)
         {
-            Debug.Log(" 현재 구역을 먼저 클리어해야 합니다!");
+            Debug.Log(" 전투 중에는 이동할 수 없습니다! (전투를 먼저 끝내세요)");
             return;
         }
 
-        // 2. ★ 길 찾기 알고리즘으로 갈 수 있는지 확인
+        // 2. 같은 노드 클릭 방지
+        if (currentNode == targetNode) return;
+
+        // 3. 길 찾기 (연결 여부 + 클리어 여부)
         if (IsPathAvailable(currentNode, targetNode))
         {
+            // ★ 모든 검문을 통과했을 때만 실행!
             MoveToNode(targetNode);
         }
         else
         {
-            Debug.Log(" 연결된 경로가 없거나, 아직 갈 수 없는 곳입니다.");
+            Debug.Log("지나갈 수 없는 길입니다.");
         }
     }
 

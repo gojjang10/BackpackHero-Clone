@@ -11,7 +11,7 @@ public class MapGenerator : MonoBehaviour
     public GameObject linePrefab;  // 노드 연결선 프리팹
 
     [Header("플레이어 아이콘")]
-    public GameObject playerIconPrefab; //  프리팹 연결할 변수
+    public GameObject playerIconPrefab; //  플레이어 아이콘 프리팹 연결할 변수
     private GameObject playerIconInstance; // 생성된 아이콘을 들고 있을 변수
 
     [Header("배치 설정")]
