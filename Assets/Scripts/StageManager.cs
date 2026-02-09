@@ -73,10 +73,18 @@ public class StageManager : MonoBehaviour
         switch (type)
         {
             case NodeType.Battle:
-                battlePanel.SetActive(true);
-                OpenInventory();
-                // 전투 매니저가 있다면 시작
-                if (BattleManager.instance != null) BattleManager.instance.StartBattle();
+
+                if (currentNode.isCleared)
+                {
+                    Debug.Log($" 이미 정복한 지역입니다. ({currentNode.coordinate}) - 전투 스킵");
+                }
+                else
+                {
+                    battlePanel.SetActive(true);
+                    OpenInventory();
+                    // 전투 매니저가 있다면 시작
+                    if (BattleManager.instance != null) BattleManager.instance.StartBattle();
+                }
 
                 break;
 
