@@ -16,4 +16,21 @@ public class BaseMonsterData : ScriptableObject
 
     [Header("몬스터 보상")]
     public int xpReward;           // 처치 시 획득 경험치
+
+    [Header("AI 패턴")]
+    public MonsterPatternSO defaultPattern;
+}
+
+// 몬스터의 행동 데이터 구조체
+[System.Serializable]
+public struct MonsterIntent
+{
+    public MonsterMoveType type;
+    public int value;
+
+    public MonsterIntent(MonsterMoveType type, int value)
+    {
+        this.type = type;
+        this.value = value;
+    }
 }
