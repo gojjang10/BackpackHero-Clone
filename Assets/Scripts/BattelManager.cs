@@ -172,27 +172,40 @@ public class BattleManager : MonoBehaviour
     {
         state = BattleState.EnemyTurn;
         if (uiManager != null) uiManager.UpdateTurnText("Enemy Turn");
-        Debug.Log(" 적 턴 시작!");
+        Debug.Log("--- [적 턴 시작] 행동 실행 ---");
 
+        // 1. 모든 몬스터가 큐에 쌓아둔 행동을 실행 (Perform)
         foreach (Monster monster in activeMonsters)
         {
-            //  몬스터가 없거나 죽었으면 패스
             if (monster == null || monster.currentHp <= 0) continue;
 
-            yield return new WaitForSeconds(0.5f);
-
-            // 매니저가 직접 제어하지 않고 몬스터에게 위임
-            yield return StartCoroutine(monster.AttackRoutine(player));
+            // ★ [수정] AttackRoutine -> PerformTurnRoutine 변경
+            yield return StartCoroutine(monster.PerformTurnRoutine(player));
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
-        // 플레이어가 죽었는지 확인
-        if(player.currentHp == 0)
+        Debug.Log("--- [적 턴 종료] 다음 행동 계획 ---");
+
+        // 2. ★ [추가] 턴 넘기기 전에 다음 행동 미리 계획 (Telegraphing)
+        foreach (Monster monster in activeMonsters)
+        {
+            if (monster != null && monster.currentHp > 0)
+            {
+                monster.PlanNextTurn();
+                // (추후 여기에 UI 아이콘 갱신 코드 추가)
+            }
+        }
+
+        // 플레이어 생존 체크 및 턴 넘기기
+        if (player.currentHp == 0)
         {
             StartCoroutine(LoseBattle());
         }
-        StartPlayerTurn();
+        else
+        {
+            StartPlayerTurn();
+        }
     }
 
     // 다음 타겟 자동 선택

@@ -24,7 +24,7 @@ public class MonsterFactory : MonoBehaviour
         go.transform.SetParent(this.transform);
 
         Monster monsterScript = go.GetComponent<Monster>();
-        monsterScript.Init(data); // 껍데기에 데이터 주입
+        monsterScript.Init(data, data.defaultPattern); // 껍데기에 데이터 주입
 
         return monsterScript;
     }
