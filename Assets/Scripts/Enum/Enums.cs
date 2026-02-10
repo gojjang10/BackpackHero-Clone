@@ -65,6 +65,7 @@ public enum StageType
     Boss 
 }
 
+// 맵 노드 타입 구분용 열거형
 public enum NodeType
 {
     Neutral,    // 빈 방
@@ -72,4 +73,14 @@ public enum NodeType
     Shop,       // 상점
     Boss,       // 보스 (3층 등 특정 층에서만)
     NextStair      // 다음 층으로 가는 계단
+}
+
+// 몬스터 행동 타입 구분용 열거형
+public enum MonsterMoveType
+{
+    Attack,     // 공격
+    Defend,     // 방어
+    Buff,       // 버프
+    Debuff,     // 디버프
+    Wait        // 대기
 }
