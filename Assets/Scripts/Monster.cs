@@ -35,6 +35,7 @@ public class Monster : MonoBehaviour
 
         gameObject.name = data.monsterName;
         monsterUI.UpdateHP(currentHp, data.maxHp);
+        monsterUI.UpdateIntentUI(null);
 
         // ★ 첫 턴 행동 계획 미리 수립
         PlanNextTurn();
@@ -48,13 +49,23 @@ public class Monster : MonoBehaviour
         // 패턴 데이터가 있으면 행동 뽑아오기
         if (patternData != null)
         {
-            MonsterIntent intent = patternData.GetNextIntent();
-            intentQueue.Enqueue(intent);
+            // maxActionsPerTurn 횟수만큼 행동 뽑기
+            for (int i = 0; i < patternData.maxActionsPerTurn; i++)
+            {
+                MonsterIntent intent = patternData.GetNextIntent();
+                // 만약 뽑힌 게 Wait이고, 이미 다른 행동을 할 예정이라면 큐에 안 넣을 수도 있음.
+                intentQueue.Enqueue(intent);
+            }
         }
         else
         {
             // 패턴이 없으면 대기행동
             intentQueue.Enqueue(new MonsterIntent(MonsterMoveType.Wait, 0));
+        }
+
+        if (monsterUI != null)
+        {
+            monsterUI.UpdateIntentUI(intentQueue);
         }
 
         // 디버깅용 로그
