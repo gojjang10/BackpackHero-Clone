@@ -19,6 +19,9 @@ public class MonsterPatternSO : ScriptableObject
     [Header("가능한 행동 목록")]
     public List<PatternDefinition> patterns;
 
+    [Header("턴당 최대 행동 횟수")]
+    public int maxActionsPerTurn = 1; 
+
     // 가중치 랜덤으로 행동 하나를 뽑아주는 함수
     public MonsterIntent GetNextIntent()
     {

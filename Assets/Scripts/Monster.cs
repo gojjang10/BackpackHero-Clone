@@ -49,8 +49,13 @@ public class Monster : MonoBehaviour
         // 패턴 데이터가 있으면 행동 뽑아오기
         if (patternData != null)
         {
-            MonsterIntent intent = patternData.GetNextIntent();
-            intentQueue.Enqueue(intent);
+            // maxActionsPerTurn 횟수만큼 행동 뽑기
+            for (int i = 0; i < patternData.maxActionsPerTurn; i++)
+            {
+                MonsterIntent intent = patternData.GetNextIntent();
+                // 만약 뽑힌 게 Wait이고, 이미 다른 행동을 할 예정이라면 큐에 안 넣을 수도 있음.
+                intentQueue.Enqueue(intent);
+            }
         }
         else
         {

@@ -471,6 +471,7 @@ GameObject:
   - component: {fileID: 4704310470550052000}
   - component: {fileID: 304943255015630100}
   - component: {fileID: 9120228602103828834}
+  - component: {fileID: 4612970818282509734}
   m_Layer: 0
   m_Name: IntentSlot (2)
   m_TagString: Untagged
@@ -550,6 +551,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 304943255015630100}
   valueText: {fileID: 4221688990805001749}
+--- !u!114 &4612970818282509734
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316877468012790321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 100
+  m_PreferredHeight: 100
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &1394383264550411451
 GameObject:
   m_ObjectHideFlags: 0
@@ -1037,6 +1058,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3092672907511126784}
   - component: {fileID: 143879781349293547}
+  - component: {fileID: 334459338576456299}
   m_Layer: 0
   m_Name: IntentPanel
   m_TagString: Untagged
@@ -1064,7 +1086,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -7, y: 257}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &143879781349293547
 MonoBehaviour:
@@ -1083,7 +1105,7 @@ MonoBehaviour:
     m_Right: 0
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 4
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
@@ -1092,6 +1114,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &334459338576456299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5214246555115720884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 0
 --- !u!1 &5936457748182191323
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,6 +1140,7 @@ GameObject:
   - component: {fileID: 8338355424055272877}
   - component: {fileID: 7216700332572297083}
   - component: {fileID: 2457784986670109159}
+  - component: {fileID: 975588276064724968}
   m_Layer: 0
   m_Name: IntentSlot (1)
   m_TagString: Untagged
@@ -1183,6 +1220,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 7216700332572297083}
   valueText: {fileID: 6975509318656851414}
+--- !u!114 &975588276064724968
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5936457748182191323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 100
+  m_PreferredHeight: 100
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &6778177047856944930
 GameObject:
   m_ObjectHideFlags: 0
@@ -1481,6 +1538,7 @@ GameObject:
   - component: {fileID: 8590853006346989341}
   - component: {fileID: 3257550356566377431}
   - component: {fileID: 309134684949021099}
+  - component: {fileID: 2230395836423376773}
   m_Layer: 0
   m_Name: IntentSlot
   m_TagString: Untagged
@@ -1560,6 +1618,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   iconImage: {fileID: 3257550356566377431}
   valueText: {fileID: 1442950004397591717}
+--- !u!114 &2230395836423376773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7150214186027165934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: -1
+  m_PreferredWidth: 100
+  m_PreferredHeight: 100
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1
 --- !u!1 &7784567653944077055
 GameObject:
   m_ObjectHideFlags: 0
