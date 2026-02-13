@@ -16,8 +16,12 @@ MonoBehaviour:
   - moveType: 0
     minValue: 10
     maxValue: 15
-    weight: 50
+    weight: 30
   - moveType: 1
+    minValue: 1
+    maxValue: 5
+    weight: 20
+  - moveType: 4
     minValue: 1
     maxValue: 5
     weight: 80

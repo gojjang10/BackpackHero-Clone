@@ -168,11 +168,6 @@ public class Monster : MonoBehaviour, IDamageable
         monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
 
         Debug.Log($" {name} 피격! {damage} (HP: {currentHp}, Block: {currentBlock})");
-
-        if (currentHp <= 0)
-        {
-            OnDie();
-        }
     }
 
     // 사망 처리 함수

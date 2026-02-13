@@ -7,6 +7,10 @@ public class Player : MonoBehaviour, IDamageable
     [Header("기본 스탯")]
     public int maxHp = 50;
     public int currentHp;
+    public int level = 1;
+    public int currentExp = 0;
+    public int maxExp = 10;           // 다음 레벨업에 필요한 경험치
+    public int expandPoints = 0;      // 가방을 확장할 수 있는 포인트 (레벨업 당 +3)
 
     [Header("전투 스탯")]
     public int maxEnergy = 3;
@@ -89,6 +93,38 @@ public class Player : MonoBehaviour, IDamageable
         UpdateUI();
     }
 
+    // 경험치 획득 함수
+    public void AddExp(int amount)
+    {
+        currentExp += amount;
+        Debug.Log($" 경험치 획득: +{amount} (현재: {currentExp} / {maxExp})");
+
+        // 경험치가 다 찼는지 확인 (연속 레벨업 가능성 고려하여 while문 사용)
+        while (currentExp >= maxExp)
+        {
+            LevelUp();
+        }
+
+        UpdateUI(); // EXP 바 갱신을 위해 UI 업데이트 호출
+    }
+
+    // 레벨업 처리 함수
+    private void LevelUp()
+    {
+        currentExp -= maxExp; // 남은 경험치 이월
+        level++;
+
+        // 다음 레벨업 요구치 증가 (예: 10 -> 15 -> 20)
+        maxExp += 5;
+
+        // 가방 확장 포인트 3점 지급
+        expandPoints += 3;
+
+        Debug.Log($" 레벨 업! 현재 레벨: {level} / 가방 확장 포인트: {expandPoints}");
+
+        // TODO: 화면에 "레벨업! 잠긴 가방을 클릭해 확장하세요!" 같은 팝업을 띄우기
+    }
+
     private void UpdateUI()
     {
         if (playerUI != null)
@@ -96,11 +132,5 @@ public class Player : MonoBehaviour, IDamageable
             playerUI.UpdateHP(currentHp, maxHp);
             playerUI.UpdateStats(currentBlock, currentEnergy);
         }
-    }
-
-    [ContextMenu("Test Add Block 10")]
-    public void TestAddBlock()
-    {
-        AddBlock(10);
     }
 }
