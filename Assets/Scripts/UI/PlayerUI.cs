@@ -11,6 +11,7 @@ public class PlayerUI : MonoBehaviour
     public TextMeshProUGUI hpText;
 
     [Header("Stats")]
+    public GameObject blockGroup; // 방패 아이콘+텍스트의 부모 오브젝트
     public TextMeshProUGUI armorText;
     public TextMeshProUGUI energyText;
 
@@ -22,7 +23,20 @@ public class PlayerUI : MonoBehaviour
 
     public void UpdateStats(int armor, int energy)
     {
-        armorText.text = $"{armor}";
         energyText.text = $"{energy}";
+
+        // 방어도가 있을 때만 방패 아이콘 표시
+        if (blockGroup != null)
+        {
+            if (armor > 0)
+            {
+                blockGroup.SetActive(true);
+                if (armorText != null) armorText.text = $"{armor}";
+            }
+            else
+            {
+                blockGroup.SetActive(false); // 0이면 숨김
+            }
+        }
     }
 }

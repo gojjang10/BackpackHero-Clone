@@ -19,4 +19,27 @@ public class EquipmentData : BaseItemData
         item.currentAttack = baseAttack;
         item.currentBlock = baseBlock;
     }
+
+    public override void OnUse(InventoryItem item, Player player, Monster target)
+    {
+        // A. 공격력이 있다면? -> 때린다
+        if (item.currentAttack > 0)
+        {
+            if (target != null)
+            {
+                target.TakeDamage(item.currentAttack);
+                Debug.Log($" 공격! {target.name}에게 {item.currentAttack} 데미지");
+            }
+        }
+
+        // B. 방어도가 있다면? -> 막는다
+        if (item.currentBlock > 0) // InventoryItem에 currentBlock 변수 추가 필요
+        {
+            if (player != null)
+            {
+                player.AddBlock(item.currentBlock);
+                Debug.Log($" 방어! 방어도 +{item.currentBlock}");
+            }
+        }
+    }
 }

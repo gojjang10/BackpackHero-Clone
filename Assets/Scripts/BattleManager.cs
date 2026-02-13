@@ -103,11 +103,11 @@ public class BattleManager : MonoBehaviour
         // 2. 행동력 차감
         player.ModifyEnergy(-item.data.energyCost);
 
-        // 3. 공격 로직 실행 
-        if (item.currentAttack > 0)
-        {
-            ProcessAttack(item.currentAttack);
-        }
+        // 3. 아이템 사용 효과 발동
+        item.data.OnUse(item, player, currentTarget);
+
+        // 4.효과 발동 후, 타겟이 죽었는지 확인
+        CheckBattleStatus();
     }
 
     // 아이템 사용 가능 여부 체크
@@ -131,17 +131,12 @@ public class BattleManager : MonoBehaviour
         return true;
     }
 
-    // 공격 처리 및 결과 확인 (자동 타겟팅 포함)
-    private void ProcessAttack(int damage)
+    private void CheckBattleStatus()
     {
-        if (currentTarget == null) return;
-
-        currentTarget.TakeDamage(damage);
-
-        // 몬스터가 죽었는지 확인
-        if (currentTarget.currentHp <= 0)
+        // 타겟이 존재하는데, 방금 맞아서 체력이 0 이하가 되었다면?
+        if (currentTarget != null && currentTarget.currentHp <= 0)
         {
-            HandleMonsterDeath(currentTarget);
+            HandleMonsterDeath(currentTarget); // 여기서 경험치 주고 사망 처리
         }
     }
 
@@ -150,6 +145,12 @@ public class BattleManager : MonoBehaviour
     {
         // 1. 리스트에서 제거 
         activeMonsters.Remove(deadMonster);
+
+        // 경험치 보상 지급
+        if (deadMonster.data != null && player != null)
+        {
+            player.AddExp(deadMonster.data.xpReward);
+        }
 
         // 2. 몬스터 오브젝트 퇴장 처리 (OnDie 호출)
         deadMonster.OnDie();

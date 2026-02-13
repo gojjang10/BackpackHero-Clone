@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Monster : MonoBehaviour
+public class Monster : MonoBehaviour, IDamageable
 {
     [Header("현재 데이터 (읽기 전용)")]
     public BaseMonsterData data; // 현재 몬스터의 원본 데이터
@@ -34,7 +34,7 @@ public class Monster : MonoBehaviour
             spriteRenderer.sprite = data.icon;
 
         gameObject.name = data.monsterName;
-        monsterUI.UpdateHP(currentHp, data.maxHp);
+        monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
         monsterUI.UpdateIntentUI(null);
 
         // ★ 첫 턴 행동 계획 미리 수립
@@ -109,7 +109,7 @@ public class Monster : MonoBehaviour
         }
         transform.localScale = actionScale;
 
-        // ★ 실제 로직 분기
+        // 행동 처리
         switch (action.type)
         {
             case MonsterMoveType.Attack:
@@ -119,8 +119,8 @@ public class Monster : MonoBehaviour
 
             case MonsterMoveType.Defend:
                 Debug.Log($" {name} 방어! 방어도 +{action.value}");
-                currentBlock += action.value;   // 방어도 작업 필요함
-                // monsterUI.UpdateBlock(currentBlock); // UI 갱신 필요
+                currentBlock += action.value; 
+                monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
                 break;
 
             case MonsterMoveType.Wait:
@@ -137,10 +137,37 @@ public class Monster : MonoBehaviour
     // 피해 처리 함수
     public void TakeDamage(int damage)
     {
- 
-        currentHp -= damage;
-        if (currentHp < 0) currentHp = 0;
-        monsterUI.UpdateHP(currentHp, data.maxHp);
+
+        int finalDamage = damage;
+
+        // 1. 방어도로 상쇄
+        if (currentBlock > 0)
+        {
+            if (currentBlock >= finalDamage)
+            {
+                // 방어도가 더 많으면 -> 데미지 0
+                currentBlock -= finalDamage;
+                finalDamage = 0;
+            }
+            else
+            {
+                // 방어도가 모자르면 -> 방어도 다 까이고 남은 데미지 적용
+                finalDamage -= currentBlock;
+                currentBlock = 0;
+            }
+        }
+
+        // 2. 체력 감소
+        if (finalDamage > 0)
+        {
+            currentHp -= finalDamage;
+            if (currentHp < 0) currentHp = 0;
+        }
+
+        // 3. UI 갱신 (체력 + 방어도)
+        monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
+
+        Debug.Log($" {name} 피격! {damage} (HP: {currentHp}, Block: {currentBlock})");
     }
 
     // 사망 처리 함수
