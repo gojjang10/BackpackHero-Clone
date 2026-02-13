@@ -43,6 +43,7 @@ public enum SearchDirection
 // 게임상황 구분용 열거형
 public enum GameState
 {
+    StartReward, // 처음에 보상 고르는 상태
     Exploration, // 탐험 (인벤토리 정리, 이동)
     Battle       // 전투 (아이템 사용, 턴 진행)
 }

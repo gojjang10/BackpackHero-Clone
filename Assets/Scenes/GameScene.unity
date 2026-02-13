@@ -2352,7 +2352,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &715570383
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4177,6 +4177,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
+  itemSpawner: {fileID: 1830990642}
+  rewardUIObject: {fileID: 1497977704}
+  mapUIObject: {fileID: 954751191}
 --- !u!4 &1438592015
 Transform:
   m_ObjectHideFlags: 0
@@ -4976,6 +4979,7 @@ MonoBehaviour:
   rewardPanel: {fileID: 1366862376}
   itemsToSpawn:
   - {fileID: 11400000, guid: 79acda4e4edcbe04091e5535b3830de0, type: 2}
+  - {fileID: 11400000, guid: 7eaa5aafe3badd943819a597624cbeb5, type: 2}
 --- !u!4 &1830990643
 Transform:
   m_ObjectHideFlags: 0

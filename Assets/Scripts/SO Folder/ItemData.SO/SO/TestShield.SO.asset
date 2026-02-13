@@ -21,8 +21,7 @@ MonoBehaviour:
   height: 2
   energyCost: 1
   itemType: 1
-  itemTags: 0100000006000000
-  effects:
-  - {fileID: 11400000, guid: b837afaf97118b54bb19c7d0323b1785, type: 2}
+  itemTags: 02000000
+  effects: []
   baseAttack: 0
   baseBlock: 5
