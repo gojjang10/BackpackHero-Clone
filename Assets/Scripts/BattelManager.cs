@@ -103,11 +103,8 @@ public class BattleManager : MonoBehaviour
         // 2. 행동력 차감
         player.ModifyEnergy(-item.data.energyCost);
 
-        // 3. 공격 로직 실행 
-        if (item.currentAttack > 0)
-        {
-            ProcessAttack(item.currentAttack);
-        }
+        // 3. 아이템 사용 효과 발동
+        item.data.OnUse(item, player, currentTarget);
     }
 
     // 아이템 사용 가능 여부 체크
