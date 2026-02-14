@@ -281,4 +281,10 @@ public class InventoryGrid : MonoBehaviour
         }
         return false; // 자리 없음
     }
+
+    public InventorySlot GetLogicalSlot(int x, int y)
+    {
+        if (!IsValidCoordinate(x, y)) return null;
+        return logicalGrid[x, y];
+    }
 }

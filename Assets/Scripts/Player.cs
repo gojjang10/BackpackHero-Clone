@@ -125,7 +125,7 @@ public class Player : MonoBehaviour, IDamageable
         // TODO: 화면에 "레벨업! 잠긴 가방을 클릭해 확장하세요!" 같은 팝업을 띄우기
     }
 
-    private void UpdateUI()
+    public void UpdateUI()
     {
         if (playerUI != null)
         {

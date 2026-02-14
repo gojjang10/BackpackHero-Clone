@@ -13,6 +13,7 @@ public class GridInteract : MonoBehaviour
     [Header("연결 필요")]
     public InventoryGrid inventoryGrid; // 인벤토리 그리드 참조
     [SerializeField] private Canvas canvas; // UI 렌더링 최상위 부모 (드래그 시 좌표 변환용)
+    public Player player; // 플레이어 참조 
 
     [Header("하이라이트 색상")]
     public Color validColor = new Color(0, 1, 0, 0.3f);   // 초록색 (반투명)
@@ -83,6 +84,36 @@ public class GridInteract : MonoBehaviour
     // 슬롯 클릭 (SlotUI.OnPointerDown에서 호출) -> 놓기
     public void OnClickSlot(int x, int y)
     {
+        // 1. 클릭한 슬롯의 데이터 가져오기
+        InventorySlot clickedSlot = inventoryGrid.GetLogicalSlot(x, y);
+
+        if (clickedSlot == null) return;
+
+        if (!clickedSlot.isUnlocked)
+        {
+            // 플레이어 연결 확인 및 포인트 체크
+            if (player != null && player.expandPoints > 0)
+            {
+                // 1. 포인트 차감
+                player.expandPoints--;
+
+                // 2. 그리드에게 해금 명령 (데이터 변경 + 색상 변경)
+                inventoryGrid.UnlockSlot(x, y);
+
+                // 3. 플레이어 정보 갱신 (포인트 줄어든 것 반영)
+                player.UpdateUI();
+
+                Debug.Log($" 가방 칸 해금 완료! (남은 포인트: {player.expandPoints})");
+            }
+            else
+            {
+                // 포인트가 없거나 플레이어 연결이 안 된 경우
+                Debug.Log(" 가방을 확장할 포인트가 부족합니다! (레벨업이 필요합니다)");
+            }
+
+            // 잠긴 칸을 클릭했을 때는 '아이템 배치'를 하지 않고 여기서 함수 종료
+            return;
+        }
         // 손에 아이템이 있을 때만 배치 시도
         if (selectedItem != null)
         {

@@ -17,5 +17,5 @@ MonoBehaviour:
   maxHp: 50
   attackDamage: 10
   defense: 0
-  xpReward: 3
+  xpReward: 11
   defaultPattern: {fileID: 11400000, guid: 8402d0a50b8c1e348bfb919bb8e05bc9, type: 2}
