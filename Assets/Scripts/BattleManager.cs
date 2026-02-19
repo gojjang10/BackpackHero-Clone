@@ -261,6 +261,8 @@ public class BattleManager : MonoBehaviour
             Debug.Log($" 노드 클리어 완료! ({StageManager.Instance.currentNode.coordinate})");
         }
 
+        player.OnTurnEnd(); // 턴 종료 처리 (방어도 초기화 등)
+
         // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
         if (rewardUIObject != null)
         {

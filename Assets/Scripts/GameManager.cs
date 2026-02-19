@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     [Header("현재 게임 상태")]
     public GameState currentState = GameState.StartReward; // 기본은 탐험 모드
+    public int currentFloor = 1; // 현재 층수 (1층부터 시작)
 
     [Header("시스템 연결")]
     public ItemSpawner itemSpawner;       // 아이템 생성기

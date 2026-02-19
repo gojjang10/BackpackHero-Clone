@@ -22,6 +22,9 @@ public class StageManager : MonoBehaviour
     [Header("맵 이동 상태")]
     public MapNode currentNode; // ★ 현재 플레이어가 있는 노드 데이터
 
+    [Header("시스템 연결")]
+    public GridInteract gridInteract; // 인스펙터에서 연결
+
     // 맵 제너레이터 참조 (아이콘 옮기라고 시켜야 하니까)
     public MapGenerator mapGenerator;
 
@@ -97,9 +100,25 @@ public class StageManager : MonoBehaviour
                 break;
 
             case NodeType.NextStair:
-                Debug.Log(">>> 다음 층으로 이동 로직 실행! (맵 재생성 등)");
-                // 여기선 나중에 GameManager.NextFloor() 같은 걸 호출하면 됨
-                ShowMap(); // 임시로 다시 맵 보여주기
+                Debug.Log(">>> 계단을 발견했습니다! 다음 층으로 이동합니다.");
+
+                // 1. GameManager의 층수(Floor) 증가
+                // (이 변수가 바뀌어야 MapGenerator가 다음 단계 설정을 가져옵니다)
+                if (GameManager.instance != null)
+                {
+                    GameManager.instance.currentFloor++;
+                    Debug.Log($"=== {GameManager.instance.currentFloor}층 진입 ===");
+                }
+
+                // 2. 맵 재생성 요청
+                // (MapGenerator.GenerateMap() 안에서 기존 맵 삭제 -> 새 설정 로드 -> 새 맵 생성 -> 플레이어 위치 초기화 수행)
+                if (mapGenerator != null)
+                {
+                    mapGenerator.GenerateMap();
+                }
+
+                // 3. 맵 화면 활성화
+                ShowMap();
                 break;
         }
     }
@@ -128,6 +147,12 @@ public class StageManager : MonoBehaviour
     // 맵과 인벤토리 토글 함수 
     public void ToggleMapState()
     {
+        if (gridInteract != null && gridInteract.IsDraggingItem)
+        {
+            Debug.Log(" 아이템을 정리하고 지도를 펼쳐주세요!");
+            return;
+        }
+
         // 맵이 꺼져있다면? -> 맵을 켜고 인벤토리를 끈다.
         bool isMapOpening = !mapPanel.activeSelf;
 

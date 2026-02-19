@@ -43,6 +43,7 @@ public class Player : MonoBehaviour, IDamageable
         UpdateUI();
     }
 
+    // 방어도 추가 함수
     public void AddBlock(int amount)
     {
         currentBlock += amount;
@@ -54,8 +55,13 @@ public class Player : MonoBehaviour, IDamageable
     public void OnTurnStart()
     {
         currentEnergy = maxEnergy; // 행동력 풀충전
-        currentBlock = 0;          // 방어도 초기화
+        UpdateUI();
+    }
 
+    public void OnTurnEnd()
+    {
+        // 턴이 끝날 때 방어도가 사라지는 경우
+        currentBlock = 0;
         UpdateUI();
     }
 
@@ -131,6 +137,7 @@ public class Player : MonoBehaviour, IDamageable
         {
             playerUI.UpdateHP(currentHp, maxHp);
             playerUI.UpdateStats(currentBlock, currentEnergy);
+            playerUI.UpdateExp(currentExp, maxExp, level);
         }
     }
 }

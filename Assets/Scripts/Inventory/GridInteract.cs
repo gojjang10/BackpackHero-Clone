@@ -10,6 +10,9 @@ public class GridInteract : MonoBehaviour
     public enum InteractMode { Manage, Use }
     public InteractMode currentMode = InteractMode.Manage; // 기본은 정리 모드
 
+    // 외부에서 아이템을 들고 있는지 확인할 수 있는 프로퍼티
+    public bool IsDraggingItem => selectedItem != null;
+
     [Header("연결 필요")]
     public InventoryGrid inventoryGrid; // 인벤토리 그리드 참조
     [SerializeField] private Canvas canvas; // UI 렌더링 최상위 부모 (드래그 시 좌표 변환용)
