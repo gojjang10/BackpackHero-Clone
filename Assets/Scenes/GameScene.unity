@@ -2881,7 +2881,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd351085e442e454398036370380d419, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 11400000, guid: fef527e578f7121469f8e2a41e0e1c57, type: 2}
+  stageConfigs:
+  - {fileID: 11400000, guid: fef527e578f7121469f8e2a41e0e1c57, type: 2}
+  - {fileID: 11400000, guid: 62d0ed3bdf37e6847ab474492f44a2e7, type: 2}
+  - {fileID: 11400000, guid: 8e5cc99a43c936844a847fff7811351b, type: 2}
   nodeParent: {fileID: 1988467004}
   nodePrefab: {fileID: 8835221656679081327, guid: b7725387201ab5048922ea1c4145187a, type: 3}
   linePrefab: {fileID: 1569226992123039789, guid: 3c8cbb4daa2fa474794e8e86259deb94, type: 3}
@@ -4182,6 +4185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentState: 0
+  currentFloor: 1
   itemSpawner: {fileID: 1830990642}
   rewardUIObject: {fileID: 1497977704}
   mapUIObject: {fileID: 954751191}

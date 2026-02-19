@@ -100,9 +100,25 @@ public class StageManager : MonoBehaviour
                 break;
 
             case NodeType.NextStair:
-                Debug.Log(">>> 다음 층으로 이동 로직 실행! (맵 재생성 등)");
-                // 여기선 나중에 GameManager.NextFloor() 같은 걸 호출하면 됨
-                ShowMap(); // 임시로 다시 맵 보여주기
+                Debug.Log(">>> 계단을 발견했습니다! 다음 층으로 이동합니다.");
+
+                // 1. GameManager의 층수(Floor) 증가
+                // (이 변수가 바뀌어야 MapGenerator가 다음 단계 설정을 가져옵니다)
+                if (GameManager.instance != null)
+                {
+                    GameManager.instance.currentFloor++;
+                    Debug.Log($"=== {GameManager.instance.currentFloor}층 진입 ===");
+                }
+
+                // 2. 맵 재생성 요청
+                // (MapGenerator.GenerateMap() 안에서 기존 맵 삭제 -> 새 설정 로드 -> 새 맵 생성 -> 플레이어 위치 초기화 수행)
+                if (mapGenerator != null)
+                {
+                    mapGenerator.GenerateMap();
+                }
+
+                // 3. 맵 화면 활성화
+                ShowMap();
                 break;
         }
     }
