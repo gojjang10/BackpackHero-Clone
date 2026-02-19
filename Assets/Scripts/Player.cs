@@ -137,6 +137,7 @@ public class Player : MonoBehaviour, IDamageable
         {
             playerUI.UpdateHP(currentHp, maxHp);
             playerUI.UpdateStats(currentBlock, currentEnergy);
+            playerUI.UpdateExp(currentExp, maxExp, level);
         }
     }
 }
