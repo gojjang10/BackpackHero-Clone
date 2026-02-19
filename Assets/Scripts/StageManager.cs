@@ -22,6 +22,9 @@ public class StageManager : MonoBehaviour
     [Header("맵 이동 상태")]
     public MapNode currentNode; // ★ 현재 플레이어가 있는 노드 데이터
 
+    [Header("시스템 연결")]
+    public GridInteract gridInteract; // 인스펙터에서 연결
+
     // 맵 제너레이터 참조 (아이콘 옮기라고 시켜야 하니까)
     public MapGenerator mapGenerator;
 
@@ -128,6 +131,12 @@ public class StageManager : MonoBehaviour
     // 맵과 인벤토리 토글 함수 
     public void ToggleMapState()
     {
+        if (gridInteract != null && gridInteract.IsDraggingItem)
+        {
+            Debug.Log(" 아이템을 정리하고 지도를 펼쳐주세요!");
+            return;
+        }
+
         // 맵이 꺼져있다면? -> 맵을 켜고 인벤토리를 끈다.
         bool isMapOpening = !mapPanel.activeSelf;
 
