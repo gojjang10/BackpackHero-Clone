@@ -2702,6 +2702,7 @@ MonoBehaviour:
   mapPanel: {fileID: 954751191}
   inventoryPanel: {fileID: 715570382}
   worldItemHolder: {fileID: 1394753231}
+  gridInteract: {fileID: 1610807523}
   mapGenerator: {fileID: 954751192}
 --- !u!4 &778873484
 Transform:

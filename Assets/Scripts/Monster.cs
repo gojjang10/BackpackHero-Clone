@@ -86,13 +86,25 @@ public class Monster : MonoBehaviour, IDamageable
             MonsterIntent action = intentQueue.Dequeue(); // 값 타입 복사
 
             yield return StartCoroutine(ProcessAction(action, player));
-            yield return new WaitForSeconds(0.5f); // 행동 간 딜레이
+
+            // 대기(Wait)는 아무것도 안 했으니 쉴 필요 없이 바로 다음으로 넘어갑니다.
+            if (action.type != MonsterMoveType.Wait)
+            {
+                yield return new WaitForSeconds(0.5f); // 행동 간 딜레이
+            }
         }
     }
 
     // 개별 행동 처리 로직
     private IEnumerator ProcessAction(MonsterIntent action, Player player)
     {
+
+        if (action.type == MonsterMoveType.Wait)
+        {
+            Debug.Log($" {name} 대기중... (애니메이션 생략)");
+            yield break; // 함수 즉시 종료 (아래 코드 실행 안 함)
+        }
+
         // 연출용 (커졌다 작아짐)
         Vector3 originalScale = transform.localScale;
         Vector3 actionScale = originalScale * 1.2f;

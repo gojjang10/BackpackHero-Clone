@@ -60,16 +60,23 @@ public class MonsterUI : MonoBehaviour
 
         if (intentQueue == null || intentQueue.Count == 0) return;
 
-        // 2. 큐 내용물 확인 (배열로 복사)
-        MonsterIntent[] intents = intentQueue.ToArray();
-
-        // 3. 앞에서부터 차례대로 채워넣기
-        for (int i = 0; i < intents.Length; i++)
+        // 큐에서 Wait 행동은 제외하고 유효한 행동만 리스트에 담기
+        List<MonsterIntent> validIntents = new List<MonsterIntent>();
+        foreach (var intent in intentQueue)
         {
-            // 슬롯 개수보다 행동이 많으면 중단 (예외 처리)
+            if (intent.type != MonsterMoveType.Wait) // Wait가 아니면 추가
+            {
+                validIntents.Add(intent);
+            }
+        }
+
+        // 2. 필터링된 리스트(validIntents)로 슬롯 채우기
+        for (int i = 0; i < validIntents.Count; i++)
+        {
+            // 슬롯 개수보다 행동이 많으면 중단
             if (i >= intentSlots.Length) break;
 
-            MonsterIntent intent = intents[i];
+            MonsterIntent intent = validIntents[i];
             Sprite icon = GetIconByType(intent.type);
 
             // 슬롯에 데이터 주입하고 켜기
