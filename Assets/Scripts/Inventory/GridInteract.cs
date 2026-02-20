@@ -12,6 +12,8 @@ public class GridInteract : MonoBehaviour
 
     // 외부에서 아이템을 들고 있는지 확인할 수 있는 프로퍼티
     public bool IsDraggingItem => selectedItem != null;
+    //플레이어가 확장 포인트를 가지고 있는지 확인하는 프로퍼티
+    public bool HasPendingExpansion => player != null && player.expandPoints > 0;
 
     [Header("연결 필요")]
     public InventoryGrid inventoryGrid; // 인벤토리 그리드 참조

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,22 @@ public class Player : MonoBehaviour, IDamageable
     public int level = 1;
     public int currentExp = 0;
     public int maxExp = 10;           // 다음 레벨업에 필요한 경험치
-    public int expandPoints = 0;      // 가방을 확장할 수 있는 포인트 (레벨업 당 +3)
+    [SerializeField] int _expandPoints = 0;      // 가방을 확장할 수 있는 포인트 (레벨업 당 +3)
+
+    public int expandPoints
+    {
+        get { return _expandPoints; }
+        set
+        {
+            if (_expandPoints != value) // 값이 실제로 변했을 때만
+            {
+                _expandPoints = value;
+
+                // 포인트가 바뀌었다고 구독자들에게 방송을 켭니다 (새로운 포인트 값을 전달)
+                OnExpandPointsChanged?.Invoke(_expandPoints);
+            }
+        }
+    }
 
     [Header("전투 스탯")]
     public int maxEnergy = 3;
@@ -20,6 +36,8 @@ public class Player : MonoBehaviour, IDamageable
     [Header("UI 연결")]
     public PlayerUI playerUI;
 
+    // 포인트가 변경될 때마다 알림을 보낼 이벤트 (방송국 역할)
+    public event Action<int> OnExpandPointsChanged;
     private void Start()
     {
         // 게임 시작 시 초기화
