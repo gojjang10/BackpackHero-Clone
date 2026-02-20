@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -34,6 +35,7 @@ public class GridInteract : MonoBehaviour
 
     [Header("UI")]
     public UITooltip uiTooltip; // 인스펙터에서 할당
+    public TextMeshProUGUI currentToggleInteractModeText; // 현재 모드 표시 텍스트 (인스펙터에서 할당)
 
     private Vector2Int originalGridPos; // 원래 위치 (X, Y) 묶어서 관리
     private Vector2Int currentMouseSlotPos;
@@ -167,7 +169,16 @@ public class GridInteract : MonoBehaviour
     public void ToggleInteractMode()
     {
         currentMode = (currentMode == InteractMode.Manage) ? InteractMode.Use : InteractMode.Manage;
-        Debug.Log($" 조작 모드 변경: {currentMode}");
+
+        if(currentMode == InteractMode.Manage)
+        {
+            currentToggleInteractModeText.text = ($" 조작 모드 : 인벤토리 정리");
+        }
+        else
+        {
+            currentToggleInteractModeText.text = ($" 조작 모드 : 아이템 사용");
+        }
+
     }
     #endregion
 
