@@ -15,6 +15,7 @@ public class StageManager : MonoBehaviour
     public GameObject rewardPanel; // 보상 UI 패널
     public GameObject mapPanel;       // 맵 전체 부모 (MapPanelArea)
     public GameObject inventoryPanel; // 인벤토리 전체 부모
+    public GameObject neturalPanel;   // 이벤트/빈 방 패널 (필요 시)
 
     [Header("아이템 청소를 위한 게임 오브젝트")]
     public Transform worldItemHolder;
@@ -45,6 +46,7 @@ public class StageManager : MonoBehaviour
         battlePanel.SetActive(false);
         shopPanel.SetActive(false);
         rewardPanel.SetActive(false);
+        neturalPanel.SetActive(false);
 
         mapPanel.SetActive(true); // 맵 켜기
 
@@ -70,6 +72,7 @@ public class StageManager : MonoBehaviour
         battlePanel.SetActive(false);
         shopPanel.SetActive(false);
         rewardPanel.SetActive(false);
+        neturalPanel.SetActive(false);
         CleanUpWorldItems();
 
         // 3. 타입별 분기 처리
@@ -97,6 +100,7 @@ public class StageManager : MonoBehaviour
                 break;
 
             case NodeType.Neutral: // 이벤트 or 빈 방
+                neturalPanel.SetActive(true);
                 break;
 
             case NodeType.NextStair:
