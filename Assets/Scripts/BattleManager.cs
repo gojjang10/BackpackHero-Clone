@@ -289,17 +289,30 @@ public class BattleManager : MonoBehaviour
 
         player.OnTurnEnd(); // 턴 종료 처리 (방어도 초기화 등)
 
-        // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
-        if (rewardUIObject != null)
-        {
-            rewardUIObject.SetActive(true);
+        bool isBossRoom = StageManager.Instance.currentNode.nodeType == NodeType.Boss;
 
-            // 2. 보상 아이템 생성 요청
-            if (itemSpawner != null)
+
+        if(isBossRoom)
+        {
+            // [A] 보스전 승리: 보상 창 대신 클리어 패널 활성화
+            Debug.Log(" 게임 클리어! 보스를 처치했습니다!");
+            if (uiManager != null) uiManager.ShowWinUI();
+        }
+        else
+        {
+            // [B] 일반전 승리: 기존 보상 창 로직
+            if (rewardUIObject != null)
             {
-                itemSpawner.SpawnRewardItems(5);
+                rewardUIObject.SetActive(true);
+
+                // 보상 아이템 생성 요청
+                if (itemSpawner != null)
+                {
+                    itemSpawner.SpawnRewardItems(5);
+                }
             }
         }
+
     }
 
     IEnumerator LoseBattle()

@@ -43,7 +43,7 @@ public class RewardUI : MonoBehaviour
         }
         else
         {
-            infoText.text = "보상을 챙기고 맵(M)을 열어 모험을 계속하세요.";
+            infoText.text = "보상을 챙기고 맵을 열어 모험을 계속하세요.";
         }
     }
 }

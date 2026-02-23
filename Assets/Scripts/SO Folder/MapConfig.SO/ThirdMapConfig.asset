@@ -16,7 +16,11 @@ MonoBehaviour:
   gridHeight: 3
   maxPathCount: 3
   branchProbability: 0.3
-  isBossStage: 0
   neutralWeight: 60
   battleWeight: 20
   shopWeight: 20
+  possibleMonsterDatas: []
+  minMonsterCount: 1
+  maxMonsterCount: 3
+  isBossStage: 1
+  bossMonsterData: {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
