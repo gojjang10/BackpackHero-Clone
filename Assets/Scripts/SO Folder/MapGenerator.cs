@@ -86,7 +86,8 @@ public class MapGenerator : MonoBehaviour
             }
             else if (node.coordinate == endPos)
             {
-                node.nodeType = NodeType.NextStair;
+                // 마지막 층은 보스방, 그 외에는 다음 계단으로 설정
+                node.nodeType = currentConfig.isBossStage ? NodeType.Boss : NodeType.NextStair;
             }
             else
             {
