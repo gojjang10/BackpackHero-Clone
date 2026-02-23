@@ -13,7 +13,7 @@ public class PatternDefinition
 }
 
 // AI 패턴 데이터 (SO)
-[CreateAssetMenu(fileName = "NewMonsterPattern", menuName = "Monster/Pattern")]
+[CreateAssetMenu(fileName = "NewMonster Pattern", menuName = "Monster Data/AI Pattern")]
 public class MonsterPatternSO : ScriptableObject
 {
     [Header("가능한 행동 목록")]
