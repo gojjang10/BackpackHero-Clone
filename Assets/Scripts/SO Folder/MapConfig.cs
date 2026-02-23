@@ -20,4 +20,10 @@ public class MapConfig : ScriptableObject
     public int neutralWeight = 60;
     public int battleWeight = 20;
     public int shopWeight = 20;
+
+    [Header("전투 설정 (몬스터 풀)")]
+    public List<BaseMonsterData> possibleMonsterDatas;  // 이 맵에서 나올 수 있는 몬스터 데이터 리스트
+
+    public int minMonsterCount = 1; // 최소 등장 마릿수
+    public int maxMonsterCount = 3; // 최대 등장 마릿수
 }
