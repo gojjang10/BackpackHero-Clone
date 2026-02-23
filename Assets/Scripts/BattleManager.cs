@@ -12,7 +12,6 @@ public class BattleManager : MonoBehaviour
     public BattleUIManager uiManager;   // 화면 담당
 
     [Header("시스템 연결")]
-    public List<BaseMonsterData> testMonsterList;
     public Player player; // 플레이어 참조
 
     [Header("전투 상태")]
@@ -46,10 +45,31 @@ public class BattleManager : MonoBehaviour
             activeMonsters.Clear();
         }
 
-        // 2. [생성] 스포너에게 몬스터 생성 요청 (기존 로직)
-        if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
+        // 2. 현재 층의 MapConfig 데이터 가져오기
+        MapConfig currentMapConfig = StageManager.Instance.mapGenerator.CurrentConfig;
+
+        if (currentMapConfig == null || currentMapConfig.possibleMonsterDatas.Count == 0)
         {
-            activeMonsters = spawner.SpawnWave(testMonsterList);
+            Debug.LogError("전투 에러: 맵 설정(MapConfig)에 몬스터 데이터가 없습니다!");
+            return;
+        }
+
+        // 3. 랜덤으로 스폰할 마릿수와 몬스터 데이터 리스트 조립
+        int spawnCount = Random.Range(currentMapConfig.minMonsterCount, currentMapConfig.maxMonsterCount + 1);
+        List<BaseMonsterData> waveDataList = new List<BaseMonsterData>();
+
+        for (int i = 0; i < spawnCount; i++)
+        {
+            // 풀에서 랜덤한 몬스터 데이터 뽑기
+            int randomIndex = Random.Range(0, currentMapConfig.possibleMonsterDatas.Count);
+            waveDataList.Add(currentMapConfig.possibleMonsterDatas[randomIndex]);
+        }
+
+        // 4. [생성] 스포너에게 조립된 데이터 리스트를 넘겨서 생성 요청
+        if (spawner != null)
+        {
+            // 스포너와 팩토리는 받은 데이터대로 껍데기에 주입해서 뱉어냅니다.
+            activeMonsters = spawner.SpawnWave(waveDataList);
 
             // 첫 번째 타겟 자동 지정
             if (activeMonsters.Count > 0)
@@ -57,8 +77,7 @@ public class BattleManager : MonoBehaviour
                 SelectTarget(activeMonsters[0]);
             }
         }
-
-        // 3. [상태 초기화]
+        // 5. [상태 초기화]
         state = BattleState.Start;
         GameManager.instance.SetState(GameState.Battle);    // 배틀 시작 시 게임 상태 변경
 

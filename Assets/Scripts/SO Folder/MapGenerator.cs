@@ -8,6 +8,7 @@ public class MapGenerator : MonoBehaviour
 
     public List<MapConfig> stageConfigs;    // 단일 변수 대신 리스트로 변경
     private MapConfig currentConfig;        // 현재 생성 중인 맵의 설정 (내부 로직용)
+    public MapConfig CurrentConfig => currentConfig; // 외부에서 현재 설정을 읽을 수 있게 하는 프로퍼티
     public Transform nodeParent;   // 노드들이 생성될 부모 오브젝트
     public GameObject nodePrefab;  // 화면에 보여줄 동그라미 프리팹
     public GameObject linePrefab;  // 노드 연결선 프리팹

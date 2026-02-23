@@ -20,3 +20,9 @@ MonoBehaviour:
   neutralWeight: 60
   battleWeight: 20
   shopWeight: 5
+  possibleMonsterDatas:
+  - {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
+  - {fileID: 11400000, guid: 7d7d630bf12c36f4292482637150338b, type: 2}
+  - {fileID: 11400000, guid: 99ac4e85300ae9d4188c3d8a6113f56a, type: 2}
+  minMonsterCount: 1
+  maxMonsterCount: 3
