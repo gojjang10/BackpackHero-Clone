@@ -79,7 +79,7 @@ public class StageManager : MonoBehaviour
         switch (type)
         {
             case NodeType.Battle:
-
+            case NodeType.Boss:
                 if (currentNode.isCleared)
                 {
                     Debug.Log($" 이미 정복한 지역입니다. ({currentNode.coordinate}) - 전투 스킵");

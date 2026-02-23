@@ -12,7 +12,6 @@ public class BattleManager : MonoBehaviour
     public BattleUIManager uiManager;   // 화면 담당
 
     [Header("시스템 연결")]
-    public List<BaseMonsterData> testMonsterList;
     public Player player; // 플레이어 참조
 
     [Header("전투 상태")]
@@ -46,22 +45,49 @@ public class BattleManager : MonoBehaviour
             activeMonsters.Clear();
         }
 
-        // 2. [생성] 스포너에게 몬스터 생성 요청 (기존 로직)
-        if (spawner != null && testMonsterList != null && testMonsterList.Count > 0)
-        {
-            activeMonsters = spawner.SpawnWave(testMonsterList);
+        // 2. 현재 층의 MapConfig 데이터 가져오기
+        MapConfig currentMapConfig = StageManager.Instance.mapGenerator.CurrentConfig;
 
-            // 첫 번째 타겟 자동 지정
-            if (activeMonsters.Count > 0)
+        //현재 방이 보스방인지 확인
+        bool isBossRoom = StageManager.Instance.currentNode.nodeType == NodeType.Boss;
+
+        List<BaseMonsterData> waveDataList = new List<BaseMonsterData>();
+
+        if (isBossRoom)
+        {
+            // [A] 보스전: 보스 데이터 1개만 스폰 리스트에 추가
+            if (currentMapConfig.bossMonsterData != null)
             {
-                SelectTarget(activeMonsters[0]);
+                waveDataList.Add(currentMapConfig.bossMonsterData);
+                Debug.Log($"보스 출현: {currentMapConfig.bossMonsterData.monsterName}!");
+            }
+            else
+            {
+                Debug.LogError("MapConfig에 보스 데이터(bossMonsterData)가 비어있습니다!");
+                return;
+            }
+        }
+        else
+        {
+            // [B] 일반전: 기존 랜덤 스폰 로직 그대로 유지
+            int spawnCount = Random.Range(currentMapConfig.minMonsterCount, currentMapConfig.maxMonsterCount + 1);
+            for (int i = 0; i < spawnCount; i++)
+            {
+                int randomIndex = Random.Range(0, currentMapConfig.possibleMonsterDatas.Count);
+                waveDataList.Add(currentMapConfig.possibleMonsterDatas[randomIndex]);
             }
         }
 
-        // 3. [상태 초기화]
-        state = BattleState.Start;
-        GameManager.instance.SetState(GameState.Battle);    // 배틀 시작 시 게임 상태 변경
+        // [생성] 스포너에게 조립된 데이터 리스트 넘기기 (기존 코드 유지)
+        if (spawner != null)
+        {
+            activeMonsters = spawner.SpawnWave(waveDataList);
+            if (activeMonsters.Count > 0) SelectTarget(activeMonsters[0]);
+        }
 
+        // [상태 초기화] (기존 코드 유지)
+        state = BattleState.Start;
+        GameManager.instance.SetState(GameState.Battle);
         StartCoroutine(SetupBattle());
     }
 
@@ -263,17 +289,30 @@ public class BattleManager : MonoBehaviour
 
         player.OnTurnEnd(); // 턴 종료 처리 (방어도 초기화 등)
 
-        // 1. 기존 승리 UI (VICTORY 텍스트) 대신 보상 창을 띄움
-        if (rewardUIObject != null)
-        {
-            rewardUIObject.SetActive(true);
+        bool isBossRoom = StageManager.Instance.currentNode.nodeType == NodeType.Boss;
 
-            // 2. 보상 아이템 생성 요청
-            if (itemSpawner != null)
+
+        if(isBossRoom)
+        {
+            // [A] 보스전 승리: 보상 창 대신 클리어 패널 활성화
+            Debug.Log(" 게임 클리어! 보스를 처치했습니다!");
+            if (uiManager != null) uiManager.ShowWinUI();
+        }
+        else
+        {
+            // [B] 일반전 승리: 기존 보상 창 로직
+            if (rewardUIObject != null)
             {
-                itemSpawner.SpawnRewardItems(5);
+                rewardUIObject.SetActive(true);
+
+                // 보상 아이템 생성 요청
+                if (itemSpawner != null)
+                {
+                    itemSpawner.SpawnRewardItems(5);
+                }
             }
         }
+
     }
 
     IEnumerator LoseBattle()

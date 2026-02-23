@@ -51,18 +51,18 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ★ 2. [모험 시작] 버튼에 연결할 함수
-    public void OnStartAdventureClicked()
-    {
-        // 보상 창 닫고, 맵 열기
-        if (rewardUIObject != null) rewardUIObject.SetActive(false);
-        if (mapUIObject != null) mapUIObject.SetActive(true);
+    //// ★ 2. [모험 시작] 버튼에 연결할 함수
+    //public void OnStartAdventureClicked()
+    //{
+    //    // 보상 창 닫고, 맵 열기
+    //    if (rewardUIObject != null) rewardUIObject.SetActive(false);
+    //    if (mapUIObject != null) mapUIObject.SetActive(true);
 
-        // 상태를 탐험 모드로 변경
-        SetState(GameState.Exploration);
+    //    // 상태를 탐험 모드로 변경
+    //    SetState(GameState.Exploration);
 
-        Debug.Log("모험을 시작합니다!");
-    }
+    //    Debug.Log("모험을 시작합니다!");
+    //}
 
     // 상태 변경 함수
     public void SetState(GameState newState)

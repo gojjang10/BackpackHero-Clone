@@ -10,13 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 622be6ba278ee854fa787b6c98f6e72c, type: 3}
-  m_Name: SecondMapConfig
+  m_Name: DefaultMapConfig
   m_EditorClassIdentifier: 
-  gridWidth: 5
+  gridWidth: 10
   gridHeight: 5
   maxPathCount: 3
   branchProbability: 0.3
   isBossStage: 0
   neutralWeight: 60
   battleWeight: 20
-  shopWeight: 20
+  shopWeight: 5
+  possibleMonsterDatas:
+  - {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
+  - {fileID: 11400000, guid: 7d7d630bf12c36f4292482637150338b, type: 2}
+  - {fileID: 11400000, guid: 99ac4e85300ae9d4188c3d8a6113f56a, type: 2}
+  minMonsterCount: 1
+  maxMonsterCount: 3

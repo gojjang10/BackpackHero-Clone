@@ -782,10 +782,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawner: {fileID: 1381867449}
   uiManager: {fileID: 1381867448}
-  testMonsterList:
-  - {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
-  - {fileID: 11400000, guid: 7d7d630bf12c36f4292482637150338b, type: 2}
-  - {fileID: 11400000, guid: 99ac4e85300ae9d4188c3d8a6113f56a, type: 2}
   player: {fileID: 22935588}
   state: 0
   activeMonsters: []
@@ -2452,7 +2448,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8d10074e37a194543ab799991599b4f7, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -2516,7 +2512,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &641721946
@@ -2923,7 +2919,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC778\uBCA4\uD1A0\uB9AC \uC7AC\uBC30\uCE58"
+  m_text: "\uC778\uBCA4\uD1A0\uB9AC \uBAA8\uB4DC\uBCC0\uACBD"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8d10074e37a194543ab799991599b4f7, type: 2}
   m_sharedMaterial: {fileID: 3968133616278261769, guid: 8d10074e37a194543ab799991599b4f7, type: 2}
@@ -3554,7 +3550,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC7AC\uC2DC\uC791"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6dd912c87d69c424c9d873a382fc59b4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8d10074e37a194543ab799991599b4f7, type: 2}
   m_sharedMaterial: {fileID: -2637321736843261249, guid: 6dd912c87d69c424c9d873a382fc59b4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -3618,7 +3614,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1089123596
@@ -6305,9 +6301,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uC0C1\uC810\uC73C\uB85C \uB4E4\uC5B4\uC654\uC2B5\uB2C8\uB2E4"
+  m_text: "\uC0C1\uC810\uC73C\uB85C \uB4E4\uC5B4\uC654\uC2B5\uB2C8\uB2E4!\n(\uBBF8\uAD6C\uD604)"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 6dd912c87d69c424c9d873a382fc59b4, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8d10074e37a194543ab799991599b4f7, type: 2}
   m_sharedMaterial: {fileID: -2637321736843261249, guid: 6dd912c87d69c424c9d873a382fc59b4, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -6339,7 +6335,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -6371,7 +6367,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!222 &1971164050
