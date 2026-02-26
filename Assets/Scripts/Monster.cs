@@ -20,6 +20,9 @@ public class Monster : MonoBehaviour, IDamageable
     public GameObject selectionMark;      // 선택 화살표
     public MonsterUI monsterUI;          // 몬스터 UI
 
+    // [쉐이더 연출 추가] 몬스터의 머티리얼(물감)을 조작할 변수
+    private Material mat;
+
     // 팩토리가 이 함수를 호출해서 몬스터를 세팅함 (초기화)
     // 초기화 함수 (Factory에서 호출)
     public void Init(BaseMonsterData inputData, MonsterPatternSO aiPattern = null)
@@ -31,7 +34,13 @@ public class Monster : MonoBehaviour, IDamageable
         currentBlock = 0;
 
         if (spriteRenderer != null && data.icon != null)
-            spriteRenderer.sprite = data.icon;
+        {
+            spriteRenderer.sprite = data.icon;  // 아이콘으로 스프라이트 설정
+            mat = spriteRenderer.material; // 머티리얼 참조 저장
+
+            mat.SetFloat("_HitEffectBlend", 0f);
+            mat.SetFloat("_DistortionAmount", 0f);
+        }
 
         gameObject.name = data.monsterName;
         monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
@@ -180,6 +189,49 @@ public class Monster : MonoBehaviour, IDamageable
         monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
 
         Debug.Log($" {name} 피격! {damage} (HP: {currentHp}, Block: {currentBlock})");
+
+        // [쉐이더 연출 추가] 피격 시 코루틴 실행
+        if (mat != null && gameObject.activeInHierarchy)
+        {
+            StartCoroutine(HitFlashRoutine());
+        }
+    }
+
+    // [쉐이더 연출 추가] 번쩍 + 물결 파동 효과를 켰다 끄는 코루틴
+    private IEnumerator HitFlashRoutine()
+    {
+        // 1. 즉시 효과 켜기
+        mat.SetFloat("_DistortionAmount", 0.3f);  // 파동 강도
+        mat.SetFloat("_HitEffectBlend", 1f);       // 섬광 강도
+        mat.SetFloat("_RippleIntensity", 0.4f);   // 파동 링의 밝기 
+
+        // 2. 파동이 퍼져나가는 애니메이션
+        float duration = 0.4f;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            float progress = time / duration;
+
+            // ① 파동 링 퍼지기 (0 -> 1)
+            mat.SetFloat("_RippleProgress", progress);
+
+            // ② 섬광 서서히 꺼지기 (1 -> 0)
+            mat.SetFloat("_HitEffectBlend", 1f - progress);
+
+            //③ 파동 링의 밝기도 퍼지면서 서서히 어둡게(0.4-> 0f)
+            //(진행도에 따라 밝기가 줄어듭니다)
+            float intensity = 0.4f * (1f - progress); 
+
+            time += Time.deltaTime;
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        // 3. 연출이 끝나면 모든 스위치를 완벽하게 0으로 원상 복구
+        mat.SetFloat("_HitEffectBlend", 0f);
+        mat.SetFloat("_DistortionAmount", 0f);
+        mat.SetFloat("_RippleProgress", 0f);
+        mat.SetFloat("_RippleIntensity", 0f); 
     }
 
     // 사망 처리 함수
