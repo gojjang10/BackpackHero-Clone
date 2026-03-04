@@ -200,7 +200,7 @@ public class Monster : MonoBehaviour, IDamageable
             if (effectScript != null)
             {
                 // 이펙트에 내 스프라이트 전달해서 연출 세팅하기
-                effectScript.Setup(spriteRenderer.sprite);
+                effectScript.Setup(spriteRenderer, Color.yellow);
             }
         }
     }

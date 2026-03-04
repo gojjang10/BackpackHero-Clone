@@ -161,6 +161,8 @@ MonoBehaviour:
   currentEnergy: 0
   currentBlock: 0
   playerUI: {fileID: 528541004}
+  spriteRenderer: {fileID: 528541002}
+  shockwavePrefab: {fileID: 7378069313264150123, guid: 88f84330f8164864db6215523ab1d85b, type: 3}
 --- !u!4 &22935589
 Transform:
   m_ObjectHideFlags: 0
@@ -170,10 +172,11 @@ Transform:
   m_GameObject: {fileID: 22935587}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.9, y: -2.32, z: -0.06474809}
+  m_LocalPosition: {x: -3.952, y: -2.27, z: -0.06474809}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 528541003}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &40579375
@@ -1600,13 +1603,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 528541001}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.952, y: -2.27, z: -0.06474809}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 640444783}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 22935589}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &528541004
 MonoBehaviour:
@@ -6486,7 +6489,6 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 22935589}
-  - {fileID: 528541003}
   - {fileID: 40579376}
   - {fileID: 1438592015}
   - {fileID: 954751193}

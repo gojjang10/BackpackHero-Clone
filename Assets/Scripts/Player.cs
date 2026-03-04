@@ -131,7 +131,7 @@ public class Player : MonoBehaviour, IDamageable
             ShockwaveEffect effectScript = effectObj.GetComponent<ShockwaveEffect>();
             if (effectScript != null)
             {
-                effectScript.Setup(spriteRenderer.sprite);
+                effectScript.Setup(spriteRenderer, Color.red);
             }
         }
     }
