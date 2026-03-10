@@ -22,8 +22,8 @@ public class GridInteract : MonoBehaviour
     public Player player; // 플레이어 참조 
 
     [Header("하이라이트 색상")]
-    public Color validColor = new Color(0, 1, 0, 0.3f);   // 초록색 (반투명)
-    public Color invalidColor = new Color(1, 0, 0, 0.3f); // 빨간색 (반투명)
+    public Color validColor = new Color(0, 1, 0, 1f);   // 초록색 (반투명)
+    public Color invalidColor = new Color(1, 0, 0, 1f); // 빨간색 (반투명)
 
     [Header("상태 변수")]
     public InventoryItem selectedItem; // 현재 들고 있는 아이템
@@ -51,10 +51,16 @@ public class GridInteract : MonoBehaviour
         // 1. 아이템을 들고 있다면 마우스 따라다니기 (Dragging)
         if (selectedItem != null)
         {
-            // 아이템의 위치를 마우스 위치로 갱신
-            // (UI 모드일 때는 RectTransform의 position에 마우스 position을 넣으면 됨)
-            selectedItemRect.position = Input.mousePosition;
+            // [수정된 부분] Screen Space - Camera 환경에 맞게 마우스 좌표를 UI 월드 좌표로 변환
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                canvas.transform as RectTransform, // 캔버스의 RectTransform
+                Input.mousePosition,               // 현재 마우스 픽셀 위치
+                canvas.worldCamera,                // 캔버스를 렌더링하는 카메라
+                out Vector3 worldPoint             // 변환된 좌표가 담길 변수
+            );
 
+            // 변환된 좌표를 아이템의 위치로 갱신
+            selectedItemRect.position = worldPoint;
             // [추가] 2. R키를 누르면 회전 시도
             if (Input.GetKeyDown(KeyCode.R))
             {
@@ -201,6 +207,14 @@ public class GridInteract : MonoBehaviour
 
         // 2. 선택 상태로 전환
         selectedItem = item;
+
+        Canvas itemCanvas = selectedItem.GetComponent<Canvas>();
+        if (itemCanvas != null)
+        {
+            itemCanvas.overrideSorting = true;
+            itemCanvas.sortingOrder = 2; // 툴팁이나 다른 아이템보다 무조건 위로
+        }
+
         selectedItemRect = selectedItem.GetComponent<RectTransform>();
 
         // 3. 렌더링 최상위로 이동
@@ -244,6 +258,14 @@ public class GridInteract : MonoBehaviour
             selectedItemRect.anchorMax = new Vector2(0.5f, 0.5f);
             selectedItemRect.pivot = new Vector2(0.5f, 0.5f);
             selectedItemRect.localScale = Vector3.one;
+
+            Canvas itemCanvas = selectedItem.GetComponent<Canvas>();
+
+            if(itemCanvas != null)
+            {
+                itemCanvas.overrideSorting = true;
+                itemCanvas.sortingOrder = 1; // 그리드보다 위에 렌더링
+            }
 
             selectedItem = null;
             ClearHighlight();

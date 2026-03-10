@@ -33,8 +33,10 @@ public class Player : MonoBehaviour, IDamageable
     public int currentEnergy;
     public int currentBlock; // 방어도
 
-    [Header("UI 연결")]
+    [Header("시스템 연결")]
     public PlayerUI playerUI;
+    public SpriteRenderer spriteRenderer;
+    public GameObject shockwavePrefab;
 
     // 포인트가 변경될 때마다 알림을 보낼 이벤트 (방송국 역할)
     public event Action<int> OnExpandPointsChanged;
@@ -115,6 +117,23 @@ public class Player : MonoBehaviour, IDamageable
         }
 
         UpdateUI();
+
+        if (shockwavePrefab != null && spriteRenderer != null)
+        {
+            // 1. 내 위치에 이펙트 생성
+            GameObject effectObj = Instantiate(shockwavePrefab, transform.position, Quaternion.identity);
+
+            // 2. 크기 맞춤 (플레이어 크기에 맞춰서)
+            // 만약 플레이어 구조가 복잡하다면(부모-자식), spriteRenderer.transform.lossyScale을 쓰는 게 안전합니다.
+            effectObj.transform.localScale = spriteRenderer.transform.lossyScale;
+
+            // 3. 내 모습(Sprite) 전달해서 터뜨리기
+            ShockwaveEffect effectScript = effectObj.GetComponent<ShockwaveEffect>();
+            if (effectScript != null)
+            {
+                effectScript.Setup(spriteRenderer, Color.red);
+            }
+        }
     }
 
     // 경험치 획득 함수

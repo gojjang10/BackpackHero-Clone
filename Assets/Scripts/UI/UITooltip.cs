@@ -11,6 +11,7 @@ public class UITooltip : MonoBehaviour
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI descText;
     public TextMeshProUGUI statsText;
+    [SerializeField] private Canvas canvas;
 
     [Header("배경 오브젝트")]
     public GameObject tooltipObject; // 툴팁 전체를 껐다 켰다 할 부모 오브젝트
@@ -74,10 +75,21 @@ public class UITooltip : MonoBehaviour
     // 툴팁이 마우스 따라다니게 하려면 Update에서 처리
     private void Update()
     {
-        if (tooltipObject.activeSelf)
+        if (tooltipObject.activeSelf && canvas != null)
         {
-            // 마우스 위치에서 살짝 오른쪽 아래에 표시
-            transform.position = Input.mousePosition + new Vector3(15, -15, 0);
+            // 1. 마우스 픽셀 위치에 기존에 주셨던 오프셋(살짝 오른쪽 아래)을 더합니다.
+            Vector2 screenPos = Input.mousePosition + new Vector3(15, -15, 0);
+
+            // 2. 화면(픽셀) 좌표를 UI 캔버스의 월드 좌표로 변환합니다.
+            RectTransformUtility.ScreenPointToWorldPointInRectangle(
+                canvas.transform as RectTransform, // 기준이 되는 캔버스의 사각형 영역
+                screenPos,                         // 오프셋이 적용된 마우스 픽셀 위치
+                canvas.worldCamera,                // 캔버스를 렌더링하는 UI 카메라
+                out Vector3 worldPoint             // 변환된 3D 좌표가 담길 변수
+            );
+
+            // 3. 변환된 최종 3D 월드 좌표를 툴팁의 위치에 적용합니다.
+            transform.position = worldPoint;
         }
     }
 }
