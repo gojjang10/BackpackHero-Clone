@@ -207,6 +207,14 @@ public class GridInteract : MonoBehaviour
 
         // 2. 선택 상태로 전환
         selectedItem = item;
+
+        Canvas itemCanvas = selectedItem.GetComponent<Canvas>();
+        if (itemCanvas != null)
+        {
+            itemCanvas.overrideSorting = true;
+            itemCanvas.sortingOrder = 2; // 툴팁이나 다른 아이템보다 무조건 위로
+        }
+
         selectedItemRect = selectedItem.GetComponent<RectTransform>();
 
         // 3. 렌더링 최상위로 이동
@@ -250,6 +258,14 @@ public class GridInteract : MonoBehaviour
             selectedItemRect.anchorMax = new Vector2(0.5f, 0.5f);
             selectedItemRect.pivot = new Vector2(0.5f, 0.5f);
             selectedItemRect.localScale = Vector3.one;
+
+            Canvas itemCanvas = selectedItem.GetComponent<Canvas>();
+
+            if(itemCanvas != null)
+            {
+                itemCanvas.overrideSorting = true;
+                itemCanvas.sortingOrder = 1; // 그리드보다 위에 렌더링
+            }
 
             selectedItem = null;
             ClearHighlight();
