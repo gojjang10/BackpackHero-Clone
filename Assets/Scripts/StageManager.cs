@@ -13,8 +13,6 @@ public class StageManager : MonoBehaviour
     public GameObject battlePanel; // 전투 UI 패널
     public GameObject shopPanel;   // 상점 UI 패널
     public GameObject rewardPanel; // 보상 UI 패널
-    public GameObject mapPanel;       // 맵 전체 부모 (MapPanelArea)
-    public GameObject inventoryPanel; // 인벤토리 전체 부모
     public GameObject neturalPanel;   // 이벤트/빈 방 패널 (필요 시)
 
     [Header("아이템 청소를 위한 게임 오브젝트")]
@@ -48,9 +46,13 @@ public class StageManager : MonoBehaviour
         rewardPanel.SetActive(false);
         neturalPanel.SetActive(false);
 
-        mapPanel.SetActive(true); // 맵 켜기
+        // ★ UIManager에게 즉시 맵을 띄우라고 지시!
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.SnapToInventory(); // 맵이 켜질 때 인벤토리는 자동으로 꺼지도록
+        }
 
-        CleanUpWorldItems(); // 필드 아이템 정리
+        CleanUpWorldItems();
     }
 
     // 노드 타입을 받아서 스테이지 전환
@@ -64,9 +66,6 @@ public class StageManager : MonoBehaviour
         }
 
         Debug.Log($"스테이지 진입 시도: {type}");
-
-        // 1. 맵 끄기 (이제 해당 방으로 들어감)
-        mapPanel.SetActive(false);
 
         // 2. 기존 패널 초기화
         battlePanel.SetActive(false);
@@ -142,9 +141,10 @@ public class StageManager : MonoBehaviour
     // 인벤토리를 켜주는 헬퍼 함수
     private void OpenInventory()
     {
-        if (StageManager.Instance.inventoryPanel != null)
+        // ★ UIManager에게 즉시 인벤토리를 화면 중앙에 띄우라고 지시!
+        if (UIManager.Instance != null)
         {
-            StageManager.Instance.inventoryPanel.SetActive(true);
+            UIManager.Instance.SnapToInventory();
         }
     }
 
@@ -166,10 +166,10 @@ public class StageManager : MonoBehaviour
         }
 
         // 맵이 꺼져있다면? -> 맵을 켜고 인벤토리를 끈다.
-        bool isMapOpening = !mapPanel.activeSelf;
+        bool isMapOpening = !UIManager.Instance.mapPanel.activeSelf;
 
-        mapPanel.SetActive(isMapOpening);
-        inventoryPanel.SetActive(!isMapOpening);
+        // "UIManager야, 조건은 내가 다 확인했으니 넌 화면이나 멋지게 밀어라!"
+        UIManager.Instance.SlideMapAndInventory(isMapOpening);
     }
 
     // 초기화 함수 (MapGenerator가 맵 다 만들고 호출해줌)

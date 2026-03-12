@@ -35,13 +35,11 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHa
 
     // 내부 컴포넌트
     private GridInteract gridInteract;
-    private Image itemImage; // 아이템 이미지
+    public Image itemImage; // 아이템 이미지
     private RectTransform rectTransform;    // 아이템 RectTransform
 
     private void Awake()
     {
-        // 초기화
-        itemImage = GetComponent<Image>();
         rectTransform = GetComponent<RectTransform>();
     }
 
@@ -114,21 +112,21 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHa
             Vector2 newSize = new Vector2(data.width * tileSize, data.height * tileSize);
             rectTransform.sizeDelta = newSize;
 
-            // [추가] 자식(하이라이트) 크기도 강제로 맞추기
-            if (highlightObject != null)
-            {
-                RectTransform highlightRect = highlightObject.GetComponent<RectTransform>();
-                if (highlightRect != null)
-                {
-                    // 1. 앵커를 중앙으로 초기화 (안전장치)
-                    highlightRect.anchorMin = new Vector2(0.5f, 0.5f);
-                    highlightRect.anchorMax = new Vector2(0.5f, 0.5f);
-                    highlightRect.pivot = new Vector2(0.5f, 0.5f);
+            //// [추가] 자식(하이라이트) 크기도 강제로 맞추기
+            //if (highlightObject != null)
+            //{
+            //    RectTransform highlightRect = highlightObject.GetComponent<RectTransform>();
+            //    if (highlightRect != null)
+            //    {
+            //        // 1. 앵커를 중앙으로 초기화 (안전장치)
+            //        highlightRect.anchorMin = new Vector2(0.5f, 0.5f);
+            //        highlightRect.anchorMax = new Vector2(0.5f, 0.5f);
+            //        highlightRect.pivot = new Vector2(0.5f, 0.5f);
 
-                    // 2. 크기를 아이템과 똑같이 맞춤
-                    highlightRect.sizeDelta = newSize;
-                }
-            }
+            //        // 2. 크기를 아이템과 똑같이 맞춤
+            //        highlightRect.sizeDelta = newSize;
+            //    }
+            //}
         }
     }
 
