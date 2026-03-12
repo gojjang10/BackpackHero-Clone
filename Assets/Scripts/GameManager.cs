@@ -14,7 +14,6 @@ public class GameManager : MonoBehaviour
     [Header("시스템 연결")]
     public ItemSpawner itemSpawner;       // 아이템 생성기
     public GameObject rewardUIObject;     // 보상 패널 UI
-    public GameObject mapUIObject;        // 맵 UI 패널 (처음엔 숨기기 위함)
 
     private BattleUIManager battleUIManager;
 
@@ -39,8 +38,6 @@ public class GameManager : MonoBehaviour
 
         SetState(GameState.StartReward);
 
-        // 맵 가리기, 보상 창 띄우기
-        if (mapUIObject != null) mapUIObject.SetActive(false);
         if (rewardUIObject != null) rewardUIObject.SetActive(true);
 
         // 시작 아이템 3개 스폰 (개수는 마음대로 조절)
