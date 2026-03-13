@@ -20,6 +20,10 @@ public class MapGenerator : MonoBehaviour
     [Header("배치 설정")]
     public float nodeSpacing = 1.5f; // 노드 간격
 
+    [Header("플레이어 아이콘 이동 연출")]
+    public float iconMoveSpeed = 5f; // 초당 이동 속도 (숫자가 클수록 빠름)
+    public bool IsIconMoving { get; private set; } // 상태 잠금용 프로퍼티
+
     // 생성된 맵 데이터를 저장할 딕셔너리 (좌표 -> 노드데이터)
     // public으로 열어서 다른 매니저가 볼 수 있게 함
     public Dictionary<Vector2Int, MapNode> mapGrid = new Dictionary<Vector2Int, MapNode>();
@@ -249,5 +253,50 @@ public class MapGenerator : MonoBehaviour
         Vector3 centerOffset = new Vector3(mapWidth / 2f, mapHeight / 2f, 0);
 
         return new Vector3(coord.x * nodeSpacing, coord.y * nodeSpacing, 0) - centerOffset;
+    }
+
+    // 맵을 따라 구불구불 이동시키는 함수
+    // System.Action onComplete : "도착하면 이 함수를 실행해줘!" 라는 뜻의 콜백입니다.
+    public void MovePlayerIconAlongPath(List<MapNode> path, System.Action onComplete)
+    {
+        if (playerIconInstance == null || path == null || path.Count == 0) return;
+        StartCoroutine(MoveAlongPathRoutine(path, onComplete));
+    }
+
+    // 여러 노드를 차례대로 방문하는 코루틴
+    private IEnumerator MoveAlongPathRoutine(List<MapNode> path, System.Action onComplete)
+    {
+        IsIconMoving = true;
+
+        // 리스트에 담긴 노드들을 순서대로 하나씩 꺼내서 이동합니다.
+        foreach (MapNode node in path)
+        {
+            Vector3 startPos = playerIconInstance.transform.localPosition;
+            Vector3 targetPos = GetNodeLocalPosition(node.coordinate);
+
+            float distance = Vector3.Distance(startPos, targetPos);
+            float duration = distance / iconMoveSpeed; // 시간 = 거리 / 속력
+            float elapsed = 0f;
+
+            if (duration > 0f)
+            {
+                while (elapsed < duration)
+                {
+                    elapsed += Time.deltaTime;
+                    // t는 0에서 1로 천천히 증가하는 값입니다. (0%에서 100%로)
+                    float t = elapsed / duration;
+                    // Lerp 함수를 사용해서 시작점에서 목표점까지 부드럽게 이동합니다.
+                    playerIconInstance.transform.localPosition = Vector3.Lerp(startPos, targetPos, t);
+                    yield return null;
+                }
+            }
+            // 오차 교정
+            playerIconInstance.transform.localPosition = targetPos;
+        }
+
+        IsIconMoving = false;
+
+        // 이동이 완전히 끝났으니, StageManager에게 "도착했어!"라고 알려줍니다.
+        onComplete?.Invoke();
     }
 }

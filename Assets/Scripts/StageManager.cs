@@ -151,6 +151,9 @@ public class StageManager : MonoBehaviour
     // 맵과 인벤토리 토글 함수 
     public void ToggleMapState()
     {
+        // ★ [잠금] 아이콘이 뽈뽈뽈 걸어가는 중이면 맵 못 닫게 방어!
+        if (mapGenerator != null && mapGenerator.IsIconMoving) return;
+
         // 아이템을 들고 있는지 검사 (GridInteract를 통해 간접 확인)
         if (gridInteract != null && gridInteract.IsDraggingItem)
         {
@@ -192,11 +195,16 @@ public class StageManager : MonoBehaviour
         // 2. 같은 노드 클릭 방지
         if (currentNode == targetNode) return;
 
-        // 3. 길 찾기 (연결 여부 + 클리어 여부)
-        if (IsPathAvailable(currentNode, targetNode))
+        // 3. [잠금] 아이콘이 이동하는 도중에는 다른 방 클릭 완벽 차단
+        if (mapGenerator != null && mapGenerator.IsIconMoving) return;
+
+        // 4. 길 찾기 (경로 리스트 받아오기)
+        List<MapNode> path = GetPath(currentNode, targetNode);
+
+        if (path != null && path.Count > 0)
         {
-            // ★ 모든 검문을 통과했을 때만 실행!
-            MoveToNode(targetNode);
+            // 길이 있으면 이동 시작
+            MoveToNode(targetNode, path);
         }
         else
         {
@@ -205,64 +213,77 @@ public class StageManager : MonoBehaviour
     }
 
     // 실제 이동 처리
-    private void MoveToNode(MapNode targetNode)
+    private void MoveToNode(MapNode targetNode, List<MapNode> path)
     {
-        Debug.Log($"이동: {currentNode.coordinate} -> {targetNode.coordinate}");
+        Debug.Log($"이동 시작: {currentNode.coordinate} -> {targetNode.coordinate}");
 
         // 1. 데이터 갱신
         currentNode = targetNode;
 
-        // 2. 비주얼 갱신 (아이콘 이동)
+        // 2. 비주얼 갱신 (코루틴 실행) 및 완료 시 콜백으로 스테이지 진입
         if (mapGenerator != null)
         {
-            mapGenerator.UpdatePlayerIconPosition(targetNode);
+            // MovePlayerIconAlongPath가 완전히 끝나면, 화살표 함수 ()=>{} 안의 코드가 실행됩니다.
+            mapGenerator.MovePlayerIconAlongPath(path, () =>
+            {
+                EnterStage(targetNode.nodeType);
+            });
         }
-
-        // 3. 스테이지 진입 (기존 로직 연결)
-        EnterStage(targetNode.nodeType);
     }
 
     // ★ BFS 길 찾기 알고리즘
-    // 시작점에서 목표점까지, '클리어된 방'들만 밟아서 갈 수 있니?
-    private bool IsPathAvailable(MapNode start, MapNode target)
+    // (기존 IsPathAvailable 삭제 후 대체) BFS 길 찾기 알고리즘의 진화
+    // 시작점에서 목표점까지의 "경로(거쳐가는 노드들)"를 찾아 리스트로 반환합니다.
+    private List<MapNode> GetPath(MapNode start, MapNode target)
     {
-        // 방문 체크용 (무한 루프 방지)
-        HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
         Queue<MapNode> queue = new Queue<MapNode>();
+        HashSet<MapNode> visited = new HashSet<MapNode>();
+        
+        // "어느 방에서 왔는지" 기록하는 용도
+        Dictionary<MapNode, MapNode> parentMap = new Dictionary<MapNode, MapNode>();
 
         queue.Enqueue(start);
-        visited.Add(start.coordinate);
+        visited.Add(start);
 
         while (queue.Count > 0)
         {
             MapNode current = queue.Dequeue();
 
-            // 목표 발견 -> 가는 길 있음
-            if (current == target) return true;
-
-            // 지금 검사하는 방이 '목표'가 아닌데 '안 깬 방'이라면? 여기서 길 막힘.
-            if (!current.isCleared && current != start)
+            // 목표 방에 도달했다면? 경로를 거꾸로 추적해서 리스트를 만듭니다.
+            if (current == target)
             {
-                continue; // 더 이상 이쪽 길로는 못 감
+                List<MapNode> path = new List<MapNode>();
+                MapNode traceNode = target;
+                
+                while (traceNode != start)
+                {
+                    path.Add(traceNode);
+                    traceNode = parentMap[traceNode]; // 부모를 찾아 거슬러 올라감
+                }
+                
+                path.Reverse(); // 거꾸로 올라갔으니 리스트를 뒤집어줌 (출발지 -> 목적지)
+                return path;
             }
 
-            // 연결된 이웃 노드 탐색
+            // 안 깬 방이면 더 이상 이쪽 길로는 못 감
+            if (!current.isCleared && current != start) continue;
+
+            // 연결된 이웃 방 탐색
             foreach (Vector2Int neighborPos in current.nextNodes)
             {
-                // 아직 방문 안 했으면 큐에 넣기
-                if (!visited.Contains(neighborPos))
+                if (mapGenerator.mapGrid.ContainsKey(neighborPos))
                 {
-                    // (주의: 매니저가 맵 데이터를 알고 있어야 함)
-                    // MapGenerator에서 mapGrid를 가져오거나, StageManager가 들고 있어야 함
-                    if (mapGenerator.mapGrid.ContainsKey(neighborPos))
+                    MapNode neighbor = mapGenerator.mapGrid[neighborPos];
+                    if (!visited.Contains(neighbor))
                     {
-                        visited.Add(neighborPos);
-                        queue.Enqueue(mapGenerator.mapGrid[neighborPos]);
+                        visited.Add(neighbor);
+                        parentMap[neighbor] = current; // "neighbor 방은 current 방에서 왔음" 기록
+                        queue.Enqueue(neighbor);
                     }
                 }
             }
         }
 
-        return false; // 길 못 찾음
+        return null; // 길을 못 찾음
     }
 }
