@@ -27,6 +27,10 @@ public class StageManager : MonoBehaviour
     // 맵 제너레이터 참조 (아이콘 옮기라고 시켜야 하니까)
     public MapGenerator mapGenerator;
 
+    [Header("필드 연출")]
+    public BackgroundScroller backgroundScroller; // 방금 만든 스크롤러 연결
+    public Animator playerAnimator;               // 플레이어 캐릭터의 애니메이터 연결
+
 
     private void Awake()
     {
@@ -223,9 +227,18 @@ public class StageManager : MonoBehaviour
         // 2. 비주얼 갱신 (코루틴 실행) 및 완료 시 콜백으로 스테이지 진입
         if (mapGenerator != null)
         {
-            // MovePlayerIconAlongPath가 완전히 끝나면, 화살표 함수 ()=>{} 안의 코드가 실행됩니다.
+            // 이동 시작 시 배경 스크롤과 달리는 애니메이션 켜기
+            if (backgroundScroller != null) backgroundScroller.StartScrolling();
+            if (playerAnimator != null) playerAnimator.SetBool("IsRun", true);
+
+            // 맵 제너레이터에게 이동 명령 하달
             mapGenerator.MovePlayerIconAlongPath(path, () =>
             {
+                // 이동이 끝났을 때 실행할 콜백 함수 (맵 제너레이터에서 이동이 끝났다고 알려줄 때 호출됨)
+                if (backgroundScroller != null) backgroundScroller.StopScrolling();
+                if (playerAnimator != null) playerAnimator.SetBool("IsRun", false);
+
+                // 도착 방의 기능(전투, 상점 등) 띄우기
                 EnterStage(targetNode.nodeType);
             });
         }
