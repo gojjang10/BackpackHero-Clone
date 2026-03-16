@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler
 {
     public BaseItemData data; // 아이템 원본 데이터
+    public Image itemImage; // 아이템 이미지
 
     [Header("하이라이트 오브젝트")]    
     public GameObject highlightObject;
@@ -33,9 +35,12 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHa
     public int onGridX; // 현재 아이템의 그리드 X 좌표
     public int onGridY; // 현재 아이템의 그리드 Y 좌표
 
+    [Header("상점 UI")]
+    public TextMeshProUGUI priceText; // 아이템 프리팹 하위의 가격 텍스트
+    public bool isInShop = false;     // 현재 상점 진열대에 있는지 여부
+
     // 내부 컴포넌트
     private GridInteract gridInteract;
-    public Image itemImage; // 아이템 이미지
     private RectTransform rectTransform;    // 아이템 RectTransform
 
     private void Awake()
@@ -111,22 +116,6 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHa
         {
             Vector2 newSize = new Vector2(data.width * tileSize, data.height * tileSize);
             rectTransform.sizeDelta = newSize;
-
-            //// [추가] 자식(하이라이트) 크기도 강제로 맞추기
-            //if (highlightObject != null)
-            //{
-            //    RectTransform highlightRect = highlightObject.GetComponent<RectTransform>();
-            //    if (highlightRect != null)
-            //    {
-            //        // 1. 앵커를 중앙으로 초기화 (안전장치)
-            //        highlightRect.anchorMin = new Vector2(0.5f, 0.5f);
-            //        highlightRect.anchorMax = new Vector2(0.5f, 0.5f);
-            //        highlightRect.pivot = new Vector2(0.5f, 0.5f);
-
-            //        // 2. 크기를 아이템과 똑같이 맞춤
-            //        highlightRect.sizeDelta = newSize;
-            //    }
-            //}
         }
     }
 
@@ -151,6 +140,26 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler, IPointerEnterHa
         if (highlightObject != null)
         {
             highlightObject.SetActive(isActive);
+        }
+    }
+
+    // 가격 표시 활성화
+    public void SetupAsShopItem()
+    {
+        isInShop = true;
+        if (priceText != null)
+        {
+            priceText.gameObject.SetActive(true);
+            priceText.text = data.basePrice.ToString() + " G"; // 가격 표시
+        }
+    }
+    // 가격 표시 비활성화
+    public void SetAsInventoryItem()
+    {
+        isInShop = false;
+        if (priceText != null)
+        {
+            priceText.gameObject.SetActive(false); // 가방에 들어오면 가격표 숨김
         }
     }
 }

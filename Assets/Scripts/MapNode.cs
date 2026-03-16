@@ -17,7 +17,7 @@ public class MapNode
             _nodeType = value;
             // ★ 타입이 바뀔 때마다 자동으로 클리어 여부 결정
             // 배틀이나 보스가 아니면 -> 자동으로 클리어(true) 처리
-            if (_nodeType == NodeType.Battle || _nodeType == NodeType.Boss)
+            if (_nodeType == NodeType.Battle || _nodeType == NodeType.Boss || _nodeType == NodeType.Shop)
             {
                 isCleared = false;
             }

@@ -18,4 +18,5 @@ MonoBehaviour:
   attackDamage: 2
   defense: 0
   xpReward: 2
+  coinReward: 5
   defaultPattern: {fileID: 11400000, guid: 13c02a49bf0130c4b9eccafda6b8a6bc, type: 2}

@@ -16,7 +16,7 @@ public class SlotUI : MonoBehaviour, IPointerDownHandler, IPointerEnterHandler, 
 
     [Header("색상 설정")]
     public Color unlockedColor = Color.white;       // 해금됨 (흰색)
-    public Color lockedColor = new Color(0.2f, 0.2f, 0.2f, 0.5f); // 잠김 (어두운 회색, 반투명)
+    public Color lockedColor = new Color(0.2f, 0.2f, 0.2f, 1f); // 잠김 (어두운 회색, 반투명)
 
     private void Awake()
     {

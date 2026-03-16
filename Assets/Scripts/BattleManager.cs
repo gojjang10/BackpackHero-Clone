@@ -172,10 +172,11 @@ public class BattleManager : MonoBehaviour
         // 1. 리스트에서 제거 
         activeMonsters.Remove(deadMonster);
 
-        // 경험치 보상 지급
+        // 경험치, 코인 보상 지급
         if (deadMonster.data != null && player != null)
         {
-            player.AddExp(deadMonster.data.xpReward);
+            player.AddExp(deadMonster.data.xpReward);   // 경험치 획득
+            player.AddCoin(deadMonster.data.coinReward); // 코인 획득
         }
 
         // 2. 몬스터 오브젝트 퇴장 처리 (OnDie 호출)
@@ -285,6 +286,12 @@ public class BattleManager : MonoBehaviour
         {
             StageManager.Instance.currentNode.isCleared = true;
             Debug.Log($" 노드 클리어 완료! ({StageManager.Instance.currentNode.coordinate})");
+
+            //  맵 제너레이터에게 "전투 이겼으니 색깔 파란색으로 바꿔라" 명령
+            if (StageManager.Instance.mapGenerator != null)
+            {
+                StageManager.Instance.mapGenerator.UpdateNodeColor(StageManager.Instance.currentNode.coordinate);
+            }
         }
 
         player.OnTurnEnd(); // 턴 종료 처리 (방어도 초기화 등)

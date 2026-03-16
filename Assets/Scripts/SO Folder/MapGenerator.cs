@@ -27,6 +27,8 @@ public class MapGenerator : MonoBehaviour
     // 생성된 맵 데이터를 저장할 딕셔너리 (좌표 -> 노드데이터)
     // public으로 열어서 다른 매니저가 볼 수 있게 함
     public Dictionary<Vector2Int, MapNode> mapGrid = new Dictionary<Vector2Int, MapNode>();
+    // 맵 시각화된 오브젝트를 관리할 딕셔너리 (좌표 -> 노드 시각 오브젝트)
+    public Dictionary<Vector2Int, MapNodeVisual> visualGrid = new Dictionary<Vector2Int, MapNodeVisual>();
 
     private void Start()
     {
@@ -63,6 +65,7 @@ public class MapGenerator : MonoBehaviour
 
         // 1. 청소하기 (기존 데이터 및 오브젝트 삭제)
         mapGrid.Clear();
+        visualGrid.Clear(); //  추가: 비주얼 딕셔너리도 맵 생성 시마다 비워줌
         foreach (Transform child in nodeParent)
         {
             Destroy(child.gameObject);
@@ -209,15 +212,11 @@ public class MapGenerator : MonoBehaviour
         go.transform.localPosition = finalPos;
         go.name = $"Node ({node.coordinate.x}, {node.coordinate.y})";
 
-        SpriteRenderer sr = go.GetComponent<SpriteRenderer>();
-        if (node.nodeType == NodeType.Battle) sr.color = Color.red;
-        else if (node.nodeType == NodeType.Shop) sr.color = Color.yellow;
-        else if (node.nodeType == NodeType.Neutral) sr.color = Color.blue;
-        else if (node.nodeType == NodeType.Boss) sr.color = Color.black;
-        else if (node.nodeType == NodeType.NextStair) sr.color = Color.green;
-
         MapNodeVisual visual = go.GetComponent<MapNodeVisual>();
         visual.Setup(node);
+        
+        // 생성된 시각 오브젝트를 딕셔너리에 저장 (추후 업데이트용)
+        visualGrid.Add(node.coordinate, visual);
     }
 
     private void DrawLines()
@@ -298,5 +297,14 @@ public class MapGenerator : MonoBehaviour
 
         // 이동이 완전히 끝났으니, StageManager에게 "도착했어!"라고 알려줍니다.
         onComplete?.Invoke();
+    }
+
+    // 외부에서 특정 좌표의 노드 색상을 업데이트하라고 시킬 때 쓰는 함수
+    public void UpdateNodeColor(Vector2Int coord)
+    {
+        if (visualGrid.ContainsKey(coord))
+        {
+            visualGrid[coord].UpdateVisualState();
+        }
     }
 }

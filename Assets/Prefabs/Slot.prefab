@@ -192,4 +192,4 @@ MonoBehaviour:
   y: 0
   highlightImage: {fileID: 1108107511619068096}
   unlockedColor: {r: 1, g: 1, b: 1, a: 1}
-  lockedColor: {r: 0.2, g: 0.2, b: 0.2, a: 0.5}
+  lockedColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}

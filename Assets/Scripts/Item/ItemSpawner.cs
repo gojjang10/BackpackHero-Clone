@@ -93,5 +93,42 @@ public class ItemSpawner : MonoBehaviour
             Debug.Log($"보상 생성 완료: {selectedData.itemName}");
         }
     }
+
+    public void SpawnShopItems(int count, Transform shopContainer)
+    {
+        // 1. 진열장 청소
+        foreach (Transform child in shopContainer)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 2. 개수만큼 생성
+        for (int i = 0; i < count; i++)
+        {
+            if (itemsToSpawn.Length == 0) return;
+
+            // 랜덤 데이터 선택
+            int randomIndex = Random.Range(0, itemsToSpawn.Length);
+            BaseItemData selectedData = itemsToSpawn[randomIndex];
+
+            // 껍데기 생성
+            GameObject newItemObj = Instantiate(itemPrefab);
+
+            // ★ 부모를 매개변수로 받은 shopContainer로 설정 (UI 스케일 꼬임 방지)
+            newItemObj.transform.SetParent(shopContainer, false);
+
+            InventoryItem newItem = newItemObj.GetComponent<InventoryItem>();
+
+            // 데이터 초기화
+            newItem.Initialize(selectedData, 100, gridInteract);
+            newItem.onGridX = -1;
+            newItem.onGridY = -1;
+
+            // ★ 상점 모드로 세팅 (가격표 켜기)
+            newItem.SetupAsShopItem();
+
+            Debug.Log($"상점 진열 완료: {selectedData.itemName}");
+        }
+    }
 }
     

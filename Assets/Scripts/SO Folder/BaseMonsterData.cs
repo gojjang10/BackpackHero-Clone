@@ -16,6 +16,7 @@ public class BaseMonsterData : ScriptableObject
 
     [Header("몬스터 보상")]
     public int xpReward;           // 처치 시 획득 경험치
+    public int coinReward;         // 처치 시 획득 코인
 
     [Header("AI 패턴")]
     public MonsterPatternSO defaultPattern;

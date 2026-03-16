@@ -28,6 +28,21 @@ public class Player : MonoBehaviour, IDamageable
         }
     }
 
+    // 1. 코인을 프로퍼티 구조로 변경 (값이 바뀔 때만 이벤트 방송)
+    [SerializeField] private int _coins = 0;
+    public int coins
+    {
+        get { return _coins; }
+        set
+        {
+            if (_coins != value)
+            {
+                _coins = value;
+                OnCoinChanged?.Invoke(_coins); // 코인이 변하면 방송
+            }
+        }
+    }
+
     [Header("전투 스탯")]
     public int maxEnergy = 3;
     public int currentEnergy;
@@ -40,12 +55,22 @@ public class Player : MonoBehaviour, IDamageable
 
     // 포인트가 변경될 때마다 알림을 보낼 이벤트 (방송국 역할)
     public event Action<int> OnExpandPointsChanged;
+
+    // 코인이 변경될 때 UI를 업데이트하기 위한 이벤트
+    public event Action<int> OnCoinChanged;
+
     private void Start()
     {
+        if (playerUI != null)
+        {
+            OnCoinChanged += playerUI.UpdateCoin; // 코인이 변경될 때마다 UI의 UpdateCoin 함수를 호출하도록 구독
+        }
+
         // 게임 시작 시 초기화
         currentHp = maxHp;
         currentEnergy = maxEnergy;
         currentBlock = 0;
+        coins = 0; // 코인 초기화 (프로퍼티로 설정해서 UI 갱신 방송이 나가도록)
 
         // UI 초기화
         UpdateUI();
@@ -166,6 +191,29 @@ public class Player : MonoBehaviour, IDamageable
         Debug.Log($" 레벨 업! 현재 레벨: {level} / 가방 확장 포인트: {expandPoints}");
 
         // TODO: 화면에 "레벨업! 잠긴 가방을 클릭해 확장하세요!" 같은 팝업을 띄우기
+    }
+
+    // 코인 획득 함수
+    public void AddCoin(int amount)
+    {
+        coins += amount; // 프로퍼티가 알아서 UI 갱신 방송
+        Debug.Log($"코인 획득: +{amount} (현재 코인: {coins})");
+    }
+
+    // 코인 소비 함수 (성공 여부 반환)
+    public bool SpendCoin(int amount)
+    {
+        if (coins >= amount)
+        {
+            coins -= amount; // 프로퍼티가 알아서 UI 갱신 방송
+            Debug.Log($"코인 소비: -{amount} (남은 코인: {coins})");
+            return true;
+        }
+        else
+        {
+            Debug.Log("코인이 부족합니다!");
+            return false;
+        }
     }
 
     public void UpdateUI()

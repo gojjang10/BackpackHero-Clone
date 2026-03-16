@@ -20,6 +20,9 @@ public class PlayerUI : MonoBehaviour
     public Slider expSlider;          // 경험치 게이지
     public TextMeshProUGUI expText;   // "3 / 10" 표시용
 
+    [Header("Coin")]
+    public TextMeshProUGUI coinText;
+
     public void UpdateHP(int currentHp, int maxHp)
     {
         hpSlider.value = (float)currentHp / maxHp;
@@ -66,6 +69,15 @@ public class PlayerUI : MonoBehaviour
         if (expText != null)
         {
             expText.text = $"{currentExp} / {maxExp}";
+        }
+    }
+
+    // 코인 업데이트 함수
+    public void UpdateCoin(int currentCoins)
+    {
+        if (coinText != null)
+        {
+            coinText.text = $"{currentCoins} G";
         }
     }
 }
