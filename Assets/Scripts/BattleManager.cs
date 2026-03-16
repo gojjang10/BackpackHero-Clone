@@ -286,6 +286,12 @@ public class BattleManager : MonoBehaviour
         {
             StageManager.Instance.currentNode.isCleared = true;
             Debug.Log($" 노드 클리어 완료! ({StageManager.Instance.currentNode.coordinate})");
+
+            //  맵 제너레이터에게 "전투 이겼으니 색깔 파란색으로 바꿔라" 명령
+            if (StageManager.Instance.mapGenerator != null)
+            {
+                StageManager.Instance.mapGenerator.UpdateNodeColor(StageManager.Instance.currentNode.coordinate);
+            }
         }
 
         player.OnTurnEnd(); // 턴 종료 처리 (방어도 초기화 등)

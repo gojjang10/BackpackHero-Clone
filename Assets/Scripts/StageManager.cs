@@ -86,6 +86,7 @@ public class StageManager : MonoBehaviour
             case NodeType.Boss:
                 if (currentNode.isCleared)
                 {
+                    neturalPanel.SetActive(true); // 대신 이벤트/빈 방 패널로 대체 (필요 시)
                     Debug.Log($" 이미 정복한 지역입니다. ({currentNode.coordinate}) - 전투 스킵");
                 }
                 else
@@ -110,12 +111,16 @@ public class StageManager : MonoBehaviour
                     // 2. 그리고 바로 방을 클리어(방문 완료) 처리합니다.
                     currentNode.isCleared = true;
 
+                    // ★ 맵 제너레이터에게 "이 방 클리어됐으니 색깔 바꿔라!" 명령
+                    if (mapGenerator != null) mapGenerator.UpdateNodeColor(currentNode.coordinate);
+
                     OpenInventory();
                     Debug.Log($"상점 첫 방문! 물건이 진열됩니다. ({currentNode.coordinate})");
                 }
                 else
                 {
                     // 이미 방문했던 상점이라면? 새로 찍어내지 않습니다! (GenerateShopItems 호출 안 함)
+                    neturalPanel.SetActive(true); // 대신 이벤트/빈 방 패널로 대체 (필요 시)
                     Debug.Log($"이미 방문한 상점입니다. 남은 물건을 구경합니다. ({currentNode.coordinate})");
                 }
 
