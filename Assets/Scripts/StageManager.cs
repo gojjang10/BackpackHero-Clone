@@ -99,10 +99,26 @@ public class StageManager : MonoBehaviour
                 break;
 
             case NodeType.Shop:
-                shopPanel.SetActive(true);
-                rewardPanel.SetActive(true); // 상점 보상 패널도 같이 켜기 (필요 시)
-                shopManager.GenerateShopItems(); // 상점 아이템 새로 생성
-                OpenInventory();
+                // ★ [무한 리롤 방지 로직]
+                if (!currentNode.isCleared)
+                {
+                    shopPanel.SetActive(true);
+                    rewardPanel.SetActive(true); // 상점 보상 패널도 같이 켜기 (필요 시)
+                    // 1. 처음 들어왔을 때만 물건을 새로 찍어냅니다!
+                    shopManager.GenerateShopItems(); 
+                    
+                    // 2. 그리고 바로 방을 클리어(방문 완료) 처리합니다.
+                    currentNode.isCleared = true;
+
+                    OpenInventory();
+                    Debug.Log($"상점 첫 방문! 물건이 진열됩니다. ({currentNode.coordinate})");
+                }
+                else
+                {
+                    // 이미 방문했던 상점이라면? 새로 찍어내지 않습니다! (GenerateShopItems 호출 안 함)
+                    Debug.Log($"이미 방문한 상점입니다. 남은 물건을 구경합니다. ({currentNode.coordinate})");
+                }
+
                 break;
 
             case NodeType.Neutral: // 이벤트 or 빈 방
