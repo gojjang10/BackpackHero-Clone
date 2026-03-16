@@ -23,6 +23,7 @@ public class StageManager : MonoBehaviour
 
     [Header("시스템 연결")]
     public GridInteract gridInteract; // 인스펙터에서 연결
+    public ShopManager shopManager;
 
     // 맵 제너레이터 참조 (아이콘 옮기라고 시켜야 하니까)
     public MapGenerator mapGenerator;
@@ -99,6 +100,8 @@ public class StageManager : MonoBehaviour
 
             case NodeType.Shop:
                 shopPanel.SetActive(true);
+                rewardPanel.SetActive(true); // 상점 보상 패널도 같이 켜기 (필요 시)
+                shopManager.GenerateShopItems(); // 상점 아이템 새로 생성
                 OpenInventory();
                 break;
 

@@ -193,6 +193,26 @@ public class GridInteract : MonoBehaviour
     // 아이템 집기 로직
     private void PickUpItem(InventoryItem item)
     {
+        if (item.isInShop)
+        {
+            // 1. 플레이어 돈 확인 및 차감
+            if (player.SpendCoin(item.data.basePrice))
+            {
+                // 2. 구매 성공! 상점 모드 해제 (가격표 끄기)
+                item.SetAsInventoryItem();
+                Debug.Log("아이템 구매 성공!");
+
+                // 이 아래부터는 원래 있던 "아이템을 마우스에 붙이는" 기존 코드가 실행되게 둡니다.
+            }
+            else
+            {
+                // 3. 돈 부족! 집어들지 못하게 함수 종료
+                // (TODO: 화면에 "골드가 부족합니다!" 팝업 띄우기)
+                return;
+            }
+        }
+
+
         // 1. 아이템이 그리드 안에 있었다면? -> 그리드 데이터에서 제거
         if (item.onGridX != -1 && item.onGridY != -1)
         {

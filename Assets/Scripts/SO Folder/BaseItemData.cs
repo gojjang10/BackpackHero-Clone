@@ -10,6 +10,7 @@ public class BaseItemData : ScriptableObject
     public string itemName;         // 아이템 이름
     [TextArea] public string description; // 툴팁에 띄울 설명
     public Sprite icon;             // 인벤토리에서 보여질 이미지
+    public int basePrice = 10; //  아이템의 기본 가격
 
     [Header("인벤토리 그리드에 적용되는 크기")]
     public int width = 1;           // 가로 크기

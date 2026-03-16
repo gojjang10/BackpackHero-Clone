@@ -172,10 +172,11 @@ public class BattleManager : MonoBehaviour
         // 1. 리스트에서 제거 
         activeMonsters.Remove(deadMonster);
 
-        // 경험치 보상 지급
+        // 경험치, 코인 보상 지급
         if (deadMonster.data != null && player != null)
         {
-            player.AddExp(deadMonster.data.xpReward);
+            player.AddExp(deadMonster.data.xpReward);   // 경험치 획득
+            player.AddCoin(deadMonster.data.coinReward); // 코인 획득
         }
 
         // 2. 몬스터 오브젝트 퇴장 처리 (OnDie 호출)
