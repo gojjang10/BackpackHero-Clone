@@ -20,7 +20,8 @@ MonoBehaviour:
   neutralWeight: 60
   battleWeight: 20
   shopWeight: 20
-  possibleMonsterDatas: []
+  possibleMonsterDatas:
+  - {fileID: 11400000, guid: 99ac4e85300ae9d4188c3d8a6113f56a, type: 2}
   minMonsterCount: 1
   maxMonsterCount: 3
   isBossStage: 1

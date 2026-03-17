@@ -204,7 +204,7 @@ public class Monster : MonoBehaviour, IDamageable
             }
         }
 
-        // ★ 데미지 텍스트 호출! (몬스터니까 false)
+        // 데미지 텍스트 호출 (몬스터니까 false)
         if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
         {
             BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, false);

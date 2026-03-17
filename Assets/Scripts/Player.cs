@@ -149,7 +149,6 @@ public class Player : MonoBehaviour, IDamageable
             GameObject effectObj = Instantiate(shockwavePrefab, transform.position, Quaternion.identity);
 
             // 2. 크기 맞춤 (플레이어 크기에 맞춰서)
-            // 만약 플레이어 구조가 복잡하다면(부모-자식), spriteRenderer.transform.lossyScale을 쓰는 게 안전합니다.
             effectObj.transform.localScale = spriteRenderer.transform.lossyScale;
 
             // 3. 내 모습(Sprite) 전달해서 터뜨리기
@@ -160,7 +159,7 @@ public class Player : MonoBehaviour, IDamageable
             }
         }
 
-        // 데미지 텍스트 호출!
+        // 데미지 텍스트 호출
         if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
         {
             BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, true);
@@ -195,8 +194,6 @@ public class Player : MonoBehaviour, IDamageable
         expandPoints += 3;
 
         Debug.Log($" 레벨 업! 현재 레벨: {level} / 가방 확장 포인트: {expandPoints}");
-
-        // TODO: 화면에 "레벨업! 잠긴 가방을 클릭해 확장하세요!" 같은 팝업을 띄우기
     }
 
     // 코인 획득 함수
