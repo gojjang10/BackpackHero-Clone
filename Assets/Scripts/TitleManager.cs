@@ -5,6 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
+    public AudioClip titleBGM; // 타이틀 화면에서 재생할 BGM 클립
+
+    private void Start()
+    {
+            // 타이틀 화면에서는 BGM이 계속 재생되도록 설정
+        SoundManager.Instance.PlayBGM(titleBGM);
+    }
+
     // [게임 시작] 버튼에 연결
     public void OnClickStartGame()
     {

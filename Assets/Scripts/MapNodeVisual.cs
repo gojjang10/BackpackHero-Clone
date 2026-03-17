@@ -29,6 +29,11 @@ public class MapNodeVisual : MonoBehaviour
         // 방이 이미 깬 방이면 파란색으로 표시 (어떤 타입이든)
         if (nodeData.isCleared)
         {
+            if(nodeData.nodeType == NodeType.NextStair)
+            {
+                sr.color = Color.green;
+                return;
+            }
             sr.color = Color.blue;
             return;
         }

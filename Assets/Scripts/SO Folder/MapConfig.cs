@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewMapConfig", menuName = "Map/Map Config")]
 public class MapConfig : ScriptableObject
 {
+    [Header("스테이지 정보")]
+    public string floorName;
+
     [Header("맵 크기")]
     public int gridWidth = 12;  // 가로 길이 (진행 단계)
     public int gridHeight = 7;  // 세로 길이 (폭)
@@ -27,4 +30,7 @@ public class MapConfig : ScriptableObject
     [Header("보스 설정")]
     public bool isBossStage = false;    // 보스 스테이지 여부
     public BaseMonsterData bossMonsterData; // isBossStage가 true일 때 소환될 보스 데이터
+
+    [Header("스테이지 음악")]
+    public AudioClip stageBGM; // 이 맵에서 재생할 BGM 클립
 }

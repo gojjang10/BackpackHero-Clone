@@ -54,7 +54,7 @@ public class StageManager : MonoBehaviour
         // ★ UIManager에게 즉시 맵을 띄우라고 지시!
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.SnapToInventory(); // 맵이 켜질 때 인벤토리는 자동으로 꺼지도록
+            UIManager.Instance.SnapToMap();
         }
 
         CleanUpWorldItems();
@@ -100,18 +100,18 @@ public class StageManager : MonoBehaviour
                 break;
 
             case NodeType.Shop:
-                // ★ [무한 리롤 방지 로직]
+                // [무한 리롤 방지 로직]
                 if (!currentNode.isCleared)
                 {
                     shopPanel.SetActive(true);
                     rewardPanel.SetActive(true); // 상점 보상 패널도 같이 켜기 (필요 시)
-                    // 1. 처음 들어왔을 때만 물건을 새로 찍어냅니다!
+                    // 1. 처음 들어왔을 때만 물건을 새로 생성합니다.
                     shopManager.GenerateShopItems(); 
                     
                     // 2. 그리고 바로 방을 클리어(방문 완료) 처리합니다.
                     currentNode.isCleared = true;
 
-                    // ★ 맵 제너레이터에게 "이 방 클리어됐으니 색깔 바꿔라!" 명령
+                    // MapGenerator에게 "이 방 클리어됐으니 색깔 바꿔라" 명령
                     if (mapGenerator != null) mapGenerator.UpdateNodeColor(currentNode.coordinate);
 
                     OpenInventory();
@@ -119,7 +119,7 @@ public class StageManager : MonoBehaviour
                 }
                 else
                 {
-                    // 이미 방문했던 상점이라면? 새로 찍어내지 않습니다! (GenerateShopItems 호출 안 함)
+                    // 이미 방문했던 상점이라면? 빈 방 연출 (GenerateShopItems 호출 안 함)
                     neturalPanel.SetActive(true); // 대신 이벤트/빈 방 패널로 대체 (필요 시)
                     Debug.Log($"이미 방문한 상점입니다. 남은 물건을 구경합니다. ({currentNode.coordinate})");
                 }
@@ -133,23 +133,37 @@ public class StageManager : MonoBehaviour
             case NodeType.NextStair:
                 Debug.Log(">>> 계단을 발견했습니다! 다음 층으로 이동합니다.");
 
-                // 1. GameManager의 층수(Floor) 증가
-                // (이 변수가 바뀌어야 MapGenerator가 다음 단계 설정을 가져옵니다)
-                if (GameManager.instance != null)
+                if (GameManager.instance != null && mapGenerator != null)
                 {
+                    // 1. 다음 층수 증가
                     GameManager.instance.currentFloor++;
-                    Debug.Log($"=== {GameManager.instance.currentFloor}층 진입 ===");
-                }
 
-                // 2. 맵 재생성 요청
-                // (MapGenerator.GenerateMap() 안에서 기존 맵 삭제 -> 새 설정 로드 -> 새 맵 생성 -> 플레이어 위치 초기화 수행)
-                if (mapGenerator != null)
-                {
-                    mapGenerator.GenerateMap();
-                }
+                    // 2. 다음 층의 Config를 가져와서 층 이름 확인 (안전 장치 포함)
+                    int nextFloorIndex = GameManager.instance.currentFloor - 1;
+                    if (nextFloorIndex >= mapGenerator.stageConfigs.Count)
+                        nextFloorIndex = mapGenerator.stageConfigs.Count - 1;
 
-                // 3. 맵 화면 활성화
-                ShowMap();
+                    string nextFloorName = mapGenerator.stageConfigs[nextFloorIndex].floorName;
+
+                    // 3. ★ UIManager에게 트랜지션 연출을 지시!
+                    if (UIManager.Instance != null)
+                    {
+                        // "화면이 완전히 까매지면, 화살표 함수 안의 로직(맵 재생성)을 실행해!"
+                        UIManager.Instance.DoFloorTransition(nextFloorName, () =>
+                        {
+                            // --- 이 안쪽은 유저 눈에 보이지 않는 암전 상태에서 실행됨 ---
+                            mapGenerator.GenerateMap(); // 기존 맵 부수고 새 맵 생성
+                            ShowMap(); // 맵 화면 활성화
+                            // -----------------------------------------------------------
+                        });
+                    }
+                    else
+                    {
+                        // UIManager가 없으면 그냥 바로 생성 (예외 처리)
+                        mapGenerator.GenerateMap();
+                        ShowMap();
+                    }
+                }
                 break;
         }
     }
@@ -185,14 +199,14 @@ public class StageManager : MonoBehaviour
         // 아이템을 들고 있는지 검사 (GridInteract를 통해 간접 확인)
         if (gridInteract != null && gridInteract.IsDraggingItem)
         {
-            Debug.Log(" 아이템을 정리하고 지도를 펼쳐주세요!");
+            UIManager.Instance.ShowWarning("아이템을 정리하고 지도를 펼쳐주세요!");
             return;
         }
 
         // 확장 포인트가 남아있는지 검사 (GridInteract를 통해 간접 확인)
         if (gridInteract != null && gridInteract.HasPendingExpansion)
         {
-            Debug.Log(" 가방 확장을 완료해야 맵을 펼칠 수 있습니다!");
+            UIManager.Instance.ShowWarning("가방 확장을 완료해야 맵을 펼칠 수 있습니다!");
             return; // 함수 강제 종료 
         }
 
@@ -216,7 +230,7 @@ public class StageManager : MonoBehaviour
         // 1. 현재 전투 중인지 확인 
         if (GameManager.instance.currentState == GameState.Battle)
         {
-            Debug.Log(" 전투 중에는 이동할 수 없습니다! (전투를 먼저 끝내세요)");
+            UIManager.Instance.ShowWarning("전투 중에는 이동할 수 없습니다!");
             return;
         }
 
@@ -226,7 +240,10 @@ public class StageManager : MonoBehaviour
         // 3. [잠금] 아이콘이 이동하는 도중에는 다른 방 클릭 완벽 차단
         if (mapGenerator != null && mapGenerator.IsIconMoving) return;
 
-        // 4. 길 찾기 (경로 리스트 받아오기)
+        // 4. 트랜지션 중에는 방 클릭 완벽 차단
+        if (UIManager.Instance != null && UIManager.Instance.IsTransitioning) return;
+
+        // 5. 길 찾기 (경로 리스트 받아오기)
         List<MapNode> path = GetPath(currentNode, targetNode);
 
         if (path != null && path.Count > 0)
@@ -236,7 +253,7 @@ public class StageManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("지나갈 수 없는 길입니다.");
+            UIManager.Instance.ShowWarning("해당 지역은 잠겨있습니다!");
         }
     }
 

@@ -192,7 +192,7 @@ public class Monster : MonoBehaviour, IDamageable
             GameObject effectObj = Instantiate(shockwavePrefab, transform.position, Quaternion.identity);
 
             // 2. 크기 맞춤 (내 크기 그대로)
-            effectObj.transform.localScale = transform.localScale;
+            //effectObj.transform.localScale = transform.localScale;
 
             // 3. 스크립트 가져오기
             ShockwaveEffect effectScript = effectObj.GetComponent<ShockwaveEffect>();
@@ -202,6 +202,12 @@ public class Monster : MonoBehaviour, IDamageable
                 // 이펙트에 내 스프라이트 전달해서 연출 세팅하기
                 effectScript.Setup(spriteRenderer, Color.yellow);
             }
+        }
+
+        // 데미지 텍스트 호출 (몬스터니까 false)
+        if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
+        {
+            BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, false);
         }
     }
 
