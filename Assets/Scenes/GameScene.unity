@@ -4974,6 +4974,8 @@ MonoBehaviour:
   turnInfoText: {fileID: 1479465585}
   endGamePanel: {fileID: 141926919}
   resultText: {fileID: 641721945}
+  damageTextPrefab: {fileID: 302188830458899463, guid: 88138e5031b0f1b4988e82fa6ef075a5, type: 3}
+  damageTextParent: {fileID: 2041537416}
 --- !u!114 &1381867449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5354,7 +5356,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 0
   m_Interactable: 1
-  m_BlocksRaycasts: 0
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!114 &1413385617
 MonoBehaviour:

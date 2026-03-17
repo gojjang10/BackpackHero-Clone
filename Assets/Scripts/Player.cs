@@ -159,6 +159,12 @@ public class Player : MonoBehaviour, IDamageable
                 effectScript.Setup(spriteRenderer, Color.red);
             }
         }
+
+        // 데미지 텍스트 호출!
+        if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
+        {
+            BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, true);
+        }
     }
 
     // 경험치 획득 함수

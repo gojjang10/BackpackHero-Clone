@@ -203,6 +203,12 @@ public class Monster : MonoBehaviour, IDamageable
                 effectScript.Setup(spriteRenderer, Color.yellow);
             }
         }
+
+        // ★ 데미지 텍스트 호출! (몬스터니까 false)
+        if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
+        {
+            BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, false);
+        }
     }
 
     // 사망 처리 함수
