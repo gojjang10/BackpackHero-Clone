@@ -211,7 +211,7 @@ public class Player : MonoBehaviour, IDamageable
         }
         else
         {
-            Debug.Log("코인이 부족합니다!");
+            UIManager.Instance.ShowWarning("골드가 부족합니다!");
             return false;
         }
     }

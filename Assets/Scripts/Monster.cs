@@ -192,7 +192,7 @@ public class Monster : MonoBehaviour, IDamageable
             GameObject effectObj = Instantiate(shockwavePrefab, transform.position, Quaternion.identity);
 
             // 2. 크기 맞춤 (내 크기 그대로)
-            effectObj.transform.localScale = transform.localScale;
+            //effectObj.transform.localScale = transform.localScale;
 
             // 3. 스크립트 가져오기
             ShockwaveEffect effectScript = effectObj.GetComponent<ShockwaveEffect>();

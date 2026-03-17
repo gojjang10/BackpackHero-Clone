@@ -169,9 +169,24 @@ public class MapGenerator : MonoBehaviour
 
         if (current != end)
         {
-            AddNodeData(end);
-            MapNode lastNode = mapGrid[current];
-            if (!lastNode.nextNodes.Contains(end)) lastNode.nextNodes.Add(end);
+            while (current.y != end.y)
+            {
+                Vector2Int next = current;
+
+                // 보스방이 내 위치보다 위에 있으면 위로, 아래에 있으면 아래로 한 칸 이동
+                if (current.y < end.y) next.y += 1;
+                else next.y -= 1;
+
+                AddNodeData(next);
+                MapNode currentNode = mapGrid[current];
+                MapNode nextNode = mapGrid[next];
+
+                // 양방향으로 안전하게 연결 (이제 시각적으로 선이 겹치는 착시가 사라집니다)
+                if (!currentNode.nextNodes.Contains(next)) currentNode.nextNodes.Add(next);
+                if (!nextNode.nextNodes.Contains(current)) nextNode.nextNodes.Add(current);
+
+                current = next;
+            }
         }
     }
 

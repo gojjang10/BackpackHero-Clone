@@ -199,14 +199,14 @@ public class StageManager : MonoBehaviour
         // 아이템을 들고 있는지 검사 (GridInteract를 통해 간접 확인)
         if (gridInteract != null && gridInteract.IsDraggingItem)
         {
-            Debug.Log(" 아이템을 정리하고 지도를 펼쳐주세요!");
+            UIManager.Instance.ShowWarning("아이템을 정리하고 지도를 펼쳐주세요!");
             return;
         }
 
         // 확장 포인트가 남아있는지 검사 (GridInteract를 통해 간접 확인)
         if (gridInteract != null && gridInteract.HasPendingExpansion)
         {
-            Debug.Log(" 가방 확장을 완료해야 맵을 펼칠 수 있습니다!");
+            UIManager.Instance.ShowWarning("가방 확장을 완료해야 맵을 펼칠 수 있습니다!");
             return; // 함수 강제 종료 
         }
 
@@ -230,7 +230,7 @@ public class StageManager : MonoBehaviour
         // 1. 현재 전투 중인지 확인 
         if (GameManager.instance.currentState == GameState.Battle)
         {
-            Debug.Log(" 전투 중에는 이동할 수 없습니다! (전투를 먼저 끝내세요)");
+            UIManager.Instance.ShowWarning("전투 중에는 이동할 수 없습니다!");
             return;
         }
 
@@ -240,7 +240,10 @@ public class StageManager : MonoBehaviour
         // 3. [잠금] 아이콘이 이동하는 도중에는 다른 방 클릭 완벽 차단
         if (mapGenerator != null && mapGenerator.IsIconMoving) return;
 
-        // 4. 길 찾기 (경로 리스트 받아오기)
+        // 4. 트랜지션 중에는 방 클릭 완벽 차단
+        if (UIManager.Instance != null && UIManager.Instance.IsTransitioning) return;
+
+        // 5. 길 찾기 (경로 리스트 받아오기)
         List<MapNode> path = GetPath(currentNode, targetNode);
 
         if (path != null && path.Count > 0)
@@ -250,7 +253,7 @@ public class StageManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("지나갈 수 없는 길입니다.");
+            UIManager.Instance.ShowWarning("해당 지역은 잠겨있습니다!");
         }
     }
 

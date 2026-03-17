@@ -119,6 +119,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator TransitionRoutine(string text, Action onMidpointCallback)
     {
         // 1. 방어 코드 (트랜지션 중에는 클릭을 막기 위해 Raycast를 켬)
+        IsTransitioning = true;
         transitionGroup.blocksRaycasts = true;
         floorNameText.text = text;
 
@@ -154,4 +155,53 @@ public class UIManager : MonoBehaviour
         transitionGroup.blocksRaycasts = false;
     }
 
+    // 외부에서 "UIManager.Instance.ShowWarning("골드가 부족!");" 이렇게 부를 함수
+    public void ShowWarning(string message)
+    {
+        if (warningGroup == null || warningText == null) return;
+
+        // 만약 이미 팝업이 떠서 코루틴이 돌고 있다면? 
+        // 하던 걸 강제로 멈추고 새로운 메시지로 덮어씌웁니다. (광클 대비)
+        if (warningCoroutine != null)
+        {
+            StopCoroutine(warningCoroutine);
+        }
+
+        // 새 코루틴 시작!
+        warningCoroutine = StartCoroutine(WarningRoutine(message));
+    }
+
+    private IEnumerator WarningRoutine(string message)
+    {
+        // 1. 텍스트 세팅 및 초기화
+        warningText.text = message;
+        warningGroup.alpha = 0f;
+        warningGroup.gameObject.SetActive(true);
+
+        float fadeDuration = 0.2f; // 0.2초 만에 빠르게 등장
+        float elapsed = 0f;
+
+        // 2. Fade In (등장)
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            warningGroup.alpha = Mathf.Lerp(0f, 1f, elapsed / fadeDuration);
+            yield return null;
+        }
+        warningGroup.alpha = 1f;
+
+        // 3. 1초 동안 대기 (유저가 글씨를 읽을 시간)
+        yield return new WaitForSeconds(1.0f);
+
+        // 4. Fade Out (서서히 사라짐)
+        elapsed = 0f;
+        while (elapsed < fadeDuration)
+        {
+            elapsed += Time.deltaTime;
+            warningGroup.alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
+            yield return null;
+        }
+        warningGroup.alpha = 0f;
+        warningGroup.gameObject.SetActive(false); // 완전히 꺼줌
+    }
 }
