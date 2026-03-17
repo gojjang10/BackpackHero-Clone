@@ -5,6 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewMapConfig", menuName = "Map/Map Config")]
 public class MapConfig : ScriptableObject
 {
+    [Header("스테이지 정보")]
+    public string floorName;
+
     [Header("맵 크기")]
     public int gridWidth = 12;  // 가로 길이 (진행 단계)
     public int gridHeight = 7;  // 세로 길이 (폭)

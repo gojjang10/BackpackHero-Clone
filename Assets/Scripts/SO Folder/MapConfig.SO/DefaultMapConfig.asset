@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 622be6ba278ee854fa787b6c98f6e72c, type: 3}
   m_Name: DefaultMapConfig
   m_EditorClassIdentifier: 
+  floorName: "\uC9C0\uD558 \uB3D9\uAD74 1\uCE35"
   gridWidth: 10
   gridHeight: 5
   maxPathCount: 3
   branchProbability: 0.3
   neutralWeight: 60
   battleWeight: 20
-  shopWeight: 100
+  shopWeight: 5
   possibleMonsterDatas:
   - {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
   - {fileID: 11400000, guid: 7d7d630bf12c36f4292482637150338b, type: 2}

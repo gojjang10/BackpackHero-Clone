@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class UIManager : MonoBehaviour
@@ -14,6 +16,15 @@ public class UIManager : MonoBehaviour
     public RectTransform inventoryPanelRect;
     public RectTransform mapPanelRect;
     public float slideDuration = 0.35f;
+
+    [Header("씬 트랜지션 연출")]
+    public CanvasGroup transitionGroup; // TransitionPanel의 CanvasGroup
+    public TextMeshProUGUI floorNameText; // 층 이름 텍스트
+
+    [Header("시스템 경고 UI")]
+    public CanvasGroup warningGroup;      // 방금 만든 SystemWarningPanel
+    public TextMeshProUGUI warningText;   // 그 안의 텍스트
+    private Coroutine warningCoroutine;   // 현재 실행 중인 코루틴 (중복 실행 방지용)
 
     // 외부에서 애니메이션 중인지 확인할 수 있게 프로퍼티로 선언 (읽기만 가능)
     public bool IsTransitioning { get; private set; }
@@ -96,4 +107,51 @@ public class UIManager : MonoBehaviour
 
         IsTransitioning = false;
     }
+
+    // 트랜지션 메인 함수
+    // 텍스트 내용과, 화면이 완전히 까매졌을 때 몰래 실행할 함수(콜백)를 받습니다.
+    public void DoFloorTransition(string text, Action onMidpointCallback)
+    {
+        if (transitionGroup == null) return;
+        StartCoroutine(TransitionRoutine(text, onMidpointCallback));
+    }
+
+    private IEnumerator TransitionRoutine(string text, Action onMidpointCallback)
+    {
+        // 1. 방어 코드 (트랜지션 중에는 클릭을 막기 위해 Raycast를 켬)
+        transitionGroup.blocksRaycasts = true;
+        floorNameText.text = text;
+
+        // 2. Fade Out (화면 까매지기)
+        float duration = 1.0f; // 1초 동안 어두워짐
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transitionGroup.alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
+            yield return null;
+        }
+        transitionGroup.alpha = 1f;
+
+        // 3. 완벽한 암전 상태 여기서 맵을 바꿉니다 (콜백 실행)
+        onMidpointCallback?.Invoke();
+
+        // 4. 텍스트를 읽을 수 있게 1.5초 정도 대기
+        yield return new WaitForSeconds(1.5f);
+
+        // 5. Fade In (화면 밝아지기)
+        elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            transitionGroup.alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            yield return null;
+        }
+        transitionGroup.alpha = 0f;
+
+        // 6. 연출 끝 다시 마우스 클릭이 되도록 Raycast를 끔
+        transitionGroup.blocksRaycasts = false;
+    }
+
 }

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 622be6ba278ee854fa787b6c98f6e72c, type: 3}
   m_Name: ThirdMapConfig
   m_EditorClassIdentifier: 
+  floorName: "\uC9C0\uD558 \uB3D9\uAD74 3\uCE35"
   gridWidth: 3
   gridHeight: 3
   maxPathCount: 3
