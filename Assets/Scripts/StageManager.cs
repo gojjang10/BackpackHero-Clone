@@ -54,7 +54,7 @@ public class StageManager : MonoBehaviour
         // ★ UIManager에게 즉시 맵을 띄우라고 지시!
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.SnapToInventory(); // 맵이 켜질 때 인벤토리는 자동으로 꺼지도록
+            UIManager.Instance.SnapToMap();
         }
 
         CleanUpWorldItems();

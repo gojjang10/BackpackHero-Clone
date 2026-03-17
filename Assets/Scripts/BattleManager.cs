@@ -23,6 +23,10 @@ public class BattleManager : MonoBehaviour
     public GameObject rewardUIObject; // RewardPanel 오브젝트 (켜고 끄기용)
     public ItemSpawner itemSpawner;   // 아이템 스포너
 
+    [Header("오디오 클립")]
+    public AudioClip battleStartBGM; // 전투 시작 시 재생할 BGM 클립
+    public AudioClip battleBGM; // 전투 중 재생할 BGM 클립
+
 
     private void Awake()
     {
@@ -94,6 +98,7 @@ public class BattleManager : MonoBehaviour
     IEnumerator SetupBattle()
     {
         if (uiManager != null) uiManager.ShowSlideNotification("전투 시작!");
+        SoundManager.Instance.PlayBGM(battleStartBGM);
 
         yield return new WaitForSeconds(1.5f);
 
@@ -111,6 +116,8 @@ public class BattleManager : MonoBehaviour
         // ★ 슬라이드 함수로 변경
         if (uiManager != null) uiManager.ShowSlideNotification("내 차례");
         Debug.Log(" 플레이어 턴 시작!");
+
+        SoundManager.Instance.PlayBGM(battleBGM);
     }
 
     // '턴 종료' 버튼과 연결
@@ -201,6 +208,8 @@ public class BattleManager : MonoBehaviour
         state = BattleState.EnemyTurn;
         if (uiManager != null) uiManager.ShowSlideNotification("적 차례");
         Debug.Log("--- [적 턴 시작] 행동 실행 ---");
+
+        yield return new WaitForSeconds(1.0f);
 
         // 1. 모든 몬스터가 큐에 쌓아둔 행동을 실행 (Perform)
         foreach (Monster monster in activeMonsters)
@@ -321,7 +330,6 @@ public class BattleManager : MonoBehaviour
                 }
             }
         }
-
     }
 
     IEnumerator LoseBattle()

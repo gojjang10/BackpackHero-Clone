@@ -30,4 +30,7 @@ public class MapConfig : ScriptableObject
     [Header("보스 설정")]
     public bool isBossStage = false;    // 보스 스테이지 여부
     public BaseMonsterData bossMonsterData; // isBossStage가 true일 때 소환될 보스 데이터
+
+    [Header("스테이지 음악")]
+    public AudioClip stageBGM; // 이 맵에서 재생할 BGM 클립
 }

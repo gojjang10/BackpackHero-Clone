@@ -118,6 +118,8 @@ public class MapGenerator : MonoBehaviour
                 StageManager.Instance.SetCurrentNode(startNode);
             }
         }
+
+        SoundManager.Instance.PlayBGM(currentConfig.stageBGM);
     }
 
     // 아이콘 생성 및 초기 위치 설정
