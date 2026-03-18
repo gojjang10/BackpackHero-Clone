@@ -30,38 +30,39 @@ public class MapGenerator : MonoBehaviour
     // 맵 시각화된 오브젝트를 관리할 딕셔너리 (좌표 -> 노드 시각 오브젝트)
     public Dictionary<Vector2Int, MapNodeVisual> visualGrid = new Dictionary<Vector2Int, MapNodeVisual>();
 
-    private void Start()
+    // 맵 생성 전 레시피(Config)만 먼저 세팅하는 함수
+    public void LoadConfig()
     {
-        GenerateMap();
-    }
-
-    // 맵 생성의 메인 함수
-    public void GenerateMap()
-    {
-        // 0. ★ [신규] 현재 층수에 맞는 Config 가져오기
         if (stageConfigs == null || stageConfigs.Count == 0)
         {
             Debug.LogError("MapGenerator: 설정 파일 리스트(stageConfigs)가 비어있습니다!");
             return;
         }
 
-        // GameManager에서 현재 층수를 가져옴 (1층 -> 인덱스 0)
         int floorIndex = 0;
         if (GameManager.instance != null)
         {
             floorIndex = GameManager.instance.currentFloor - 1;
         }
 
-        // 인덱스 범위 안전 장치 (만약 준비된 설정보다 층수가 높아지면 마지막 설정을 계속 사용)
         if (floorIndex >= stageConfigs.Count)
         {
             floorIndex = stageConfigs.Count - 1;
         }
 
-        // 이번에 사용할 설정을 확정 (이후 모든 함수는 이 변수를 사용함)
         currentConfig = stageConfigs[floorIndex];
-        Debug.Log($"[MapGenerator] {floorIndex + 1}층 맵 생성 시작 (설정: {currentConfig.name})");
+        Debug.Log($"[MapGenerator] {floorIndex + 1}층 데이터 로드 완료 (설정: {currentConfig.name})");
+    }
 
+    // 맵 생성의 메인 함수
+    public void GenerateMap()
+    {
+        // [안전 장치] 데이터가 없으면 맵 생성 중단
+        if (currentConfig == null)
+        {
+            Debug.LogError("맵을 생성하기 전에 LoadConfig()를 먼저 호출해야 합니다!");
+            return;
+        }
 
         // 1. 청소하기 (기존 데이터 및 오브젝트 삭제)
         mapGrid.Clear();
@@ -119,7 +120,6 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        SoundManager.Instance.PlayBGM(currentConfig.stageBGM);
     }
 
     // 아이콘 생성 및 초기 위치 설정

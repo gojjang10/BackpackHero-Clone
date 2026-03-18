@@ -19,6 +19,8 @@ public class Monster : MonoBehaviour, IDamageable
     public SpriteRenderer spriteRenderer; // 이미지를 바꿔주기 위해 필요
     public GameObject selectionMark;      // 선택 화살표
     public MonsterUI monsterUI;          // 몬스터 UI
+    public AudioClip takeDamageSFX;         // 피격 사운드
+    public AudioClip addBlockSFX;
 
     [Header("VFX")]
     public GameObject shockwavePrefab;
@@ -138,6 +140,11 @@ public class Monster : MonoBehaviour, IDamageable
                 Debug.Log($" {name} 방어! 방어도 +{action.value}");
                 currentBlock += action.value; 
                 monsterUI.UpdateStats(currentHp, data.maxHp, currentBlock);
+
+                if(SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.PlaySFX(addBlockSFX);
+                }
                 break;
 
             case MonsterMoveType.Wait:
@@ -208,6 +215,12 @@ public class Monster : MonoBehaviour, IDamageable
         if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
         {
             BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, false);
+        }
+
+        // 피격 사운드 재생
+        if (takeDamageSFX != null)
+        {
+            SoundManager.Instance.PlaySFX(takeDamageSFX);
         }
     }
 

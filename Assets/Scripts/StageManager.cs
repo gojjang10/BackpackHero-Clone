@@ -19,7 +19,7 @@ public class StageManager : MonoBehaviour
     public Transform worldItemHolder;
 
     [Header("맵 이동 상태")]
-    public MapNode currentNode; // ★ 현재 플레이어가 있는 노드 데이터
+    public MapNode currentNode; // 현재 플레이어가 있는 노드 데이터
 
     [Header("시스템 연결")]
     public GridInteract gridInteract; // 인스펙터에서 연결
@@ -40,6 +40,20 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
+        if (mapGenerator != null)
+        {
+            // 1. 맵을 그리기 전에 레시피(Config)만 먼저 가져옵니다
+            mapGenerator.LoadConfig();
+
+            // 2. 데이터가 확실히 있으므로 안전하게 BGM 재생
+            if (mapGenerator.CurrentConfig != null && mapGenerator.CurrentConfig.stageBGM != null)
+            {
+                SoundManager.Instance.PlayBGM(mapGenerator.CurrentConfig.stageBGM);
+            }
+
+            // 3. 유저가 인벤토리를 보는 동안 맵을 백그라운드에서 구워둡니다.
+            mapGenerator.GenerateMap();
+        }
         ShowMap(); // 게임 시작 시 맵부터 보여주기
     }
 
@@ -51,10 +65,10 @@ public class StageManager : MonoBehaviour
         rewardPanel.SetActive(false);
         neturalPanel.SetActive(false);
 
-        // ★ UIManager에게 즉시 맵을 띄우라고 지시!
+        // UIManager에게 즉시 인벤토리를 띄우라고 지시
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.SnapToMap();
+            UIManager.Instance.SnapToInventory();
         }
 
         CleanUpWorldItems();
@@ -151,10 +165,19 @@ public class StageManager : MonoBehaviour
                         // "화면이 완전히 까매지면, 화살표 함수 안의 로직(맵 재생성)을 실행해!"
                         UIManager.Instance.DoFloorTransition(nextFloorName, () =>
                         {
-                            // --- 이 안쪽은 유저 눈에 보이지 않는 암전 상태에서 실행됨 ---
-                            mapGenerator.GenerateMap(); // 기존 맵 부수고 새 맵 생성
+                            // 맵을 부수기 전에, "새로운 층의 레시피를 가져와라" 라고 지시합니다.
+                            mapGenerator.LoadConfig();
+
+                            // 가져온 새 레시피로 맵을 굽습니다.
+                            mapGenerator.GenerateMap();
+
                             ShowMap(); // 맵 화면 활성화
-                            // -----------------------------------------------------------
+
+                            // 새로운 층의 BGM으로 부드럽게 교체
+                            if (mapGenerator.CurrentConfig != null && mapGenerator.CurrentConfig.stageBGM != null)
+                            {
+                                SoundManager.Instance.PlayBGMWithFade(mapGenerator.CurrentConfig.stageBGM, 1.5f);
+                            }
                         });
                     }
                     else
@@ -270,14 +293,14 @@ public class StageManager : MonoBehaviour
         {
             // 이동 시작 시 배경 스크롤과 달리는 애니메이션 켜기
             if (backgroundScroller != null) backgroundScroller.StartScrolling();
-            if (playerAnimator != null) playerAnimator.SetBool("IsRun", true);
+            if (playerAnimator != null) playerAnimator.SetBool("IsMoving", true);
 
             // 맵 제너레이터에게 이동 명령 하달
             mapGenerator.MovePlayerIconAlongPath(path, () =>
             {
                 // 이동이 끝났을 때 실행할 콜백 함수 (맵 제너레이터에서 이동이 끝났다고 알려줄 때 호출됨)
                 if (backgroundScroller != null) backgroundScroller.StopScrolling();
-                if (playerAnimator != null) playerAnimator.SetBool("IsRun", false);
+                if (playerAnimator != null) playerAnimator.SetBool("IsMoving", false);
 
                 // 도착 방의 기능(전투, 상점 등) 띄우기
                 EnterStage(targetNode.nodeType);

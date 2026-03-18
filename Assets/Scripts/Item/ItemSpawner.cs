@@ -130,5 +130,70 @@ public class ItemSpawner : MonoBehaviour
             Debug.Log($"상점 진열 완료: {selectedData.itemName}");
         }
     }
+
+    // 게임 시작 시 확정적으로 무기 1개, 방어구 1개, 랜덤 1개를 주는 함수
+    public void SpawnOpeningItems()
+    {
+        // 1. 기존에 보상 패널에 있던 아이템들 청소
+        foreach (Transform child in rewardPanel)
+        {
+            Destroy(child.gameObject);
+        }
+
+        if (itemsToSpawn.Length == 0) return;
+
+        // 2. 전체 아이템 풀에서 무기와 방어구 분리하기
+        List<BaseItemData> weapons = new List<BaseItemData>();
+        List<BaseItemData> armors = new List<BaseItemData>();
+
+        foreach (var item in itemsToSpawn)
+        {
+            // 아이템 태그에 Weapon이 있으면 무기 리스트에, Armor가 있으면 방어구 리스트에 추가
+            if (item.itemTags.Contains(ItemTag.Weapon))
+            {
+                weapons.Add(item);
+            }
+            else if (item.itemTags.Contains(ItemTag.Armor))
+            {
+                armors.Add(item);
+            }
+        }
+
+        // 3. 스폰할 아이템 3개를 담을 리스트 준비
+        List<BaseItemData> selectedItems = new List<BaseItemData>();
+
+        // 무기 1개 뽑기 (무기가 풀에 없으면 에러 방지용으로 아무거나 뽑음)
+        if (weapons.Count > 0)
+            selectedItems.Add(weapons[Random.Range(0, weapons.Count)]);
+        else
+            selectedItems.Add(itemsToSpawn[Random.Range(0, itemsToSpawn.Length)]);
+
+        // 방어구 1개 뽑기
+        if (armors.Count > 0)
+            selectedItems.Add(armors[Random.Range(0, armors.Count)]);
+        else
+            selectedItems.Add(itemsToSpawn[Random.Range(0, itemsToSpawn.Length)]);
+
+        // 남은 1개는 전체 풀에서 완전 랜덤으로 뽑기
+        selectedItems.Add(itemsToSpawn[Random.Range(0, itemsToSpawn.Length)]);
+
+        // 4. 선택된 3개의 아이템을 기존과 완벽하게 똑같은 방식으로 화면에 생성
+        foreach (var data in selectedItems)
+        {
+            GameObject newItemObj = Instantiate(itemPrefab);
+
+            // 부모를 '보상 패널'로 설정
+            newItemObj.transform.SetParent(rewardPanel, false);
+
+            InventoryItem newItem = newItemObj.GetComponent<InventoryItem>();
+
+            // 데이터 초기화 
+            newItem.Initialize(data, 100, gridInteract);
+            newItem.onGridX = -1;
+            newItem.onGridY = -1;
+
+            Debug.Log($"오프닝 보상 생성 완료: {data.itemName}");
+        }
+    }
 }
     

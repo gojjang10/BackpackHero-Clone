@@ -164,6 +164,8 @@ MonoBehaviour:
   playerUI: {fileID: 528541004}
   spriteRenderer: {fileID: 528541002}
   shockwavePrefab: {fileID: 7378069313264150123, guid: 88f84330f8164864db6215523ab1d85b, type: 3}
+  takeDamageSFX: {fileID: 8300000, guid: 773745bf302978545bb54bf09a1ef185, type: 3}
+  addBlockSFX: {fileID: 8300000, guid: d4355e54f212f554d98d72a088d81082, type: 3}
 --- !u!4 &22935589
 Transform:
   m_ObjectHideFlags: 0
@@ -1069,6 +1071,8 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   rewardUIObject: {fileID: 1497977704}
   itemSpawner: {fileID: 1830990642}
+  battleStartBGM: {fileID: 8300000, guid: 6945c41fe4f9beb48a13c61beafabbcc, type: 3}
+  battleBGM: {fileID: 8300000, guid: 04b33ff63961af64cbc950a6f5ef6231, type: 3}
 --- !u!4 &315721399
 Transform:
   m_ObjectHideFlags: 0
@@ -2056,7 +2060,7 @@ Animator:
   m_GameObject: {fileID: 528541001}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0f0814659f6fee842b50ebda189b4d3b, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

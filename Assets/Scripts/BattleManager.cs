@@ -102,6 +102,7 @@ public class BattleManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
+        SoundManager.Instance.PlayBGM(battleBGM);
         StartPlayerTurn();
     }
 
@@ -113,11 +114,9 @@ public class BattleManager : MonoBehaviour
         // 플레이어 상태 리셋 (행동력 충전 등)
         if (player != null) player.OnTurnStart();
 
-        // ★ 슬라이드 함수로 변경
+        // 슬라이드 함수로 변경
         if (uiManager != null) uiManager.ShowSlideNotification("내 차례");
         Debug.Log(" 플레이어 턴 시작!");
-
-        SoundManager.Instance.PlayBGM(battleBGM);
     }
 
     // '턴 종료' 버튼과 연결
@@ -292,6 +291,13 @@ public class BattleManager : MonoBehaviour
 
         uiManager.OnDisable();  // 전투 UI 비활성화
         GameManager.instance.SetState(GameState.Exploration); // 탐험 모드로 전환
+
+        // 전투 BGM을 부드럽게 끄고, 기존 스테이지 BGM으로 페이드인 전환 (1.5초 동안)
+        if (StageManager.Instance != null && StageManager.Instance.mapGenerator != null)
+        {
+            AudioClip stageBGM = StageManager.Instance.mapGenerator.CurrentConfig.stageBGM;
+            SoundManager.Instance.PlayBGMWithFade(stageBGM, 1.5f);
+        }
 
         if (StageManager.Instance != null && StageManager.Instance.currentNode != null)
         {
