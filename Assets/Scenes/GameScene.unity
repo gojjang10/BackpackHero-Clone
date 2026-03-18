@@ -164,6 +164,8 @@ MonoBehaviour:
   playerUI: {fileID: 528541004}
   spriteRenderer: {fileID: 528541002}
   shockwavePrefab: {fileID: 7378069313264150123, guid: 88f84330f8164864db6215523ab1d85b, type: 3}
+  takeDamageSFX: {fileID: 8300000, guid: 773745bf302978545bb54bf09a1ef185, type: 3}
+  addBlockSFX: {fileID: 8300000, guid: d4355e54f212f554d98d72a088d81082, type: 3}
 --- !u!4 &22935589
 Transform:
   m_ObjectHideFlags: 0

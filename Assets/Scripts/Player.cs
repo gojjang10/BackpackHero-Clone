@@ -52,6 +52,8 @@ public class Player : MonoBehaviour, IDamageable
     public PlayerUI playerUI;
     public SpriteRenderer spriteRenderer;
     public GameObject shockwavePrefab;
+    public AudioClip takeDamageSFX;
+    public AudioClip addBlockSFX;
 
     // 포인트가 변경될 때마다 알림을 보낼 이벤트 (방송국 역할)
     public event Action<int> OnExpandPointsChanged;
@@ -94,6 +96,11 @@ public class Player : MonoBehaviour, IDamageable
         currentBlock += amount;
         Debug.Log($" 방어도 증가! (+{amount}) -> 현재: {currentBlock}");
         UpdateUI();
+
+        if (addBlockSFX != null)
+        {
+            SoundManager.Instance.PlaySFX(addBlockSFX);
+        }
     }
 
     // 턴 시작 시 리셋할 것들
@@ -163,6 +170,12 @@ public class Player : MonoBehaviour, IDamageable
         if (BattleManager.instance != null && BattleManager.instance.uiManager != null)
         {
             BattleManager.instance.uiManager.SpawnDamageText(damage, transform.position, true);
+        }
+
+        // 피격 사운드 재생
+        if (takeDamageSFX != null)
+        {
+            SoundManager.Instance.PlaySFX(takeDamageSFX);
         }
     }
 

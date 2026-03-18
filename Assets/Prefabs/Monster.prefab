@@ -1747,6 +1747,8 @@ MonoBehaviour:
   spriteRenderer: {fileID: 7617761007962907741}
   selectionMark: {fileID: 119703266659857816}
   monsterUI: {fileID: 912478342934814701}
+  takeDamageSFX: {fileID: 8300000, guid: 773745bf302978545bb54bf09a1ef185, type: 3}
+  addBlockSFX: {fileID: 8300000, guid: d4355e54f212f554d98d72a088d81082, type: 3}
   shockwavePrefab: {fileID: 7378069313264150123, guid: 88f84330f8164864db6215523ab1d85b, type: 3}
 --- !u!61 &4530822536844946170
 BoxCollider2D:

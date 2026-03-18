@@ -26,3 +26,4 @@ MonoBehaviour:
   maxMonsterCount: 3
   isBossStage: 1
   bossMonsterData: {fileID: 11400000, guid: 909891c28bf57e44096799f4677b1610, type: 2}
+  stageBGM: {fileID: 8300000, guid: 6c5b4c1d6d99ce548abae499fd2005e6, type: 3}
