@@ -43,23 +43,10 @@ public class GameManager : MonoBehaviour
         // 시작 아이템 3개 스폰 (개수는 마음대로 조절)
         if (itemSpawner != null)
         {
-            itemSpawner.SpawnRewardItems(3);
+            itemSpawner.SpawnOpeningItems();
             Debug.Log("시작 보상이 지급되었습니다. 아이템을 가방에 넣으세요!");
         }
     }
-
-    //// ★ 2. [모험 시작] 버튼에 연결할 함수
-    //public void OnStartAdventureClicked()
-    //{
-    //    // 보상 창 닫고, 맵 열기
-    //    if (rewardUIObject != null) rewardUIObject.SetActive(false);
-    //    if (mapUIObject != null) mapUIObject.SetActive(true);
-
-    //    // 상태를 탐험 모드로 변경
-    //    SetState(GameState.Exploration);
-
-    //    Debug.Log("모험을 시작합니다!");
-    //}
 
     // 상태 변경 함수
     public void SetState(GameState newState)
