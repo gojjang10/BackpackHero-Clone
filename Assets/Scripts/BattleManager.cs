@@ -102,6 +102,7 @@ public class BattleManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
+        SoundManager.Instance.PlayBGM(battleBGM);
         StartPlayerTurn();
     }
 
@@ -113,11 +114,9 @@ public class BattleManager : MonoBehaviour
         // 플레이어 상태 리셋 (행동력 충전 등)
         if (player != null) player.OnTurnStart();
 
-        // ★ 슬라이드 함수로 변경
+        // 슬라이드 함수로 변경
         if (uiManager != null) uiManager.ShowSlideNotification("내 차례");
         Debug.Log(" 플레이어 턴 시작!");
-
-        SoundManager.Instance.PlayBGM(battleBGM);
     }
 
     // '턴 종료' 버튼과 연결

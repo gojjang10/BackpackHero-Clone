@@ -1069,6 +1069,8 @@ MonoBehaviour:
   currentTarget: {fileID: 0}
   rewardUIObject: {fileID: 1497977704}
   itemSpawner: {fileID: 1830990642}
+  battleStartBGM: {fileID: 8300000, guid: 6945c41fe4f9beb48a13c61beafabbcc, type: 3}
+  battleBGM: {fileID: 8300000, guid: 04b33ff63961af64cbc950a6f5ef6231, type: 3}
 --- !u!4 &315721399
 Transform:
   m_ObjectHideFlags: 0

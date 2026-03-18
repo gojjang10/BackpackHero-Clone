@@ -19,7 +19,7 @@ public class StageManager : MonoBehaviour
     public Transform worldItemHolder;
 
     [Header("맵 이동 상태")]
-    public MapNode currentNode; // ★ 현재 플레이어가 있는 노드 데이터
+    public MapNode currentNode; // 현재 플레이어가 있는 노드 데이터
 
     [Header("시스템 연결")]
     public GridInteract gridInteract; // 인스펙터에서 연결
@@ -40,6 +40,20 @@ public class StageManager : MonoBehaviour
 
     private void Start()
     {
+        if (mapGenerator != null)
+        {
+            // 1. 맵을 그리기 전에 레시피(Config)만 먼저 가져옵니다
+            mapGenerator.LoadConfig();
+
+            // 2. 데이터가 확실히 있으므로 안전하게 BGM 재생
+            if (mapGenerator.CurrentConfig != null && mapGenerator.CurrentConfig.stageBGM != null)
+            {
+                SoundManager.Instance.PlayBGM(mapGenerator.CurrentConfig.stageBGM);
+            }
+
+            // 3. 유저가 인벤토리를 보는 동안 맵을 백그라운드에서 구워둡니다.
+            mapGenerator.GenerateMap();
+        }
         ShowMap(); // 게임 시작 시 맵부터 보여주기
     }
 
@@ -51,10 +65,10 @@ public class StageManager : MonoBehaviour
         rewardPanel.SetActive(false);
         neturalPanel.SetActive(false);
 
-        // ★ UIManager에게 즉시 맵을 띄우라고 지시!
+        // UIManager에게 즉시 인벤토리를 띄우라고 지시
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.SnapToMap();
+            UIManager.Instance.SnapToInventory();
         }
 
         CleanUpWorldItems();
