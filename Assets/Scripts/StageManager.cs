@@ -293,14 +293,14 @@ public class StageManager : MonoBehaviour
         {
             // 이동 시작 시 배경 스크롤과 달리는 애니메이션 켜기
             if (backgroundScroller != null) backgroundScroller.StartScrolling();
-            if (playerAnimator != null) playerAnimator.SetBool("IsRun", true);
+            if (playerAnimator != null) playerAnimator.SetBool("IsMoving", true);
 
             // 맵 제너레이터에게 이동 명령 하달
             mapGenerator.MovePlayerIconAlongPath(path, () =>
             {
                 // 이동이 끝났을 때 실행할 콜백 함수 (맵 제너레이터에서 이동이 끝났다고 알려줄 때 호출됨)
                 if (backgroundScroller != null) backgroundScroller.StopScrolling();
-                if (playerAnimator != null) playerAnimator.SetBool("IsRun", false);
+                if (playerAnimator != null) playerAnimator.SetBool("IsMoving", false);
 
                 // 도착 방의 기능(전투, 상점 등) 띄우기
                 EnterStage(targetNode.nodeType);
