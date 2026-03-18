@@ -292,6 +292,13 @@ public class BattleManager : MonoBehaviour
         uiManager.OnDisable();  // 전투 UI 비활성화
         GameManager.instance.SetState(GameState.Exploration); // 탐험 모드로 전환
 
+        // 전투 BGM을 부드럽게 끄고, 기존 스테이지 BGM으로 페이드인 전환 (1.5초 동안)
+        if (StageManager.Instance != null && StageManager.Instance.mapGenerator != null)
+        {
+            AudioClip stageBGM = StageManager.Instance.mapGenerator.CurrentConfig.stageBGM;
+            SoundManager.Instance.PlayBGMWithFade(stageBGM, 1.5f);
+        }
+
         if (StageManager.Instance != null && StageManager.Instance.currentNode != null)
         {
             StageManager.Instance.currentNode.isCleared = true;

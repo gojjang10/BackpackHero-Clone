@@ -165,10 +165,19 @@ public class StageManager : MonoBehaviour
                         // "화면이 완전히 까매지면, 화살표 함수 안의 로직(맵 재생성)을 실행해!"
                         UIManager.Instance.DoFloorTransition(nextFloorName, () =>
                         {
-                            // --- 이 안쪽은 유저 눈에 보이지 않는 암전 상태에서 실행됨 ---
-                            mapGenerator.GenerateMap(); // 기존 맵 부수고 새 맵 생성
+                            // 맵을 부수기 전에, "새로운 층의 레시피를 가져와라" 라고 지시합니다.
+                            mapGenerator.LoadConfig();
+
+                            // 가져온 새 레시피로 맵을 굽습니다.
+                            mapGenerator.GenerateMap();
+
                             ShowMap(); // 맵 화면 활성화
-                            // -----------------------------------------------------------
+
+                            // 새로운 층의 BGM으로 부드럽게 교체
+                            if (mapGenerator.CurrentConfig != null && mapGenerator.CurrentConfig.stageBGM != null)
+                            {
+                                SoundManager.Instance.PlayBGMWithFade(mapGenerator.CurrentConfig.stageBGM, 1.5f);
+                            }
                         });
                     }
                     else
